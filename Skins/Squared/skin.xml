@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Steve Jobs</Author>
+  <Website>http://apple.com</Website>
+  <VolBar Type="horizontal" Steps="16" X="33" Y="165" />
+  <DeviceText X="20" Y="10" Font="Arial" ColorHex="#FFFFFF" FontSize="9" MaxWidth="170" MaxHeight="40" />
+</OSDskin>

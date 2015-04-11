@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioSwitch", "AudioSwitch.csproj", "{27E9D710-5098-4F59-8E81-412B63705301}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|Win32 = Debug|Win32
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|Win32 = Release|Win32
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{27E9D710-5098-4F59-8E81-412B63705301}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Debug|Win32.ActiveCfg = Debug|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Debug|x86.ActiveCfg = Debug|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Debug|x86.Build.0 = Debug|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Release|Any CPU.ActiveCfg = Release|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Release|Mixed Platforms.Build.0 = Release|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Release|Win32.ActiveCfg = Release|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Release|x86.ActiveCfg = Release|x86
+		{27E9D710-5098-4F59-8E81-412B63705301}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

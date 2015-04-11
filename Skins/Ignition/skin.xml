@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="1.0">
+  <Author>Aphaits</Author>
+  <Website>http://aphaits.deviantart.com</Website>
+  <VolBar Type="bitstrip" Steps="14" X="18" Y="18" />
+  <DeviceText X="40" Y="85" Font="Arial" ColorHex="#FFFFFF" FontSize="8" MaxWidth="140" MaxHeight="50" />
+</OSDskin>

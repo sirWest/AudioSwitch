@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="1.0">
+  <Author>Matthew Malensek</Author>
+  <Website>http://matt.malensek.net</Website>
+  <VolBar Type="horizontal" Steps="13" X="28" Y="118" />
+  <DeviceText X="25" Y="100" Font="Arial" ColorHex="#FFFFFF" FontSize="7" MaxWidth="110" MaxHeight="25" />
+</OSDskin>
