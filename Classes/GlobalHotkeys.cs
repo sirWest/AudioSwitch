@@ -12,7 +12,8 @@ namespace AudioSwitch.Classes
         Alt = 1,
         Control = 2,
         Shift = 4,
-        Win = 8
+        LWin = 8,
+        RWin = 16
     }
 
     public static class GlobalHotkeys

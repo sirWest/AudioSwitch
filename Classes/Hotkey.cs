@@ -57,10 +57,17 @@ namespace AudioSwitch.Classes
         }
 
         [XmlIgnore]
-        public bool Win
+        public bool LWin
         {
-            get { return ModifierKeys.HasFlag(HotModifierKeys.Win); }
-            set { ModHotFlag(value, HotModifierKeys.Win); }
+            get { return ModifierKeys.HasFlag(HotModifierKeys.LWin); }
+            set { ModHotFlag(value, HotModifierKeys.LWin); }
+        }
+
+        [XmlIgnore]
+        public bool RWin
+        {
+            get { return ModifierKeys.HasFlag(HotModifierKeys.RWin); }
+            set { ModHotFlag(value, HotModifierKeys.RWin); }
         }
 
         public void Dispose()

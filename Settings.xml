@@ -3,17 +3,15 @@
   <IgnoreErrors>false</IgnoreErrors>
   <DefaultDataFlow>eRender</DefaultDataFlow>
   <DefaultMultimediaAndComm>true</DefaultMultimediaAndComm>
-  <ColorVU>true</ColorVU>
-  <OSD Skin="Grey volume" Left="61" Top="26" ClosingTimeout="1300" Transparency="255" />
-  <VolumeScroll Key="LWin" ShowOSD="true" Enabled="true" />
+  <ColorVU>false</ColorVU>
+  <OSD Skin="Default" Left="61" Top="26" ClosingTimeout="1300" Transparency="255" />
+  <VolumeScroll Key="LWin" ShowOSD="true" Enabled="false" />
   <Hotkey Function="SwitchPlaybackDevice" ModifierKeys="Alt" HotKey="X" ShowOSD="true" />
   <Hotkey Function="SwitchRecordingDevice" ModifierKeys="Alt" HotKey="Y" ShowOSD="true" />
-  <Hotkey Function="TogglePlaybackMute" ModifierKeys="Alt Win" HotKey="Left" ShowOSD="true" />
-  <Hotkey Function="ToggleRecordingMute" ModifierKeys="Alt Win" HotKey="Right" ShowOSD="true" />
-  <Hotkey Function="PlaybackVolumeUp" ModifierKeys="Alt Win" HotKey="Up" ShowOSD="true" />
-  <Hotkey Function="PlaybackVolumeDown" ModifierKeys="Alt Win" HotKey="Down" ShowOSD="true" />
-  <Hotkey Function="RecordingVolumeUp" ModifierKeys="None" HotKey="None" ShowOSD="false" />
-  <Hotkey Function="RecordingVolumeDown" ModifierKeys="None" HotKey="None" ShowOSD="false" />
-  <Device DeviceID="{0.0.0.00000000}.{011082b8-e49e-4d48-adec-eb91b4ed9785}" HideFromList="false" Hue="8" Saturation="91" Brightness="14" />
-  <Device DeviceID="{0.0.0.00000000}.{c5f0d1c1-33a0-4766-9d5b-5d48570c20d9}" HideFromList="false" Hue="121" Saturation="88" Brightness="8" />
+  <Hotkey Function="TogglePlaybackMute" ModifierKeys="Alt LWin" HotKey="Left" ShowOSD="true" />
+  <Hotkey Function="ToggleRecordingMute" ModifierKeys="Alt LWin" HotKey="Right" ShowOSD="true" />
+  <Hotkey Function="PlaybackVolumeUp" ModifierKeys="Alt LWin" HotKey="Up" ShowOSD="true" />
+  <Hotkey Function="PlaybackVolumeDown" ModifierKeys="Alt LWin" HotKey="Down" ShowOSD="true" />
+  <Hotkey Function="RecordingVolumeUp" ModifierKeys="None" HotKey="None" ShowOSD="true" />
+  <Hotkey Function="RecordingVolumeDown" ModifierKeys="None" HotKey="None" ShowOSD="true" />
 </Settings>

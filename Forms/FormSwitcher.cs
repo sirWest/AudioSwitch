@@ -26,8 +26,7 @@ namespace AudioSwitch.Forms
             switch (m.Msg)
             {
                 case WM_HOTKEY:
-                    if (!Visible)
-                        HotKeyPressed((short)m.WParam);
+                    HotKeyPressed((short)m.WParam);
                     break;
 
                 case 0x84:

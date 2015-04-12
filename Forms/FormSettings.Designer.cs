@@ -35,13 +35,6 @@ namespace AudioSwitch.Forms
             this.tabSettings = new System.Windows.Forms.TabControl();
             this.tabHotkeys = new System.Windows.Forms.TabPage();
             this.gridHotkeys = new System.Windows.Forms.DataGridView();
-            this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Control = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Alt = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Win = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ShowOSD = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tabDevices = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.groupDevice = new System.Windows.Forms.GroupBox();
@@ -83,6 +76,14 @@ namespace AudioSwitch.Forms
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.linkManual = new System.Windows.Forms.LinkLabel();
             this.listDevices = new AudioSwitch.Controls.CustomListView();
+            this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Control = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Alt = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.LWin = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.RWin = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ShowOSD = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tabSettings.SuspendLayout();
             this.tabHotkeys.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHotkeys)).BeginInit();
@@ -141,7 +142,8 @@ namespace AudioSwitch.Forms
             this.Control,
             this.Alt,
             this.Shift,
-            this.Win,
+            this.LWin,
+            this.RWin,
             this.ShowOSD,
             this.HotKey});
             this.gridHotkeys.GridColor = System.Drawing.SystemColors.Control;
@@ -159,58 +161,6 @@ namespace AudioSwitch.Forms
             this.gridHotkeys.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHotkeys.Size = new System.Drawing.Size(520, 304);
             this.gridHotkeys.TabIndex = 1;
-            // 
-            // Function
-            // 
-            this.Function.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Function.HeaderText = "Function";
-            this.Function.MaxDropDownItems = 100;
-            this.Function.MinimumWidth = 160;
-            this.Function.Name = "Function";
-            this.Function.Width = 160;
-            // 
-            // Control
-            // 
-            this.Control.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Control.HeaderText = "Control";
-            this.Control.Name = "Control";
-            this.Control.Width = 46;
-            // 
-            // Alt
-            // 
-            this.Alt.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Alt.HeaderText = "Alt";
-            this.Alt.Name = "Alt";
-            this.Alt.Width = 25;
-            // 
-            // Shift
-            // 
-            this.Shift.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Shift.HeaderText = "Shift";
-            this.Shift.Name = "Shift";
-            this.Shift.Width = 34;
-            // 
-            // Win
-            // 
-            this.Win.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Win.HeaderText = "Win";
-            this.Win.Name = "Win";
-            this.Win.Width = 32;
-            // 
-            // ShowOSD
-            // 
-            this.ShowOSD.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.ShowOSD.HeaderText = "Show OSD";
-            this.ShowOSD.Name = "ShowOSD";
-            this.ShowOSD.Width = 66;
-            // 
-            // HotKey
-            // 
-            this.HotKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.HotKey.HeaderText = "Hot Key";
-            this.HotKey.MaxDropDownItems = 20;
-            this.HotKey.MinimumWidth = 120;
-            this.HotKey.Name = "HotKey";
             // 
             // tabDevices
             // 
@@ -694,6 +644,65 @@ namespace AudioSwitch.Forms
             this.listDevices.View = System.Windows.Forms.View.Tile;
             this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
             // 
+            // Function
+            // 
+            this.Function.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Function.HeaderText = "Function";
+            this.Function.MaxDropDownItems = 100;
+            this.Function.MinimumWidth = 160;
+            this.Function.Name = "Function";
+            this.Function.Width = 160;
+            // 
+            // Control
+            // 
+            this.Control.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Control.HeaderText = "Control";
+            this.Control.Name = "Control";
+            this.Control.Width = 46;
+            // 
+            // Alt
+            // 
+            this.Alt.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Alt.HeaderText = "Alt";
+            this.Alt.Name = "Alt";
+            this.Alt.Width = 25;
+            // 
+            // Shift
+            // 
+            this.Shift.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Shift.HeaderText = "Shift";
+            this.Shift.Name = "Shift";
+            this.Shift.Width = 34;
+            // 
+            // LWin
+            // 
+            this.LWin.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.LWin.HeaderText = "LWin";
+            this.LWin.Name = "LWin";
+            this.LWin.Width = 38;
+            // 
+            // RWin
+            // 
+            this.RWin.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RWin.HeaderText = "RWin";
+            this.RWin.Name = "RWin";
+            this.RWin.Width = 40;
+            // 
+            // ShowOSD
+            // 
+            this.ShowOSD.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ShowOSD.HeaderText = "Show OSD";
+            this.ShowOSD.Name = "ShowOSD";
+            this.ShowOSD.Width = 66;
+            // 
+            // HotKey
+            // 
+            this.HotKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.HotKey.HeaderText = "Hot Key";
+            this.HotKey.MaxDropDownItems = 20;
+            this.HotKey.MinimumWidth = 80;
+            this.HotKey.Name = "HotKey";
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -789,13 +798,14 @@ namespace AudioSwitch.Forms
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkColorVU;
         private System.Windows.Forms.DataGridViewComboBoxColumn Function;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Control;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Alt;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Shift;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Win;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn LWin;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn RWin;
         private System.Windows.Forms.DataGridViewCheckBoxColumn ShowOSD;
         private System.Windows.Forms.DataGridViewComboBoxColumn HotKey;
-        private System.Windows.Forms.CheckBox checkColorVU;
     }
 }

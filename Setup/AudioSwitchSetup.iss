@@ -2,7 +2,8 @@
 #define ApplicationVersion GetFileVersion('..\bin\Release\AudioSwitch.exe')
 
 [Setup]
-AppId=ApplicationName
+AppMutex={{579A9A19-7AE5-42CD-8147-E587F5C9DD50}}
+AppId={#ApplicationName}
 AppName={#ApplicationName} v2.0
 AppVerName={#ApplicationName}
 AppVersion={#ApplicationVersion}

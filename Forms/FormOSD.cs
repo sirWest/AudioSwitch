@@ -37,9 +37,16 @@ namespace AudioSwitch.Forms
             get
             {
                 var cp = base.CreateParams;
-                cp.ExStyle |= 0x00080000; // This form has to have the WS_EX_LAYERED extended style
+                cp.ExStyle |= 0x00080000 | // This form has to have the WS_EX_LAYERED extended style
+                              0x08000000 | // WS_EX_NOACTIVATE
+                              0x00000080;  // WS_EX_TOOLWINDOW
                 return cp;
             }
+        }
+
+        protected override bool ShowWithoutActivation
+        {
+            get { return true; }
         }
 
         public FormOSD()

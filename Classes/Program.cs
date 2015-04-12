@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using AudioSwitch.CoreAudioApi;
 using AudioSwitch.Forms;
@@ -9,6 +10,8 @@ namespace AudioSwitch.Classes
 {
     internal static class Program
     {
+        static Mutex mutex = new Mutex(true, "{579A9A19-7AE5-42CD-8147-E587F5C9DD50}");
+
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
 
@@ -40,10 +43,9 @@ namespace AudioSwitch.Classes
 
                     var cmdArgsJoined = string.Join(" ", args);
                     var cmdArgs = cmdArgsJoined.Split('-');
-                    var willExit = false;
 
                     var hotkeyFunction = HotkeyFunction.SwitchPlaybackDevice;
-                    var modifiers = HotModifierKeys.Win;
+                    var modifiers = HotModifierKeys.LWin;
                     var hotKey = Keys.LWin;
                     var rType = settings.DefaultDataFlow;
                     var keysOK = 0;

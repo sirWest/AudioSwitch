@@ -36,7 +36,8 @@ namespace AudioSwitch.Forms
             Control.DataPropertyName = "Control";
             Alt.DataPropertyName = "Alt";
             Shift.DataPropertyName = "Shift";
-            Win.DataPropertyName = "Win";
+            LWin.DataPropertyName = "LWin";
+            RWin.DataPropertyName = "RWin";
             ShowOSD.DataPropertyName = "ShowOSD";
 
             gridHotkeys.DataSource = Program.settings.Hotkey;
