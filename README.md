@@ -1,7 +1,7 @@
 # ![](/AudioSwitchLogoSmall.png)  AudioSwitch
 Switch between default audio input or output + change volume
 
-[AudioSwitch v2.0 RC6 Setup](https://drive.google.com/file/d/0B8VyHhqTufh1WXB1TExJajQ1UjQ/view?usp=sharing)
+[AudioSwitch latest setups](https://drive.google.com/folderview?id=0B8VyHhqTufh1fkVlRElYZXlxRlJlUGtwX2tIYXM5VDlwXzl5MDJUQ1loelM3QmxRUlJsN0k&usp=sharing)
 
 Command-line parameters are renewed, get the new parameters by typing **AudioSwitch.exe /help**
 
