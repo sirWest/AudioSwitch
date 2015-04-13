@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using AudioSwitch.CoreAudioApi;
 
 namespace AudioSwitch.Classes
 {
     internal static class EndPoints
     {
-        internal static readonly List<string> DeviceNames = new List<string>();
-        internal static int DefaultDeviceID;
+        private static int DefaultDeviceID;
+        internal static string DefaultDeviceName;
 
         internal static readonly MMDeviceEnumerator DeviceEnumerator;
         public static readonly MMDeviceNotifyClient NotifyClient;
-        private static readonly Dictionary<int, string> DeviceIDs = new Dictionary<int, string>(); 
+        private static readonly Dictionary<int, string> DeviceIDs = new Dictionary<int, string>();
+        public static readonly Dictionary<string, string> DeviceNames = new Dictionary<string, string>(); 
         private static readonly PolicyConfigClient pPolicyConfig = new PolicyConfigClient();
         
         static EndPoints()
@@ -34,11 +36,15 @@ namespace AudioSwitch.Classes
             {
                 var device = pDevices[i];
                 var devID = device.ID;
-                DeviceNames.Add(device.FriendlyName);
+                var devName = device.FriendlyName;
+                DeviceNames.Add(devID, devName);
                 DeviceIDs.Add(i, devID);
 
                 if (devID == defDeviceID)
+                {
                     DefaultDeviceID = i;
+                    DefaultDeviceName = devName;
+                }
             }
         }
 
@@ -51,8 +57,8 @@ namespace AudioSwitch.Classes
             else
                 DefaultDeviceID++;
 
-            SetDefaultDevice(DefaultDeviceID);
-            return DeviceNames[DefaultDeviceID];
+            SetDefaultDeviceByID(DefaultDeviceID);
+            return DeviceNames[DeviceIDs[DefaultDeviceID]];
         }
 
         internal static MMDevice GetDefaultMMDevice(EDataFlow renderType)
@@ -75,9 +81,22 @@ namespace AudioSwitch.Classes
             return devices;
         }
 
-        internal static void SetDefaultDevice(int devID)
+        internal static void SetDefaultDeviceByID(int devID)
         {
             SetDefaultDevice(DeviceIDs[devID]);
+            DefaultDeviceID = devID;
+            DefaultDeviceName = DeviceNames[DeviceIDs[devID]];
+        }
+
+        internal static bool SetDefaultDeviceByName(string devName)
+        {
+            foreach (var device in DeviceNames.Where(device => device.Value == devName))
+            {
+                SetDefaultDevice(device.Key);
+                DefaultDeviceName = device.Value;
+                return true;
+            }
+            return false;
         }
 
         internal static void SetDefaultDevice(string devID)

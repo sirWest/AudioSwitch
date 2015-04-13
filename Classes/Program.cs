@@ -10,7 +10,7 @@ namespace AudioSwitch.Classes
 {
     internal static class Program
     {
-        static Mutex mutex = new Mutex(true, "{579A9A19-7AE5-42CD-8147-E587F5C9DD50}");
+        static readonly Mutex mutex = new Mutex(true, "{579A9A19-7AE5-42CD-8147-E587F5C9DD50}");
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
@@ -41,88 +41,139 @@ namespace AudioSwitch.Classes
                     isConsole = true;
                     Console.WriteLine();
 
-                    var cmdArgsJoined = string.Join(" ", args);
-                    var cmdArgs = cmdArgsJoined.Split('-');
-
                     var hotkeyFunction = HotkeyFunction.SwitchPlaybackDevice;
                     var modifiers = HotModifierKeys.LWin;
                     var hotKey = Keys.LWin;
                     var rType = settings.DefaultDataFlow;
                     var keysOK = 0;
 
-                    foreach (var arg in cmdArgs)
+                    for (var index = 0; index < args.Length; index++)
                     {
+                        var arg = args[index];
                         if (string.IsNullOrWhiteSpace(arg))
                             continue;
 
-                        var purecmd = arg.Length > 1 ? arg.Substring(1, arg.Length - 1).Trim() : "";
-
-                        switch (arg.Substring(0, 1))
+                        switch (arg.Substring(1, arg.Length - 1))
                         {
+                            case "help":
+                            case "h":
+                            case "?":
+                                Console.WriteLine();
+                                Console.WriteLine("AudioSwitch v2.0 command-line help");
+                                Console.WriteLine("----------------------------------");
+                                Console.WriteLine("Available commands:");
+                                Console.WriteLine("  /i - switch to input devices for the command. Default taken from settings.");
+                                Console.WriteLine("  /o - switch to output devices for the command. Default taken from settings.");
+                                Console.WriteLine();
+                                Console.WriteLine("  /l - list all available devices of the selected type, < > is current default.");
+                                Console.WriteLine("  /s - set a device as default: number for index, string for name.");
+                                Console.WriteLine();
+                                Console.WriteLine("  /m - set modifier keys for a new hotkey, separated by commas. Case sensitive.");
+                                Console.WriteLine("  /k - set a key for a new hotkey. Case sensitive.");
+                                Console.WriteLine("  /f - choose a function for the new hotkey. Case sensitive.");
+                                Console.WriteLine();
+                                Console.WriteLine("  /m, /k, /f (blank) - shows all possible values for the parameter.");
+                                break;
+
+                            case "i":
+                                rType = EDataFlow.eCapture;
+                                Console.WriteLine("Device group changed to input devices.");
+                                break;
+
+                            case "o":
+                                rType = EDataFlow.eRender;
+                                Console.WriteLine("Device group changed to output devices.");
+                                break;
+
+                            case "l":
+                                Console.WriteLine();
+                                Console.WriteLine(" Devices available:");
+                                EndPoints.RefreshDeviceList(rType);
+
+                                var i = 0;
+                                foreach (var device in EndPoints.DeviceNames.Values)
+                                    Console.WriteLine(device == EndPoints.DefaultDeviceName ? " <{0}> {1}" : "  {0}  {1}", i++, device);
+                                Console.WriteLine();
+                                break;
+
+                            case "s":
+                                index++;
+                                int devID;
+
+                                if (int.TryParse(args[index], out devID))
+                                {
+                                    EndPoints.RefreshDeviceList(rType);
+                                    if (devID <= EndPoints.DeviceNames.Count - 1)
+                                    {
+                                        EndPoints.SetDefaultDeviceByID(devID);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Error changing device!");
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    EndPoints.RefreshDeviceList(rType);
+                                    if (!EndPoints.SetDefaultDeviceByName(args[index]))
+                                    {
+                                        Console.WriteLine("Error changing device!");
+                                        return;
+                                    }
+                                }
+                                Console.WriteLine("Device changed to \"" + EndPoints.DefaultDeviceName + "\"");
+                                break;
+
                             case "m":
-                                if (!Enum.TryParse(purecmd, true, out modifiers))
+                                if (index == args.Length - 1)
+                                {
+                                    Console.WriteLine("Modifier keys:");
+                                    Console.WriteLine(string.Join(", ", Enum.GetNames(typeof(HotModifierKeys))));
+                                    return;
+                                }
+                                index++;
+                                if (!Enum.TryParse(args[index], true, out modifiers))
                                 {
                                     Console.WriteLine("Error reading modifier key(s)!");
                                     return;
                                 }
+                                Console.WriteLine("Modifier key(s) set to " + modifiers);
                                 keysOK++;
                                 break;
 
                             case "k":
-                                if (!Enum.TryParse(purecmd, true, out hotKey))
+                                if (index == args.Length - 1)
+                                {
+                                    Console.WriteLine("Keys:");
+                                    Console.WriteLine(string.Join(", ", Enum.GetNames(typeof(Keys))));
+                                    return;
+                                }
+                                index++;
+                                if (!Enum.TryParse(args[index], true, out hotKey))
                                 {
                                     Console.WriteLine("Error reading hot key!");
                                     return;
                                 }
+                                Console.WriteLine("Hot key set to " + hotKey);
                                 keysOK++;
                                 break;
 
                             case "f":
-                                if (!Enum.TryParse(purecmd, true, out hotkeyFunction))
+                                if (index == args.Length - 1)
+                                {
+                                    Console.WriteLine("Function names:");
+                                    Console.WriteLine(string.Join(", ", Enum.GetNames(typeof(HotkeyFunction))));
+                                    return;
+                                }
+                                index++;
+                                if (!Enum.TryParse(args[index], true, out hotkeyFunction))
                                 {
                                     Console.WriteLine("Error reading function name!");
                                     return;
                                 }
+                                Console.WriteLine("Hot key function set to " + hotkeyFunction);
                                 keysOK++;
-                                break;
-
-                            case "i":
-                                var devID = int.Parse(purecmd);
-                                EndPoints.RefreshDeviceList(rType);
-                                if (devID <= EndPoints.DeviceNames.Count - 1)
-                                    EndPoints.SetDefaultDevice(devID);
-                                break;
-
-                            case "r":
-                                switch (purecmd.ToLower())
-                                {
-                                    case "playback":
-                                        rType = EDataFlow.eRender;
-                                        break;
-                                    case "recording":
-                                        rType = EDataFlow.eCapture;
-                                        break;
-                                }
-
-                                if (rType == EDataFlow.eAll)
-                                {
-                                    Console.WriteLine("Error reading render type!");
-                                    return;
-                                }
-                                break;
-
-                            case "l":
-                                Console.WriteLine(" Devices available:");
-                                EndPoints.RefreshDeviceList(rType);
-
-                                for (var i = 0; i < EndPoints.DeviceNames.Count; i++)
-                                    Console.WriteLine(i == EndPoints.DefaultDeviceID ? " <{0}> {1}" : "  {0}  {1}", i, EndPoints.DeviceNames[i]);
-                                break;
-
-                            case "s":
-                                Settings.settingsxml = purecmd;
-                                settings = Settings.Load();
-                                rType = settings.DefaultDataFlow;
                                 break;
                         }
                     }
@@ -139,11 +190,15 @@ namespace AudioSwitch.Classes
                     return;
                 }
 
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                frmOSD = new FormOSD();
-                formSwitcher = new FormSwitcher();
-                Application.Run();
+                if (mutex.WaitOne(0, false))
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    frmOSD = new FormOSD();
+                    formSwitcher = new FormSwitcher();
+                    Application.Run();
+                    mutex.Close();
+                }
             }
             finally
             {

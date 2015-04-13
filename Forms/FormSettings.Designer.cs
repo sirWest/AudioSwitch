@@ -35,6 +35,14 @@ namespace AudioSwitch.Forms
             this.tabSettings = new System.Windows.Forms.TabControl();
             this.tabHotkeys = new System.Windows.Forms.TabPage();
             this.gridHotkeys = new System.Windows.Forms.DataGridView();
+            this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Control = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Alt = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.LWin = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.RWin = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ShowOSD = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tabDevices = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.groupDevice = new System.Windows.Forms.GroupBox();
@@ -49,6 +57,7 @@ namespace AudioSwitch.Forms
             this.trackSaturation = new System.Windows.Forms.TrackBar();
             this.trackHue = new System.Windows.Forms.TrackBar();
             this.pictureModded = new System.Windows.Forms.PictureBox();
+            this.listDevices = new AudioSwitch.Controls.CustomListView();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkColorVU = new System.Windows.Forms.CheckBox();
@@ -74,16 +83,6 @@ namespace AudioSwitch.Forms
             this.buttonClose = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.linkManual = new System.Windows.Forms.LinkLabel();
-            this.listDevices = new AudioSwitch.Controls.CustomListView();
-            this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Control = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Alt = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.LWin = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.RWin = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ShowOSD = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tabSettings.SuspendLayout();
             this.tabHotkeys.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHotkeys)).BeginInit();
@@ -161,6 +160,65 @@ namespace AudioSwitch.Forms
             this.gridHotkeys.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHotkeys.Size = new System.Drawing.Size(520, 304);
             this.gridHotkeys.TabIndex = 1;
+            // 
+            // Function
+            // 
+            this.Function.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Function.HeaderText = "Function";
+            this.Function.MaxDropDownItems = 100;
+            this.Function.MinimumWidth = 160;
+            this.Function.Name = "Function";
+            this.Function.Width = 160;
+            // 
+            // Control
+            // 
+            this.Control.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Control.HeaderText = "Control";
+            this.Control.Name = "Control";
+            this.Control.Width = 46;
+            // 
+            // Alt
+            // 
+            this.Alt.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Alt.HeaderText = "Alt";
+            this.Alt.Name = "Alt";
+            this.Alt.Width = 25;
+            // 
+            // Shift
+            // 
+            this.Shift.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Shift.HeaderText = "Shift";
+            this.Shift.Name = "Shift";
+            this.Shift.Width = 34;
+            // 
+            // LWin
+            // 
+            this.LWin.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.LWin.HeaderText = "LWin";
+            this.LWin.Name = "LWin";
+            this.LWin.Width = 38;
+            // 
+            // RWin
+            // 
+            this.RWin.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RWin.HeaderText = "RWin";
+            this.RWin.Name = "RWin";
+            this.RWin.Width = 40;
+            // 
+            // ShowOSD
+            // 
+            this.ShowOSD.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ShowOSD.HeaderText = "Show OSD";
+            this.ShowOSD.Name = "ShowOSD";
+            this.ShowOSD.Width = 66;
+            // 
+            // HotKey
+            // 
+            this.HotKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.HotKey.HeaderText = "Hot Key";
+            this.HotKey.MaxDropDownItems = 20;
+            this.HotKey.MinimumWidth = 80;
+            this.HotKey.Name = "HotKey";
             // 
             // tabDevices
             // 
@@ -311,6 +369,24 @@ namespace AudioSwitch.Forms
             this.pictureModded.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureModded.TabIndex = 20;
             this.pictureModded.TabStop = false;
+            // 
+            // listDevices
+            // 
+            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
+            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listDevices.FullRowSelect = true;
+            this.listDevices.HideSelection = false;
+            this.listDevices.Location = new System.Drawing.Point(6, 25);
+            this.listDevices.MultiSelect = false;
+            this.listDevices.Name = "listDevices";
+            this.listDevices.Size = new System.Drawing.Size(242, 285);
+            this.listDevices.TabIndex = 1;
+            this.listDevices.TileSize = new System.Drawing.Size(222, 40);
+            this.listDevices.UseCompatibleStateImageBehavior = false;
+            this.listDevices.View = System.Windows.Forms.View.Tile;
+            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
             // 
             // tabGeneral
             // 
@@ -612,103 +688,11 @@ namespace AudioSwitch.Forms
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
-            // linkManual
-            // 
-            this.linkManual.AutoSize = true;
-            this.linkManual.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkManual.LinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkManual.Location = new System.Drawing.Point(468, 5);
-            this.linkManual.Name = "linkManual";
-            this.linkManual.Size = new System.Drawing.Size(75, 13);
-            this.linkManual.TabIndex = 7;
-            this.linkManual.TabStop = true;
-            this.linkManual.Text = "Online Manual";
-            this.linkManual.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkManual.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkManual_LinkClicked);
-            // 
-            // listDevices
-            // 
-            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
-            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listDevices.FullRowSelect = true;
-            this.listDevices.HideSelection = false;
-            this.listDevices.Location = new System.Drawing.Point(6, 25);
-            this.listDevices.MultiSelect = false;
-            this.listDevices.Name = "listDevices";
-            this.listDevices.Size = new System.Drawing.Size(242, 285);
-            this.listDevices.TabIndex = 1;
-            this.listDevices.TileSize = new System.Drawing.Size(222, 40);
-            this.listDevices.UseCompatibleStateImageBehavior = false;
-            this.listDevices.View = System.Windows.Forms.View.Tile;
-            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
-            // 
-            // Function
-            // 
-            this.Function.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Function.HeaderText = "Function";
-            this.Function.MaxDropDownItems = 100;
-            this.Function.MinimumWidth = 160;
-            this.Function.Name = "Function";
-            this.Function.Width = 160;
-            // 
-            // Control
-            // 
-            this.Control.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Control.HeaderText = "Control";
-            this.Control.Name = "Control";
-            this.Control.Width = 46;
-            // 
-            // Alt
-            // 
-            this.Alt.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Alt.HeaderText = "Alt";
-            this.Alt.Name = "Alt";
-            this.Alt.Width = 25;
-            // 
-            // Shift
-            // 
-            this.Shift.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Shift.HeaderText = "Shift";
-            this.Shift.Name = "Shift";
-            this.Shift.Width = 34;
-            // 
-            // LWin
-            // 
-            this.LWin.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.LWin.HeaderText = "LWin";
-            this.LWin.Name = "LWin";
-            this.LWin.Width = 38;
-            // 
-            // RWin
-            // 
-            this.RWin.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.RWin.HeaderText = "RWin";
-            this.RWin.Name = "RWin";
-            this.RWin.Width = 40;
-            // 
-            // ShowOSD
-            // 
-            this.ShowOSD.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.ShowOSD.HeaderText = "Show OSD";
-            this.ShowOSD.Name = "ShowOSD";
-            this.ShowOSD.Width = 66;
-            // 
-            // HotKey
-            // 
-            this.HotKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.HotKey.HeaderText = "Hot Key";
-            this.HotKey.MaxDropDownItems = 20;
-            this.HotKey.MinimumWidth = 80;
-            this.HotKey.Name = "HotKey";
-            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(547, 380);
-            this.Controls.Add(this.linkManual);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.buttonClose);
@@ -763,7 +747,6 @@ namespace AudioSwitch.Forms
         private Controls.CustomListView listDevices;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.LinkLabel linkManual;
         private System.Windows.Forms.GroupBox groupDevice;
         private System.Windows.Forms.CheckBox checkHideDevice;
         private System.Windows.Forms.Label label9;

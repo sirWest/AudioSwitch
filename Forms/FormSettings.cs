@@ -41,9 +41,6 @@ namespace AudioSwitch.Forms
             ShowOSD.DataPropertyName = "ShowOSD";
 
             gridHotkeys.DataSource = Program.settings.Hotkey;
-
-            var linkTip = new ToolTip();
-            linkTip.SetToolTip(linkManual, "https://code.google.com/p/audioswitch/wiki/Manual");
         }
 
         private void FormSettings_Load(object sender, EventArgs e)
@@ -178,11 +175,6 @@ namespace AudioSwitch.Forms
         private void checkDefaultMultiAndComm_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings.DefaultMultimediaAndComm = checkDefaultMultiAndComm.Checked;
-        }
-
-        private void linkManual_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://code.google.com/p/audioswitch/wiki/Manual");
         }
 
         private void trackTransparency_ValueChanged(object sender, EventArgs e)

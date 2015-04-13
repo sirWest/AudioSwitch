@@ -450,6 +450,7 @@ namespace AudioSwitch.Forms
                 cfg.ShowDialog();
                 ledLeft.OldStyle = Program.settings.ColorVU;
                 ledRight.OldStyle = Program.settings.ColorVU;
+                SetTrayIcons();
             }
         }
 
