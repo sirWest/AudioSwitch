@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace AudioSwitch.CoreAudioApi.Interfaces
 {
-    [Guid("F8679F50-850A-41CF-9C72-430F290290C8"),
+    [Guid("00000000-0000-0000-C000-000000000046"),
     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IPolicyConfig
+    internal interface IPolicyConfig10
     {
         [PreserveSig]
         int GetMixFormat(string pszDeviceName, IntPtr ppFormat);

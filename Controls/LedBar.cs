@@ -18,7 +18,7 @@ namespace AudioSwitch.Controls
             }
             set
             {
-                BackColor = value? Color.Black : SystemColors.Control;
+                BackColor = value ? Color.Black : SystemColors.Control;
                 _oldStyle = value;
             }
         }
@@ -54,7 +54,7 @@ namespace AudioSwitch.Controls
                     LED[i].BackColor = val >= i ? pgOnColors[i] : pgOffColors[i];
             else
                 for (var i = 0; i < 14; i++)
-                    LED[i].BackColor = val >= i ? SystemColors.ControlDarkDark : SystemColors.ScrollBar;
+                    LED[i].BackColor = val >= i ? Color.Gray : Color.Gainsboro;
         }
     }
 }

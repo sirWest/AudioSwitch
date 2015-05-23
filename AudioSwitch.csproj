@@ -165,6 +165,8 @@
     <Compile Include="CoreAudioApi\Interfaces\IPolicyConfig.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CoreAudioApi\Interfaces\IPolicyConfig10.cs" />
+    <Compile Include="CoreAudioApi\Interfaces\IPolicyConfigVista.cs" />
     <Compile Include="CoreAudioApi\Interfaces\IPropertyStore.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -91,9 +91,12 @@ namespace AudioSwitch.Classes
 
         internal void Save()
         {
-            var xs = new XmlSerializer(typeof(Settings));
-            using (var tw = new StreamWriter(settingsxml))
-                xs.Serialize(tw, this);
+            do
+            {
+                var xs = new XmlSerializer(typeof (Settings));
+                using (var tw = new StreamWriter(settingsxml))
+                    xs.Serialize(tw, this);
+            } while (new FileInfo(settingsxml).Length < 20);
         }
 
         internal static Settings Load()
