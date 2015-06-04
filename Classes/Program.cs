@@ -22,7 +22,6 @@ namespace AudioSwitch.Classes
         private static extern bool AttachConsole(int dwProcessId);
 
         internal static FormOSD frmOSD;
-        private static FormSwitcher formSwitcher;
         private static bool isConsole;
         internal static Settings settings;
 
@@ -41,7 +40,7 @@ namespace AudioSwitch.Classes
                     isConsole = true;
                     Console.WriteLine();
 
-                    var hotkeyFunction = HotkeyFunction.SwitchPlaybackDevice;
+                    var hotkeyFunction = HotkeyFunction.NextPlaybackDevice;
                     var modifiers = HotModifierKeys.LWin;
                     var hotKey = Keys.LWin;
                     var rType = settings.DefaultDataFlow;
@@ -195,7 +194,7 @@ namespace AudioSwitch.Classes
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     frmOSD = new FormOSD();
-                    formSwitcher = new FormSwitcher();
+                    var formSwitcher = new FormSwitcher();
                     Application.Run();
                     mutex.Close();
                 }
@@ -224,9 +223,9 @@ namespace AudioSwitch.Classes
                     w.Flush();
                     w.Close();
                 }
-                MessageBox.Show("An unexpected error has occured - AudioSwitch will now close :(" + Environment.NewLine +
+                MessageBox.Show("An unexpected error has occurred - AudioSwitch will now close :(" + Environment.NewLine +
                                 "Error messages are written to a log file 'ErrorLog.txt' in the installation folder. " + Environment.NewLine + 
-                                "Please create an issue ticket in Google Code page with the contents of the log file.",
+                                "Please create an issue in GitHub issue tracker page with the contents of the log file.",
                                 "AudioSwitch - Unexpected Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally

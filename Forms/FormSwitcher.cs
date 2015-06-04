@@ -215,12 +215,20 @@ namespace AudioSwitch.Forms
 
             switch (hkid.Function)
             {
-                case HotkeyFunction.SwitchPlaybackDevice:
-                    QuickSwitchDevice(EDataFlow.eRender, hkid.ShowOSD);
+                case HotkeyFunction.PreviousPlaybackDevice:
+                    QuickSwitchDevice(true, EDataFlow.eRender, hkid.ShowOSD);
                     break;
 
-                case HotkeyFunction.SwitchRecordingDevice:
-                    QuickSwitchDevice(EDataFlow.eCapture, hkid.ShowOSD);
+                case HotkeyFunction.NextPlaybackDevice:
+                    QuickSwitchDevice(false, EDataFlow.eRender, hkid.ShowOSD);
+                    break;
+
+                case HotkeyFunction.PreviousRecordingDevice:
+                    QuickSwitchDevice(true, EDataFlow.eCapture, hkid.ShowOSD);
+                    break;
+
+                case HotkeyFunction.NextRecordingDevice:
+                    QuickSwitchDevice(false, EDataFlow.eCapture, hkid.ShowOSD);
                     break;
 
                 case HotkeyFunction.TogglePlaybackMute:
@@ -249,9 +257,9 @@ namespace AudioSwitch.Forms
             }
         }
 
-        private void QuickSwitchDevice(EDataFlow rType, bool showOSD)
+        private void QuickSwitchDevice(bool previous, EDataFlow rType, bool showOSD)
         {
-            var devName = EndPoints.SetNextDefault(rType);
+            var devName = previous ? EndPoints.SetPrevDefault(rType) : EndPoints.SetNextDefault(rType);
 
             if (showOSD)
                 Program.frmOSD.ChangeDevice(devName);

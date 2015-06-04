@@ -11,6 +11,21 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -97,18 +112,6 @@
     <Compile Include="CoreAudioApi\AudioMeterInformationChannels.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CoreAudioApi\AudioSessionControl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\AudioSessionDisconnectReason.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\AudioSessionManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\AudioSessionState.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CoreAudioApi\AudioVolumeNotificationData.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -138,18 +141,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CoreAudioApi\Interfaces\IAudioMeterInformation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionControl2.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionEnumerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionEvents.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionManager2.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CoreAudioApi\Interfaces\IMMDevice.cs">
@@ -197,12 +188,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CoreAudioApi\PropVariant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\SessionCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreAudioApi\VolEventsHandler.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controls\CustomListView.cs">
@@ -402,5 +387,27 @@
     <None Include="Resources\ThumbHover.png" />
     <None Include="Resources\ThumbMute.png" />
     <None Include="Resources\ThumbNormal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
 </Project>

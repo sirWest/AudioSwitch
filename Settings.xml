@@ -6,8 +6,10 @@
   <ColorVU>false</ColorVU>
   <OSD Skin="Default" Left="61" Top="26" ClosingTimeout="1300" Transparency="255" />
   <VolumeScroll Key="LWin" ShowOSD="true" Enabled="false" />
-  <Hotkey Function="SwitchPlaybackDevice" ModifierKeys="Alt" HotKey="X" ShowOSD="true" />
-  <Hotkey Function="SwitchRecordingDevice" ModifierKeys="Alt" HotKey="Y" ShowOSD="true" />
+  <Hotkey Function="PreviousPlaybackDevice" ModifierKeys="Alt" HotKey="Z" ShowOSD="true" />
+  <Hotkey Function="NextPlaybackDevice" ModifierKeys="Alt" HotKey="X" ShowOSD="true" />
+  <Hotkey Function="PreviousRecordingDevice" ModifierKeys="Alt" HotKey="C" ShowOSD="true" />
+  <Hotkey Function="NextRecordingDevice" ModifierKeys="Alt" HotKey="V" ShowOSD="true" />
   <Hotkey Function="TogglePlaybackMute" ModifierKeys="Alt LWin" HotKey="Left" ShowOSD="true" />
   <Hotkey Function="ToggleRecordingMute" ModifierKeys="Alt LWin" HotKey="Right" ShowOSD="true" />
   <Hotkey Function="PlaybackVolumeUp" ModifierKeys="Alt LWin" HotKey="Up" ShowOSD="true" />

@@ -111,8 +111,10 @@ namespace AudioSwitch.Classes
 
     public enum HotkeyFunction
     {
-        SwitchPlaybackDevice,
-        SwitchRecordingDevice,
+        PreviousPlaybackDevice,
+        NextPlaybackDevice,
+        PreviousRecordingDevice,
+        NextRecordingDevice,
         TogglePlaybackMute,
         ToggleRecordingMute,
         PlaybackVolumeUp,

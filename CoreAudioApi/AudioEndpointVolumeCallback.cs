@@ -47,21 +47,8 @@ namespace AudioSwitch.CoreAudioApi
             //to get all data, thats why it is split up into two steps, first the static
             //data is marshalled into the data structure, then with some IntPtr math the
             //remaining floats are read from memory.
-            //
+
             var data = (AUDIO_VOLUME_NOTIFICATION_DATA) Marshal.PtrToStructure(NotifyData, typeof(AUDIO_VOLUME_NOTIFICATION_DATA));
-            
-            //Determine offset in structure of the first float
-            var Offset = Marshal.OffsetOf(typeof (AUDIO_VOLUME_NOTIFICATION_DATA), "ChannelVolume");
-            //Determine offset in memory of the first float
-            var FirstFloatPtr = (IntPtr) ((long) NotifyData + (long) Offset);
-
-            var voldata = new float[data.nChannels];
-            
-            //Read all floats from memory.
-            for (var i = 0; i < data.nChannels; i++)
-                voldata[i] = (float) Marshal.PtrToStructure(FirstFloatPtr, typeof (float));
-
-            //Create combined structure and Fire Event in parent class.
             var NotificationData = new AudioVolumeNotificationData(data.bMuted, data.fMasterVolume);
             _Parent.FireNotification(NotificationData);
             return 0; //S_OK

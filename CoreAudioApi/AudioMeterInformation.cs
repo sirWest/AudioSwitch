@@ -26,13 +26,11 @@ namespace AudioSwitch.CoreAudioApi
 {
     public class AudioMeterInformation
     {
-        private readonly IAudioMeterInformation _AudioMeterInformation;
         internal readonly AudioMeterInformationChannels Channels;
 
         internal AudioMeterInformation(IAudioMeterInformation realInterface)
         {
-            _AudioMeterInformation = realInterface;
-            Channels = new AudioMeterInformationChannels(_AudioMeterInformation);
+            Channels = new AudioMeterInformationChannels(realInterface);
         }
     }
 }

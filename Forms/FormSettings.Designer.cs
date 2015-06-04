@@ -690,8 +690,7 @@ namespace AudioSwitch.Forms
             // 
             // FormSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(547, 380);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox1);

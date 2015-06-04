@@ -48,6 +48,19 @@ namespace AudioSwitch.Classes
             }
         }
 
+        internal static string SetPrevDefault(EDataFlow rType)
+        {
+            RefreshDeviceList(rType);
+
+            if (DefaultDeviceID == 0)
+                DefaultDeviceID = DeviceNames.Count - 1;
+            else
+                DefaultDeviceID--;
+
+            SetDefaultDeviceByID(DefaultDeviceID);
+            return DeviceNames[DeviceIDs[DefaultDeviceID]];
+        }
+
         internal static string SetNextDefault(EDataFlow rType)
         {
             RefreshDeviceList(rType);

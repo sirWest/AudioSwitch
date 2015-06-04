@@ -32,5 +32,4 @@ namespace AudioSwitch.CoreAudioApi.Interfaces
         [PreserveSig] 
         int OnNotify(IntPtr pNotifyData);
     };
-
 }

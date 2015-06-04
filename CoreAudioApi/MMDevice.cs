@@ -32,24 +32,15 @@ namespace AudioSwitch.CoreAudioApi
         private PropertyStore _PropertyStore;
         private AudioMeterInformation _AudioMeterInformation;
         private AudioEndpointVolume _AudioEndpointVolume;
-        private AudioSessionManager _AudioSessionManager;
 
         private static Guid IID_IAudioMeterInformation = typeof(IAudioMeterInformation).GUID;
         private static Guid IID_IAudioEndpointVolume = typeof(IAudioEndpointVolume).GUID;
-        private static Guid IID_IAudioSessionManager = typeof(IAudioSessionManager2).GUID;
 
         private PropertyStore GetPropertyInformation()
         {
             IPropertyStore propstore;
             Marshal.ThrowExceptionForHR(_RealDevice.OpenPropertyStore(EStgmAccess.STGM_READ, out propstore));
             return new PropertyStore(propstore);
-        }
-
-        private void GetAudioSessionManager()
-        {
-            object result;
-            Marshal.ThrowExceptionForHR(_RealDevice.Activate(ref IID_IAudioSessionManager, CLSCTX.ALL, IntPtr.Zero, out result));
-            _AudioSessionManager = new AudioSessionManager(result as IAudioSessionManager2);
         }
 
         private void GetAudioMeterInformation()
@@ -64,17 +55,6 @@ namespace AudioSwitch.CoreAudioApi
             object result;
             Marshal.ThrowExceptionForHR(_RealDevice.Activate(ref IID_IAudioEndpointVolume, CLSCTX.ALL, IntPtr.Zero, out result));
             _AudioEndpointVolume = new AudioEndpointVolume(result as IAudioEndpointVolume);
-        }
-
-        public AudioSessionManager AudioSessionManager
-        {
-            get
-            {
-                if (_AudioSessionManager == null)
-                    GetAudioSessionManager();
-
-                return _AudioSessionManager;
-            }
         }
 
         public AudioMeterInformation AudioMeterInformation

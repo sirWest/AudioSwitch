@@ -13,7 +13,6 @@ namespace AudioSwitch.Controls
         internal MMDevice Device;
         internal bool Stereo;
 
-        private VolEventsHandler volEvents;
         private static DateTime LastScroll = DateTime.Now;
         private static readonly TimeSpan ShortInterval = new TimeSpan(0, 0, 0, 0, 80);
         
@@ -54,7 +53,7 @@ namespace AudioSwitch.Controls
             handleTip.SetToolTip(Thumb, "Master Volume");
         }
 
-        internal void ChangeMute()
+        private void ChangeMute()
         {
             Mute = !Mute;
             Device.AudioEndpointVolume.Mute = Mute;
@@ -217,25 +216,10 @@ namespace AudioSwitch.Controls
 
         internal void RegisterDevice(EDataFlow RenderType)
         {
-            if (Device != null)
-            {
-                try
-                {
-                    Device.AudioEndpointVolume.OnVolumeNotification -= VolNotify;
-                    if (volEvents != null)
-                        Device.AudioSessionManager.Sessions[0].UnregisterAudioSessionNotification(volEvents);
-                    volEvents = null;
-                }
-                catch { }
-                Device = null;
-            }
-
             Device = EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(RenderType, ERole.eMultimedia);
             Value = Device.AudioEndpointVolume.MasterVolumeLevelScalar;
             Mute = Device.AudioEndpointVolume.Mute;
             Stereo = Device.AudioMeterInformation.Channels.GetCount() > 1;
-            volEvents = new VolEventsHandler(this);
-            Device.AudioSessionManager.Sessions[0].RegisterAudioSessionNotification(volEvents);
             Device.AudioEndpointVolume.OnVolumeNotification += VolNotify;
         }
     }

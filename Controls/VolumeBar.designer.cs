@@ -68,7 +68,7 @@ namespace AudioSwitch.Controls
             // 
             // VolumeBar
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.Thumb);
             this.Controls.Add(this.lblGraph);
             this.Name = "VolumeBar";
