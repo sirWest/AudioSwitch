@@ -43,6 +43,7 @@ namespace AudioSwitch.Forms
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.audioDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureItemsBack = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -50,7 +51,6 @@ namespace AudioSwitch.Forms
             this.ledRight = new AudioSwitch.Controls.LedBar();
             this.VolBar = new AudioSwitch.Controls.VolumeBar();
             this.listDevices = new AudioSwitch.Controls.CustomListView();
-            this.audioDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureItemsBack)).BeginInit();
             this.SuspendLayout();
@@ -75,10 +75,18 @@ namespace AudioSwitch.Forms
             // 
             // settingsToolStripMenuItem
             // 
+            this.settingsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.settingsToolStripMenuItem.Text = "&Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // audioDevicesToolStripMenuItem
+            // 
+            this.audioDevicesToolStripMenuItem.Name = "audioDevicesToolStripMenuItem";
+            this.audioDevicesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.audioDevicesToolStripMenuItem.Text = "Audio Devices";
+            this.audioDevicesToolStripMenuItem.Click += new System.EventHandler(this.audioDevicesToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -149,13 +157,6 @@ namespace AudioSwitch.Forms
             this.listDevices.UseCompatibleStateImageBehavior = false;
             this.listDevices.View = System.Windows.Forms.View.Tile;
             this.listDevices.Click += new System.EventHandler(this.listDevices_Click);
-            // 
-            // audioDevicesToolStripMenuItem
-            // 
-            this.audioDevicesToolStripMenuItem.Name = "audioDevicesToolStripMenuItem";
-            this.audioDevicesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.audioDevicesToolStripMenuItem.Text = "Audio Devices";
-            this.audioDevicesToolStripMenuItem.Click += new System.EventHandler(this.audioDevicesToolStripMenuItem_Click);
             // 
             // FormSwitcher
             // 

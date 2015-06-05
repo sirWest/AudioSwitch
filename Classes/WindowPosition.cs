@@ -71,7 +71,7 @@ namespace AudioSwitch.Classes
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
+        internal struct RECT
         {
             public int left;
             public int top;
@@ -104,6 +104,20 @@ namespace AudioSwitch.Classes
             RECT rect;
             Shell_NotifyIconGetRect(ref notifyiconidentifier2, out rect);
             return new Point(rect.left + (rect.right - rect.left) / 2, rect.top + (rect.bottom - rect.top) / 2);
+        }
+
+        internal static RECT GetNotifyIconArea(IDisposable notifyicon)
+        {
+            var field = notifyicon.GetType().GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
+            var num = (int)field.GetValue(notifyicon);
+            var fieldInfo = notifyicon.GetType().GetField("window", BindingFlags.NonPublic | BindingFlags.Instance);
+            var window = (NativeWindow)fieldInfo.GetValue(notifyicon);
+            var notifyiconidentifier2 = new NOTIFYICONIDENTIFIER { hWnd = window.Handle, uID = (uint)num };
+            notifyiconidentifier2.cbSize = (uint)Marshal.SizeOf(notifyiconidentifier2);
+
+            RECT rect;
+            Shell_NotifyIconGetRect(ref notifyiconidentifier2, out rect);
+            return rect;
         }
 
         public static Point GetWindowPosition(NotifyIcon notifyicon, int windowwidth, int windowheight)

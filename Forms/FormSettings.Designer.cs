@@ -235,7 +235,6 @@ namespace AudioSwitch.Forms
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 13);
@@ -264,7 +263,6 @@ namespace AudioSwitch.Forms
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(121, 27);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(79, 13);
@@ -273,7 +271,6 @@ namespace AudioSwitch.Forms
             // 
             // checkHideDevice
             // 
-            this.checkHideDevice.AutoSize = true;
             this.checkHideDevice.Location = new System.Drawing.Point(17, 237);
             this.checkHideDevice.Name = "checkHideDevice";
             this.checkHideDevice.Size = new System.Drawing.Size(154, 17);
@@ -283,7 +280,6 @@ namespace AudioSwitch.Forms
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(42, 63);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(27, 13);
@@ -292,7 +288,6 @@ namespace AudioSwitch.Forms
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(14, 88);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(55, 13);
@@ -301,7 +296,6 @@ namespace AudioSwitch.Forms
             // 
             // label11
             // 
-            this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(13, 114);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(56, 13);
@@ -417,7 +411,6 @@ namespace AudioSwitch.Forms
             // 
             // checkColorVU
             // 
-            this.checkColorVU.AutoSize = true;
             this.checkColorVU.Location = new System.Drawing.Point(356, 23);
             this.checkColorVU.Name = "checkColorVU";
             this.checkColorVU.Size = new System.Drawing.Size(121, 17);
@@ -427,7 +420,6 @@ namespace AudioSwitch.Forms
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(11, 24);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(108, 13);
@@ -445,7 +437,6 @@ namespace AudioSwitch.Forms
             // 
             // checkDefaultMultiAndComm
             // 
-            this.checkDefaultMultiAndComm.AutoSize = true;
             this.checkDefaultMultiAndComm.Location = new System.Drawing.Point(14, 48);
             this.checkDefaultMultiAndComm.Name = "checkDefaultMultiAndComm";
             this.checkDefaultMultiAndComm.Size = new System.Drawing.Size(306, 17);
@@ -469,7 +460,6 @@ namespace AudioSwitch.Forms
             // 
             // checkVolScroll
             // 
-            this.checkVolScroll.AutoSize = true;
             this.checkVolScroll.Location = new System.Drawing.Point(14, 23);
             this.checkVolScroll.Name = "checkVolScroll";
             this.checkVolScroll.Size = new System.Drawing.Size(65, 17);
@@ -480,7 +470,6 @@ namespace AudioSwitch.Forms
             // 
             // checkScrShowOSD
             // 
-            this.checkScrShowOSD.AutoSize = true;
             this.checkScrShowOSD.Location = new System.Drawing.Point(390, 23);
             this.checkScrShowOSD.Name = "checkScrShowOSD";
             this.checkScrShowOSD.Size = new System.Drawing.Size(79, 17);
@@ -509,7 +498,6 @@ namespace AudioSwitch.Forms
             // 
             // labelVolScroll
             // 
-            this.labelVolScroll.AutoSize = true;
             this.labelVolScroll.Location = new System.Drawing.Point(245, 24);
             this.labelVolScroll.Name = "labelVolScroll";
             this.labelVolScroll.Size = new System.Drawing.Size(85, 13);
@@ -547,7 +535,6 @@ namespace AudioSwitch.Forms
             // 
             // labelAuthor
             // 
-            this.labelAuthor.AutoSize = true;
             this.labelAuthor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.labelAuthor.Location = new System.Drawing.Point(15, 57);
             this.labelAuthor.Name = "labelAuthor";
@@ -558,7 +545,6 @@ namespace AudioSwitch.Forms
             // 
             // linkWebpage
             // 
-            this.linkWebpage.AutoSize = true;
             this.linkWebpage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.linkWebpage.LinkColor = System.Drawing.SystemColors.HotTrack;
             this.linkWebpage.Location = new System.Drawing.Point(15, 86);
@@ -573,7 +559,6 @@ namespace AudioSwitch.Forms
             // 
             // labelVersion
             // 
-            this.labelVersion.AutoSize = true;
             this.labelVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.labelVersion.Location = new System.Drawing.Point(54, 70);
             this.labelVersion.Name = "labelVersion";
@@ -593,7 +578,6 @@ namespace AudioSwitch.Forms
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.label1.Location = new System.Drawing.Point(16, 70);
             this.label1.Name = "label1";
@@ -638,7 +622,6 @@ namespace AudioSwitch.Forms
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(308, 104);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(107, 13);
@@ -648,7 +631,6 @@ namespace AudioSwitch.Forms
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(314, 17);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(72, 13);
@@ -667,7 +649,6 @@ namespace AudioSwitch.Forms
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.label4.Location = new System.Drawing.Point(37, 351);

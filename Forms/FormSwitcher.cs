@@ -21,6 +21,7 @@ namespace AudioSwitch.Forms
         private List<Icon> ActiveTrayIcons = new List<Icon>();
         private static EDataFlow RenderType;
         internal static float DpiFactor;
+        private bool DeactivatedOnIcon;
 
         protected override void WndProc(ref Message m)
         {
@@ -188,6 +189,12 @@ namespace AudioSwitch.Forms
             RenderType = Program.settings.DefaultDataFlow;
             RefreshDevices(RenderType);
             VolBar.RegisterDevice(RenderType);
+
+            var iconpos = WindowPosition.GetNotifyIconArea(notifyIcon);
+            var iconrect = new Rectangle(iconpos.left, iconpos.top, iconpos.right - iconpos.left, iconpos.bottom - iconpos.top);
+
+            if (iconrect.Contains(Cursor.Position))
+                DeactivatedOnIcon = true;
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -332,12 +339,22 @@ namespace AudioSwitch.Forms
             {
                 RenderType = rType;
                 RefreshDevices(RenderType);
+
+                if (DeactivatedOnIcon)
+                    return;
+
                 SetSizes();
             }
         }
 
         private void notifyIcon1_MouseUp(object sender, MouseEventArgs e)
         {
+            if (DeactivatedOnIcon)
+            {
+                DeactivatedOnIcon = false;
+                return;
+            }
+
             if (ModifierKeys.HasFlag(Keys.Alt))
                 return;
 
