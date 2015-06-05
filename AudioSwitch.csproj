@@ -367,7 +367,6 @@
     <Content Include="Skins\Squared\skin.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Resources\spkr.png" />
     <Content Include="Settings.xml">
