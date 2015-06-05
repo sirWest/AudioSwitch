@@ -26,6 +26,9 @@ namespace AudioSwitch.Classes
         public bool ColorVU;
 
         [XmlElement]
+        public bool ShowHardwareName;
+
+        [XmlElement]
         public COSD OSD;
 
         public class COSD

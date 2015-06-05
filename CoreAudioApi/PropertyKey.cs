@@ -28,6 +28,12 @@ namespace AudioSwitch.CoreAudioApi
     {
         public Guid fmtid;
         public int pid;
+
+        public PropertyKey(Guid guid, int Pid)
+        {
+            fmtid = guid;
+            pid = Pid;
+        }
     }; 
 
 }

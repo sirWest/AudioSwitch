@@ -81,6 +81,7 @@ namespace AudioSwitch.Forms
             checkVolScroll.Checked = Program.settings.VolumeScroll.Enabled;
             comboScrollKey.Text = Program.settings.VolumeScroll.Key.ToString();
             checkScrShowOSD.Checked = Program.settings.VolumeScroll.ShowOSD;
+            checkShowHWName.Checked = Program.settings.ShowHardwareName;
 
             gridHotkeys.CellEndEdit += gridHotkeys_CellEndEdit;
             gridHotkeys.RowsAdded += gridHotkeys_RowsAdded;
@@ -148,6 +149,7 @@ namespace AudioSwitch.Forms
 
             Program.settings.DefaultMultimediaAndComm = checkDefaultMultiAndComm.Checked;
             Program.settings.ColorVU = checkColorVU.Checked;
+            Program.settings.ShowHardwareName = checkShowHWName.Checked;
 
             Program.settings.Save();
         }

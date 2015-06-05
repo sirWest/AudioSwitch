@@ -22,6 +22,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using AudioSwitch.Classes;
 using AudioSwitch.CoreAudioApi.Interfaces;
 
 namespace AudioSwitch.CoreAudioApi
@@ -85,8 +86,13 @@ namespace AudioSwitch.CoreAudioApi
             {
                 if (_PropertyStore == null)
                     _PropertyStore = GetPropertyInformation();
-                if (_PropertyStore.Contains(PKEY.PKEY_DeviceInterface_FriendlyName))
-                    return (string)_PropertyStore[PKEY.PKEY_DeviceInterface_FriendlyName].PropVariant.GetValue();
+
+                var nameGuid = Program.settings.ShowHardwareName
+                    ? PKEY.PKEY_Device_FriendlyName
+                    : PKEY.PKEY_Device_DeviceDesc;
+
+                if (_PropertyStore.Contains(nameGuid))
+                    return (string)_PropertyStore[nameGuid].PropVariant.GetValue();
                 return "Unknown";
             }
         }

@@ -4,6 +4,7 @@
   <DefaultDataFlow>eRender</DefaultDataFlow>
   <DefaultMultimediaAndComm>true</DefaultMultimediaAndComm>
   <ColorVU>false</ColorVU>
+  <ShowHardwareName>true</ShowHardwareName>
   <OSD Skin="Default" Left="61" Top="26" ClosingTimeout="1300" Transparency="255" />
   <VolumeScroll Key="LWin" ShowOSD="true" Enabled="false" />
   <Hotkey Function="PreviousPlaybackDevice" ModifierKeys="Alt" HotKey="Z" ShowOSD="true" />
