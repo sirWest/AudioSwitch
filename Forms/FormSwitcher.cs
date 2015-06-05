@@ -22,16 +22,23 @@ namespace AudioSwitch.Forms
         private static EDataFlow RenderType;
         internal static float DpiFactor;
         private bool DeactivatedOnIcon;
+        private readonly bool IsWin10;
 
         protected override void WndProc(ref Message m)
         {
             switch (m.Msg)
             {
                 case WM_HOTKEY:
-                    HotKeyPressed((short)m.WParam);
+                    HotKeyPressed((short) m.WParam);
                     break;
 
-                case 0x84:
+                case 132:
+                    break;
+
+                case 522:
+                    var bytes = BitConverter.GetBytes((int) m.WParam);
+                    var y = BitConverter.ToInt16(bytes, 2);
+                    VolBar.DoScroll(this, new ScrollEventArgs((ScrollEventType) (m.WParam.ToInt32() & 0xffff), y));
                     break;
 
                 default:
@@ -43,12 +50,17 @@ namespace AudioSwitch.Forms
         public FormSwitcher()
         {
             InitializeComponent();
+
+            var winVer = FileVersionInfo.GetVersionInfo(Environment.SystemDirectory + "\\explorer.exe");
+            IsWin10 = winVer.ProductMajorPart == 10;
+            if (IsWin10)
+                FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            SetWindowTheme(listDevices.Handle, "explorer", null);
+
             ledLeft.OldStyle = Program.settings.ColorVU;
             ledLeft.SetValue((float)0.1);
             ledRight.OldStyle = Program.settings.ColorVU;
             ledRight.SetValue((float)0.1);
-
-            SetWindowTheme(listDevices.Handle, "explorer", null);
             
             using (var gr = CreateGraphics())
                 DpiFactor = gr.DpiX / 96;
@@ -58,6 +70,8 @@ namespace AudioSwitch.Forms
 
             listDevices.TileSize = tile;
             listDevices.Scroll += VolBar.DoScroll;
+            ledLeft.Scroll += VolBar.DoScroll;
+            ledRight.Scroll += VolBar.DoScroll;
             listDevices.LargeImageList = DeviceIcons.ActiveIcons;
 
             if (DpiFactor <= 1)
@@ -371,7 +385,7 @@ namespace AudioSwitch.Forms
 
         private void SetSizes()
         {
-            Height = listDevices.Items.Count * listDevices.TileSize.Height + pictureItemsBack.ClientSize.Height + SystemInformation.FrameBorderSize.Width * 2;
+            Height = listDevices.Items.Count * listDevices.TileSize.Height + pictureItemsBack.ClientSize.Height + (IsWin10 ? 2 : SystemInformation.FrameBorderSize.Width * 2);
             pictureItemsBack.Top = ClientSize.Height - pictureItemsBack.ClientSize.Height;
             VolBar.Top = pictureItemsBack.Top + pictureItemsBack.Height/2 - VolBar.Height/2;
             ledLeft.Top = VolBar.Top - ledLeft.Height - 1;

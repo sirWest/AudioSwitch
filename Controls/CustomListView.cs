@@ -14,15 +14,14 @@ namespace AudioSwitch.Controls
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x020A)
+            if (m.Msg == 522)
             {
-                try
+                if (Scroll != null)
                 {
                     var bytes = BitConverter.GetBytes((int)m.WParam);
                     var y = BitConverter.ToInt16(bytes, 2);
                     Scroll(this, new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), y));
                 }
-                catch {}
             }
             else
                 base.WndProc(ref m);

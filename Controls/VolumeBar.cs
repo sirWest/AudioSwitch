@@ -47,6 +47,18 @@ namespace AudioSwitch.Controls
             }
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 522)
+            {
+                var bytes = BitConverter.GetBytes((int)m.WParam);
+                var y = BitConverter.ToInt16(bytes, 2);
+                DoScroll(this, new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), y));
+            }
+            else
+                base.WndProc(ref m);
+        }
+
         public VolumeBar()
         {
             InitializeComponent();

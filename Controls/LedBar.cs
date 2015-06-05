@@ -6,6 +6,7 @@ namespace AudioSwitch.Controls
 {
     internal sealed partial class LedBar : UserControl
     {
+        internal event ScrollEventHandler Scroll;
         private readonly Label[] LED;
         private int lastValue;
 
@@ -21,6 +22,21 @@ namespace AudioSwitch.Controls
                 BackColor = value ? Color.Black : SystemColors.Control;
                 _oldStyle = value;
             }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 522)
+            {
+                if (Scroll != null)
+                {
+                    var bytes = BitConverter.GetBytes((int)m.WParam);
+                    var y = BitConverter.ToInt16(bytes, 2);
+                    Scroll(this, new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), y));
+                }
+            }
+            else
+                base.WndProc(ref m);
         }
 
         private static readonly Color[] pgOnColors =
