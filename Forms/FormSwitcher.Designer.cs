@@ -175,7 +175,6 @@ namespace AudioSwitch.Forms
             this.pictureItemsBack.Size = new System.Drawing.Size(221, 43);
             this.pictureItemsBack.TabIndex = 2;
             this.pictureItemsBack.TabStop = false;
-            this.pictureItemsBack.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             // 
             // FormSwitcher
             // 

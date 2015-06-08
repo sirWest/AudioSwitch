@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -210,15 +209,6 @@ namespace AudioSwitch.Forms
 
             if (iconrect.Contains(Cursor.Position))
                 DeactivatedOnIcon = true;
-        }
-
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            //using (var pen = new Pen(SystemColors.ScrollBar))
-            //    e.Graphics.DrawLine(pen, 0, 0, pictureItemsBack.Width, 0);
-            e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
         }
 
         private void IconChanged(object sender, EventArgs eventArgs)
