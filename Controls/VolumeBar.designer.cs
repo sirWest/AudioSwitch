@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace AudioSwitch.Controls
 {
     internal partial class VolumeBar
@@ -37,7 +39,7 @@ namespace AudioSwitch.Controls
             // lblGraph
             // 
             this.lblGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 3.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            this.lblGraph.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.lblGraph.ForeColor = System.Drawing.Color.Gray;
             this.lblGraph.Location = new System.Drawing.Point(-1, 1);
             this.lblGraph.Margin = new System.Windows.Forms.Padding(0);
             this.lblGraph.Name = "lblGraph";

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -213,8 +214,11 @@ namespace AudioSwitch.Forms
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            using (var pen = new Pen(SystemColors.ScrollBar))
-                e.Graphics.DrawLine(pen, 0, 0, pictureItemsBack.Width, 0);
+            //using (var pen = new Pen(SystemColors.ScrollBar))
+            //    e.Graphics.DrawLine(pen, 0, 0, pictureItemsBack.Width, 0);
+            e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
         }
 
         private void IconChanged(object sender, EventArgs eventArgs)
@@ -386,7 +390,7 @@ namespace AudioSwitch.Forms
         private void SetSizes()
         {
             Height = listDevices.Items.Count * listDevices.TileSize.Height + pictureItemsBack.ClientSize.Height + (IsWin10 ? 2 : SystemInformation.FrameBorderSize.Width * 2);
-            pictureItemsBack.Top = ClientSize.Height - pictureItemsBack.ClientSize.Height;
+            pictureShadow.Top = pictureItemsBack.Top = ClientSize.Height - pictureItemsBack.ClientSize.Height;
             VolBar.Top = pictureItemsBack.Top + pictureItemsBack.Height/2 - VolBar.Height/2;
             ledLeft.Top = VolBar.Top - ledLeft.Height - 1;
             ledRight.Top = VolBar.Top + VolBar.Height + 1;

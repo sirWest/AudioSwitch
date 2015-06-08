@@ -44,15 +44,17 @@ namespace AudioSwitch.Forms
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.audioDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureItemsBack = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.ledLeft = new AudioSwitch.Controls.LedBar();
             this.ledRight = new AudioSwitch.Controls.LedBar();
+            this.ledLeft = new AudioSwitch.Controls.LedBar();
             this.VolBar = new AudioSwitch.Controls.VolumeBar();
             this.listDevices = new AudioSwitch.Controls.CustomListView();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.pictureShadow = new System.Windows.Forms.PictureBox();
+            this.pictureItemsBack = new System.Windows.Forms.PictureBox();
             this.trayMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureShadow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureItemsBack)).BeginInit();
             this.SuspendLayout();
             // 
@@ -90,6 +92,11 @@ namespace AudioSwitch.Forms
             this.audioDevicesToolStripMenuItem.Text = "Audio Devices";
             this.audioDevicesToolStripMenuItem.Click += new System.EventHandler(this.audioDevicesToolStripMenuItem_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -97,31 +104,10 @@ namespace AudioSwitch.Forms
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // pictureItemsBack
-            // 
-            this.pictureItemsBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureItemsBack.Location = new System.Drawing.Point(0, 192);
-            this.pictureItemsBack.Name = "pictureItemsBack";
-            this.pictureItemsBack.Size = new System.Drawing.Size(221, 43);
-            this.pictureItemsBack.TabIndex = 2;
-            this.pictureItemsBack.TabStop = false;
-            this.pictureItemsBack.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
-            // 
             // timer1
             // 
             this.timer1.Interval = 1;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // ledLeft
-            // 
-            this.ledLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ledLeft.BackColor = System.Drawing.SystemColors.Control;
-            this.ledLeft.Location = new System.Drawing.Point(12, 202);
-            this.ledLeft.Name = "ledLeft";
-            this.ledLeft.OldStyle = false;
-            this.ledLeft.Size = new System.Drawing.Size(196, 6);
-            this.ledLeft.TabIndex = 8;
-            this.ledLeft.TabStop = false;
             // 
             // ledRight
             // 
@@ -133,6 +119,17 @@ namespace AudioSwitch.Forms
             this.ledRight.Size = new System.Drawing.Size(196, 6);
             this.ledRight.TabIndex = 9;
             this.ledRight.TabStop = false;
+            // 
+            // ledLeft
+            // 
+            this.ledLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ledLeft.BackColor = System.Drawing.SystemColors.Control;
+            this.ledLeft.Location = new System.Drawing.Point(12, 202);
+            this.ledLeft.Name = "ledLeft";
+            this.ledLeft.OldStyle = false;
+            this.ledLeft.Size = new System.Drawing.Size(196, 6);
+            this.ledLeft.TabIndex = 8;
+            this.ledLeft.TabStop = false;
             // 
             // VolBar
             // 
@@ -160,16 +157,32 @@ namespace AudioSwitch.Forms
             this.listDevices.View = System.Windows.Forms.View.Tile;
             this.listDevices.Click += new System.EventHandler(this.listDevices_Click);
             // 
-            // toolStripSeparator1
+            // pictureShadow
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+            this.pictureShadow.BackgroundImage = global::AudioSwitch.Properties.Resources.shadow;
+            this.pictureShadow.Location = new System.Drawing.Point(0, 192);
+            this.pictureShadow.Name = "pictureShadow";
+            this.pictureShadow.Size = new System.Drawing.Size(221, 6);
+            this.pictureShadow.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureShadow.TabIndex = 10;
+            this.pictureShadow.TabStop = false;
+            // 
+            // pictureItemsBack
+            // 
+            this.pictureItemsBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureItemsBack.Location = new System.Drawing.Point(0, 192);
+            this.pictureItemsBack.Name = "pictureItemsBack";
+            this.pictureItemsBack.Size = new System.Drawing.Size(221, 43);
+            this.pictureItemsBack.TabIndex = 2;
+            this.pictureItemsBack.TabStop = false;
+            this.pictureItemsBack.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             // 
             // FormSwitcher
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(220, 234);
             this.ControlBox = false;
+            this.Controls.Add(this.pictureShadow);
             this.Controls.Add(this.ledRight);
             this.Controls.Add(this.ledLeft);
             this.Controls.Add(this.VolBar);
@@ -186,6 +199,7 @@ namespace AudioSwitch.Forms
             this.Deactivate += new System.EventHandler(this.FormSwitcher_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSwitcher_FormClosing);
             this.trayMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureShadow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureItemsBack)).EndInit();
             this.ResumeLayout(false);
 
@@ -203,5 +217,6 @@ namespace AudioSwitch.Forms
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem audioDevicesToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
+        private PictureBox pictureShadow;
     }
 }

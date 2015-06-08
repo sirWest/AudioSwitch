@@ -153,6 +153,16 @@ namespace AudioSwitch.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap shadow {
+            get {
+                object obj = ResourceManager.GetObject("shadow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap spkr {
             get {
                 object obj = ResourceManager.GetObject("spkr", resourceCulture);

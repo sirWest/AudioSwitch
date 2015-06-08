@@ -267,6 +267,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\shadow.png" />
     <Content Include="Skins\Default\back.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
