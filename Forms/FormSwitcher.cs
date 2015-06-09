@@ -51,7 +51,7 @@ namespace AudioSwitch.Forms
         {
             InitializeComponent();
 
-            var winVer = FileVersionInfo.GetVersionInfo(Environment.SystemDirectory + "\\explorer.exe");
+            var winVer = FileVersionInfo.GetVersionInfo(Environment.GetEnvironmentVariable("windir") + "\\explorer.exe");
             IsWin10 = winVer.ProductMajorPart == 10;
             if (IsWin10)
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
