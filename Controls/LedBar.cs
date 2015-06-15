@@ -6,17 +6,13 @@ namespace AudioSwitch.Controls
 {
     internal sealed partial class LedBar : UserControl
     {
-        internal event ScrollEventHandler Scroll;
+        internal event ScrollEventHandler DoScroll;
         private readonly Label[] LED;
         private int lastValue;
 
         private bool _oldStyle;
         public bool OldStyle
         {
-            get
-            {
-                return _oldStyle;
-            }
             set
             {
                 BackColor = value ? Color.Black : SystemColors.Control;
@@ -28,11 +24,11 @@ namespace AudioSwitch.Controls
         {
             if (m.Msg == 522)
             {
-                if (Scroll != null)
+                if (DoScroll != null)
                 {
                     var bytes = BitConverter.GetBytes((int)m.WParam);
                     var y = BitConverter.ToInt16(bytes, 2);
-                    Scroll(this, new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), y));
+                    DoScroll(this, new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), y));
                 }
             }
             else
@@ -65,7 +61,7 @@ namespace AudioSwitch.Controls
             if (lastValue == val) return;
             lastValue = val;
 
-            if (OldStyle)
+            if (_oldStyle)
                 for (var i = 0; i < 14; i++)
                     LED[i].BackColor = val >= i ? pgOnColors[i] : pgOffColors[i];
             else

@@ -156,6 +156,7 @@ namespace AudioSwitch.Forms
 
         private void tabOSD_Enter(object sender, EventArgs e)
         {
+            labelTips.Text = "OSD window is shown. Move it and the position gets saved.";
             numTimeout.Value = Program.settings.OSD.ClosingTimeout;
 
             Program.frmOSD.Show();
@@ -301,6 +302,16 @@ namespace AudioSwitch.Forms
         private void checkScrShowOSD_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings.VolumeScroll.ShowOSD = checkScrShowOSD.Checked;
+        }
+
+        private void tabDevices_Enter(object sender, EventArgs e)
+        {
+            labelTips.Text = "Select a device and change the tray icon appearance. Don't forget to save!";
+        }
+
+        private void tabHotkeys_Enter(object sender, EventArgs e)
+        {
+            labelTips.Text = "Select a hotkey row and press 'Delete' keyboard button to delete it.";
         }
     }
 }

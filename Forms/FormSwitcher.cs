@@ -70,8 +70,8 @@ namespace AudioSwitch.Forms
 
             listDevices.TileSize = tile;
             listDevices.Scroll += VolBar.DoScroll;
-            ledLeft.Scroll += VolBar.DoScroll;
-            ledRight.Scroll += VolBar.DoScroll;
+            ledLeft.DoScroll += VolBar.DoScroll;
+            ledRight.DoScroll += VolBar.DoScroll;
             listDevices.LargeImageList = DeviceIcons.ActiveIcons;
 
             if (DpiFactor <= 1)

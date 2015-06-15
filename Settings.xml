@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <IgnoreErrors>false</IgnoreErrors>
   <DefaultDataFlow>eRender</DefaultDataFlow>
   <DefaultMultimediaAndComm>true</DefaultMultimediaAndComm>
   <ColorVU>false</ColorVU>
@@ -9,12 +8,6 @@
   <VolumeScroll Key="LWin" ShowOSD="true" Enabled="false" />
   <Hotkey Function="PreviousPlaybackDevice" ModifierKeys="Alt" HotKey="Z" ShowOSD="true" />
   <Hotkey Function="NextPlaybackDevice" ModifierKeys="Alt" HotKey="X" ShowOSD="true" />
-  <Hotkey Function="PreviousRecordingDevice" ModifierKeys="Alt" HotKey="C" ShowOSD="true" />
-  <Hotkey Function="NextRecordingDevice" ModifierKeys="Alt" HotKey="V" ShowOSD="true" />
-  <Hotkey Function="TogglePlaybackMute" ModifierKeys="Alt LWin" HotKey="Left" ShowOSD="true" />
-  <Hotkey Function="ToggleRecordingMute" ModifierKeys="Alt LWin" HotKey="Right" ShowOSD="true" />
   <Hotkey Function="PlaybackVolumeUp" ModifierKeys="Alt LWin" HotKey="Up" ShowOSD="true" />
   <Hotkey Function="PlaybackVolumeDown" ModifierKeys="Alt LWin" HotKey="Down" ShowOSD="true" />
-  <Hotkey Function="RecordingVolumeUp" ModifierKeys="None" HotKey="None" ShowOSD="true" />
-  <Hotkey Function="RecordingVolumeDown" ModifierKeys="None" HotKey="None" ShowOSD="true" />
 </Settings>

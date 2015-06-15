@@ -92,20 +92,6 @@ namespace AudioSwitch.Classes
             return (TaskbarPosition)data.uEdge;
         }
 
-        private static Point GetNotifyIconPosition(IDisposable notifyicon)
-        {
-            var field = notifyicon.GetType().GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-            var num = (int) field.GetValue(notifyicon);
-            var fieldInfo = notifyicon.GetType().GetField("window", BindingFlags.NonPublic | BindingFlags.Instance);
-            var window = (NativeWindow) fieldInfo.GetValue(notifyicon);
-            var notifyiconidentifier2 = new NOTIFYICONIDENTIFIER {hWnd = window.Handle, uID = (uint) num};
-            notifyiconidentifier2.cbSize = (uint) Marshal.SizeOf(notifyiconidentifier2);
-
-            RECT rect;
-            Shell_NotifyIconGetRect(ref notifyiconidentifier2, out rect);
-            return new Point(rect.left + (rect.right - rect.left) / 2, rect.top + (rect.bottom - rect.top) / 2);
-        }
-
         internal static RECT GetNotifyIconArea(IDisposable notifyicon)
         {
             var field = notifyicon.GetType().GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -129,7 +115,8 @@ namespace AudioSwitch.Classes
                 return new Point((Screen.PrimaryScreen.WorkingArea.Width + windowwidth)/2,
                                  (Screen.PrimaryScreen.WorkingArea.Height + windowheight)/2);
 
-            var iconPos = GetNotifyIconPosition(notifyicon);
+            var rect = GetNotifyIconArea(notifyicon);
+            var iconPos = new Point(rect.left + (rect.right - rect.left) / 2, rect.top + (rect.bottom - rect.top) / 2);
 
             var windowOffset = (int)Math.Round(8 * FormSwitcher.DpiFactor);
             var iconOffset = (int)Math.Round(8 * FormSwitcher.DpiFactor);

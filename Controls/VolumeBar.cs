@@ -24,7 +24,7 @@ namespace AudioSwitch.Controls
         internal bool Mute
         {
             get { return _mute; }
-            set
+            private set
             {
                 _mute = value;
                 Thumb.BackgroundImage.Dispose();
@@ -38,7 +38,7 @@ namespace AudioSwitch.Controls
         internal float Value
         {
             get { return _value; }
-            set
+            private set
             {
                 _value = value;
                 MoveThumb();

@@ -23,7 +23,7 @@ MinVersion=6.1
 
 [Files]
 Source: "..\bin\Release\AudioSwitch.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\Settings.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "..\bin\Release\Settings.xml"; DestDir: "{app}"
 Source: "..\bin\Release\Skins\*"; DestDir: "{app}\Skins"; Flags: recursesubdirs
 
 [Tasks]

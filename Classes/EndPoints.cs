@@ -114,17 +114,9 @@ namespace AudioSwitch.Classes
 
         internal static void SetDefaultDevice(string devID)
         {
-            try
-            {
-                pPolicyConfig.SetDefaultEndpoint(devID, ERole.eMultimedia);
-                if (Program.settings.DefaultMultimediaAndComm)
-                    pPolicyConfig.SetDefaultEndpoint(devID, ERole.eCommunications);
-            }
-            catch
-            {
-                if (!Program.settings.IgnoreErrors)
-                    throw;
-            }
+            pPolicyConfig.SetDefaultEndpoint(devID, ERole.eMultimedia);
+            if (Program.settings.DefaultMultimediaAndComm)
+                pPolicyConfig.SetDefaultEndpoint(devID, ERole.eCommunications);
         }
     }
 }

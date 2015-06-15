@@ -11,10 +11,7 @@ namespace AudioSwitch.Classes
     public class Settings
     {
         [XmlIgnore] 
-        internal static string settingsxml = "Settings.xml";
-
-        [XmlElement]
-        public bool IgnoreErrors;
+        internal const string settingsxml = "Settings.xml";
 
         [XmlElement]
         public EDataFlow DefaultDataFlow;

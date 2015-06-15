@@ -31,7 +31,7 @@ namespace AudioSwitch.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabSettings = new System.Windows.Forms.TabControl();
             this.tabHotkeys = new System.Windows.Forms.TabPage();
             this.gridHotkeys = new System.Windows.Forms.DataGridView();
@@ -57,8 +57,10 @@ namespace AudioSwitch.Forms
             this.trackSaturation = new System.Windows.Forms.TrackBar();
             this.trackHue = new System.Windows.Forms.TrackBar();
             this.pictureModded = new System.Windows.Forms.PictureBox();
+            this.listDevices = new AudioSwitch.Controls.CustomListView();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkShowHWName = new System.Windows.Forms.CheckBox();
             this.checkColorVU = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.comboDefMode = new System.Windows.Forms.ComboBox();
@@ -82,8 +84,7 @@ namespace AudioSwitch.Forms
             this.buttonClose = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.checkShowHWName = new System.Windows.Forms.CheckBox();
-            this.listDevices = new AudioSwitch.Controls.CustomListView();
+            this.labelTips = new System.Windows.Forms.Label();
             this.tabSettings.SuspendLayout();
             this.tabHotkeys.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHotkeys)).BeginInit();
@@ -109,7 +110,7 @@ namespace AudioSwitch.Forms
             this.tabSettings.Controls.Add(this.tabDevices);
             this.tabSettings.Controls.Add(this.tabGeneral);
             this.tabSettings.HotTrack = true;
-            this.tabSettings.Location = new System.Drawing.Point(3, 3);
+            this.tabSettings.Location = new System.Drawing.Point(3, 4);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.SelectedIndex = 0;
             this.tabSettings.Size = new System.Drawing.Size(540, 342);
@@ -125,6 +126,7 @@ namespace AudioSwitch.Forms
             this.tabHotkeys.TabIndex = 0;
             this.tabHotkeys.Text = "Hot Keys";
             this.tabHotkeys.UseVisualStyleBackColor = true;
+            this.tabHotkeys.Enter += new System.EventHandler(this.tabHotkeys_Enter);
             // 
             // gridHotkeys
             // 
@@ -151,12 +153,12 @@ namespace AudioSwitch.Forms
             this.gridHotkeys.Name = "gridHotkeys";
             this.gridHotkeys.RowHeadersWidth = 25;
             this.gridHotkeys.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.gridHotkeys.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.gridHotkeys.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHotkeys.Size = new System.Drawing.Size(520, 304);
@@ -233,6 +235,7 @@ namespace AudioSwitch.Forms
             this.tabDevices.TabIndex = 1;
             this.tabDevices.Text = "Devices";
             this.tabDevices.UseVisualStyleBackColor = true;
+            this.tabDevices.Enter += new System.EventHandler(this.tabDevices_Enter);
             // 
             // label2
             // 
@@ -365,6 +368,24 @@ namespace AudioSwitch.Forms
             this.pictureModded.TabIndex = 20;
             this.pictureModded.TabStop = false;
             // 
+            // listDevices
+            // 
+            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
+            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listDevices.FullRowSelect = true;
+            this.listDevices.HideSelection = false;
+            this.listDevices.Location = new System.Drawing.Point(6, 25);
+            this.listDevices.MultiSelect = false;
+            this.listDevices.Name = "listDevices";
+            this.listDevices.Size = new System.Drawing.Size(242, 285);
+            this.listDevices.TabIndex = 1;
+            this.listDevices.TileSize = new System.Drawing.Size(222, 40);
+            this.listDevices.UseCompatibleStateImageBehavior = false;
+            this.listDevices.View = System.Windows.Forms.View.Tile;
+            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
+            // 
             // tabGeneral
             // 
             this.tabGeneral.Controls.Add(this.groupBox2);
@@ -392,6 +413,16 @@ namespace AudioSwitch.Forms
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Misc";
+            // 
+            // checkShowHWName
+            // 
+            this.checkShowHWName.AutoSize = true;
+            this.checkShowHWName.Location = new System.Drawing.Point(301, 23);
+            this.checkShowHWName.Name = "checkShowHWName";
+            this.checkShowHWName.Size = new System.Drawing.Size(193, 17);
+            this.checkShowHWName.TabIndex = 22;
+            this.checkShowHWName.Text = "Show also device\'s hardware name";
+            this.checkShowHWName.UseVisualStyleBackColor = true;
             // 
             // checkColorVU
             // 
@@ -653,38 +684,21 @@ namespace AudioSwitch.Forms
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
-            // checkShowHWName
+            // labelTips
             // 
-            this.checkShowHWName.AutoSize = true;
-            this.checkShowHWName.Location = new System.Drawing.Point(301, 23);
-            this.checkShowHWName.Name = "checkShowHWName";
-            this.checkShowHWName.Size = new System.Drawing.Size(193, 17);
-            this.checkShowHWName.TabIndex = 22;
-            this.checkShowHWName.Text = "Show also device\'s hardware name";
-            this.checkShowHWName.UseVisualStyleBackColor = true;
-            // 
-            // listDevices
-            // 
-            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
-            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listDevices.FullRowSelect = true;
-            this.listDevices.HideSelection = false;
-            this.listDevices.Location = new System.Drawing.Point(6, 25);
-            this.listDevices.MultiSelect = false;
-            this.listDevices.Name = "listDevices";
-            this.listDevices.Size = new System.Drawing.Size(242, 285);
-            this.listDevices.TabIndex = 1;
-            this.listDevices.TileSize = new System.Drawing.Size(222, 40);
-            this.listDevices.UseCompatibleStateImageBehavior = false;
-            this.listDevices.View = System.Windows.Forms.View.Tile;
-            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
+            this.labelTips.ForeColor = System.Drawing.Color.Green;
+            this.labelTips.Location = new System.Drawing.Point(170, 4);
+            this.labelTips.Name = "labelTips";
+            this.labelTips.Size = new System.Drawing.Size(367, 16);
+            this.labelTips.TabIndex = 7;
+            this.labelTips.Text = "labelTips";
+            this.labelTips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(547, 380);
+            this.Controls.Add(this.labelTips);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.buttonClose);
@@ -779,5 +793,6 @@ namespace AudioSwitch.Forms
         private System.Windows.Forms.DataGridViewCheckBoxColumn ShowOSD;
         private System.Windows.Forms.DataGridViewComboBoxColumn HotKey;
         private System.Windows.Forms.CheckBox checkShowHWName;
+        private System.Windows.Forms.Label labelTips;
     }
 }
