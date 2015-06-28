@@ -24,6 +24,13 @@ namespace AudioSwitch.Classes
         internal static FormOSD frmOSD;
         private static bool isConsole;
         internal static Settings settings;
+        
+        internal static string LogPath {
+            get {
+                return Path.Combine(Path.GetDirectoryName( 
+                    System.Reflection.Assembly.GetExecutingAssembly().Location ), "ErrorLog.txt");
+            }
+        }
 
         [STAThread]
         private static void Main(string[] args)
@@ -214,7 +221,7 @@ namespace AudioSwitch.Classes
             try
             {
                 var ex = (Exception)e.ExceptionObject;
-                using (var w = File.AppendText("ErrorLog.txt"))
+                using (var w = File.AppendText(LogPath))
                 {
                     w.WriteLine("Log Entry: {0}", DateTime.Now);
                     w.WriteLine("");

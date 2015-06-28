@@ -67,7 +67,7 @@ namespace AudioSwitch.Forms
             }
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
 
-            var OSDskins = Directory.GetDirectories("Skins");
+			var OSDskins = Directory.GetDirectories(OSDskin.SkinsRootDir);
             foreach (var skinDir in OSDskins)
                 comboOSDSkin.Items.Add(skinDir.Substring(skinDir.IndexOf('\\') + 1));
             comboOSDSkin.Text = Program.settings.OSD.Skin;
