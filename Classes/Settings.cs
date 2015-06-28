@@ -12,6 +12,13 @@ namespace AudioSwitch.Classes
     {
         [XmlIgnore] 
         internal const string settingsxml = "Settings.xml";
+        
+        [XmlIgnore]
+        internal static string SettingsPath {
+            get {
+				return Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location ), settingsxml);
+            }
+        }
 
         [XmlElement]
         public EDataFlow DefaultDataFlow;
@@ -94,15 +101,15 @@ namespace AudioSwitch.Classes
             do
             {
                 var xs = new XmlSerializer(typeof (Settings));
-                using (var tw = new StreamWriter(settingsxml))
+                using (var tw = new StreamWriter(SettingsPath))
                     xs.Serialize(tw, this);
-            } while (new FileInfo(settingsxml).Length < 20);
+            } while (new FileInfo(SettingsPath).Length < 20);
         }
 
         internal static Settings Load()
         {
             var xs = new XmlSerializer(typeof(Settings));
-            using (var fileStream = new StreamReader(settingsxml))
+            using (var fileStream = new StreamReader(SettingsPath))
                 return (Settings)xs.Deserialize(fileStream);
         }
     }
