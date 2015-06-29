@@ -37,7 +37,7 @@ namespace AudioSwitch.Classes
         internal static OSDskin Load(string SkinName)
         {
             var xs = new XmlSerializer(typeof(OSDskin));
-            using (var fileStream = new StreamReader("Skins\\" + Program.settings.OSD.Skin + "\\skin.xml"))
+            using (var fileStream = new StreamReader(Program.Root + "Skins\\" + Program.settings.OSD.Skin + "\\skin.xml"))
                 return (OSDskin)xs.Deserialize(fileStream);
         }
     }

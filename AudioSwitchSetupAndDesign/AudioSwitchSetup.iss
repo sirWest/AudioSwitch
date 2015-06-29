@@ -4,7 +4,7 @@
 [Setup]
 AppMutex={{579A9A19-7AE5-42CD-8147-E587F5C9DD50}}
 AppId={#ApplicationName}
-AppName={#ApplicationName} v2.0
+AppName={#ApplicationName} v2.0.1
 AppVerName={#ApplicationName}
 AppVersion={#ApplicationVersion}
 VersionInfoVersion={#ApplicationVersion}

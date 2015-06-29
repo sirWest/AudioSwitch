@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -11,6 +12,7 @@ namespace AudioSwitch.Classes
     internal static class Program
     {
         static readonly Mutex mutex = new Mutex(true, "{579A9A19-7AE5-42CD-8147-E587F5C9DD50}");
+        internal static string Root;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
@@ -28,6 +30,11 @@ namespace AudioSwitch.Classes
         [STAThread]
         private static void Main(string[] args)
         {
+            var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            var uri = new UriBuilder(codeBase);
+            var path = Uri.UnescapeDataString(uri.Path);
+            Root = Path.GetDirectoryName(path) + "\\";
+
             try
             {
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
@@ -214,7 +221,7 @@ namespace AudioSwitch.Classes
             try
             {
                 var ex = (Exception)e.ExceptionObject;
-                using (var w = File.AppendText("ErrorLog.txt"))
+                using (var w = File.AppendText(Root + "ErrorLog.txt"))
                 {
                     w.WriteLine("Log Entry: {0}", DateTime.Now);
                     w.WriteLine("");

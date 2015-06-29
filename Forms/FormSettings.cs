@@ -67,9 +67,9 @@ namespace AudioSwitch.Forms
             }
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
 
-            var OSDskins = Directory.GetDirectories("Skins");
+            var OSDskins = Directory.GetDirectories(Program.Root + "Skins");
             foreach (var skinDir in OSDskins)
-                comboOSDSkin.Items.Add(skinDir.Substring(skinDir.IndexOf('\\') + 1));
+                comboOSDSkin.Items.Add(skinDir.Substring(skinDir.LastIndexOf('\\') + 1));
             comboOSDSkin.Text = Program.settings.OSD.Skin;
             trackTransparency.Value = Program.settings.OSD.Transparency;
 

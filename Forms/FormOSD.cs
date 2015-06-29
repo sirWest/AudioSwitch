@@ -94,21 +94,23 @@ namespace AudioSwitch.Forms
                 defBackImg.Dispose();
                 defBackImg = null;
             }
-            defBackImg = new Bitmap(Image.FromFile("Skins\\" + Program.settings.OSD.Skin + "\\back.png"));
+            var skinPath = Program.Root + "Skins\\" + Program.settings.OSD.Skin;
+
+            defBackImg = new Bitmap(Image.FromFile(skinPath + "\\back.png"));
 
             if (muteBackImg != null)
             {
                 muteBackImg.Dispose();
                 muteBackImg = null;
             }
-            muteBackImg = new Bitmap(Image.FromFile("Skins\\" + Program.settings.OSD.Skin + "\\mute.png"));
+            muteBackImg = new Bitmap(Image.FromFile(skinPath + "\\mute.png"));
 
             if (volBarImg != null)
             {
                 volBarImg.Dispose();
                 volBarImg = null;
             }
-            volBarImg = new Bitmap(Image.FromFile("Skins\\" + Program.settings.OSD.Skin + "\\meter.png"));
+            volBarImg = new Bitmap(Image.FromFile(skinPath + "\\meter.png"));
 
             Skin = OSDskin.Load(Program.settings.OSD.Skin);
 
@@ -118,7 +120,7 @@ namespace AudioSwitch.Forms
                 volBarEffect = null;
             }
             if (Skin.VolBar.Effect)
-                volBarEffect = new Bitmap(Image.FromFile("Skins\\" + Program.settings.OSD.Skin + "\\meter_effect.png"));
+                volBarEffect = new Bitmap(Image.FromFile(skinPath + "\\meter_effect.png"));
         }
 
         internal void SetVolImage(float volume)
