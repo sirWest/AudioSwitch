@@ -60,7 +60,6 @@ namespace AudioSwitch.Forms
             // 
             // notifyIcon
             // 
-            this.notifyIcon.ContextMenuStrip = this.trayMenu;
             this.notifyIcon.Text = "AudioSwitch";
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDown);

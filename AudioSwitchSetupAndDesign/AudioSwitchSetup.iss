@@ -4,7 +4,7 @@
 [Setup]
 AppMutex={{579A9A19-7AE5-42CD-8147-E587F5C9DD50}}
 AppId={#ApplicationName}
-AppName={#ApplicationName} v2.0.1
+AppName={#ApplicationName} v2.1
 AppVerName={#ApplicationName}
 AppVersion={#ApplicationVersion}
 VersionInfoVersion={#ApplicationVersion}
@@ -23,7 +23,7 @@ MinVersion=6.1
 
 [Files]
 Source: "..\bin\Release\AudioSwitch.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\Settings.xml"; DestDir: "{app}"
+Source: "..\bin\Release\Settings.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist 
 Source: "..\bin\Release\Skins\*"; DestDir: "{app}\Skins"; Flags: recursesubdirs
 
 [Tasks]

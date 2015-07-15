@@ -17,7 +17,7 @@ namespace AudioSwitch.Forms
             InitializeComponent();
 
             FormSwitcher.SetWindowTheme(listDevices.Handle, "explorer", null);
-            var tile = new Size(listDevices.ClientSize.Width, (int)(listDevices.TileSize.Height * FormSwitcher.DpiFactor));
+            var tile = new Size(listDevices.ClientSize.Width - 18, (int)(listDevices.TileSize.Height * FormSwitcher.DpiFactor));
             listDevices.TileSize = tile;
 
             var size = new Size((int)(32 * FormSwitcher.DpiFactor), (int)(32 * FormSwitcher.DpiFactor));
@@ -83,6 +83,12 @@ namespace AudioSwitch.Forms
             checkScrShowOSD.Checked = Program.settings.VolumeScroll.ShowOSD;
             checkShowHWName.Checked = Program.settings.ShowHardwareName;
 
+            radioQuickSwitch.Checked = Program.settings.QuickSwitchEnabled;
+            radioAlwaysMenu.Checked = !radioQuickSwitch.Checked;
+            checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
+
+            checkQSShowOSD.Checked = Program.settings.QuickSwitchShowOSD;
+            
             gridHotkeys.CellEndEdit += gridHotkeys_CellEndEdit;
             gridHotkeys.RowsAdded += gridHotkeys_RowsAdded;
             gridHotkeys.RowsRemoved += gridHotkeys_RowsRemoved;
@@ -150,6 +156,8 @@ namespace AudioSwitch.Forms
             Program.settings.DefaultMultimediaAndComm = checkDefaultMultiAndComm.Checked;
             Program.settings.ColorVU = checkColorVU.Checked;
             Program.settings.ShowHardwareName = checkShowHWName.Checked;
+            Program.settings.QuickSwitchEnabled = radioQuickSwitch.Checked;
+            Program.settings.QuickSwitchShowOSD = checkQSShowOSD.Checked;
 
             Program.settings.Save();
         }
@@ -312,6 +320,11 @@ namespace AudioSwitch.Forms
         private void tabHotkeys_Enter(object sender, EventArgs e)
         {
             labelTips.Text = "Select a hotkey row and press 'Delete' keyboard button to delete it.";
+        }
+
+        private void radioQuickSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+            checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
         }
     }
 }

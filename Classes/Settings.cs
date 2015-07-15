@@ -26,6 +26,12 @@ namespace AudioSwitch.Classes
         public bool ShowHardwareName;
 
         [XmlElement]
+        public bool QuickSwitchEnabled;
+
+        [XmlElement]
+        public bool QuickSwitchShowOSD;
+
+        [XmlElement]
         public COSD OSD;
 
         public class COSD

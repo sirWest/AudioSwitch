@@ -9,8 +9,7 @@
     <AssemblyName>AudioSwitch</AssemblyName>
     <OutputType>WinExe</OutputType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -267,6 +266,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\shadow.png" />
     <Content Include="Skins\Default\back.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

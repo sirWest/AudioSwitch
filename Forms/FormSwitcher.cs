@@ -333,26 +333,29 @@ namespace AudioSwitch.Forms
         private void notifyIcon1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
+            {
+                if (Program.settings.QuickSwitchEnabled && !DeactivatedOnIcon)
+                {
+                    notifyIcon.ContextMenuStrip = null;
+                    QuickSwitchDevice(false, Program.settings.DefaultDataFlow, Program.settings.QuickSwitchShowOSD);
+                }
+                else
+                    notifyIcon.ContextMenuStrip = trayMenu;
+
                 return;
+            }
 
             var rType = Program.settings.DefaultDataFlow;
             if (ModifierKeys.HasFlag(Keys.Control))
                 rType = rType == EDataFlow.eRender ? EDataFlow.eCapture : EDataFlow.eRender;
-            
-            if (ModifierKeys.HasFlag(Keys.Alt))
-            {
-                ChangeDeviceState(rType, true, 0, true);
-            }
-            else
-            {
-                RenderType = rType;
-                RefreshDevices(RenderType);
 
-                if (DeactivatedOnIcon)
-                    return;
+            RenderType = rType;
+            RefreshDevices(RenderType);
 
-                SetSizes();
-            }
+            if (DeactivatedOnIcon)
+                return;
+
+            SetSizes();
         }
 
         private void notifyIcon1_MouseUp(object sender, MouseEventArgs e)
@@ -362,9 +365,6 @@ namespace AudioSwitch.Forms
                 DeactivatedOnIcon = false;
                 return;
             }
-
-            if (ModifierKeys.HasFlag(Keys.Alt))
-                return;
 
             if (listDevices.Items.Count > 0)
                 VolBar.RegisterDevice(RenderType);

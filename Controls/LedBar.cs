@@ -13,6 +13,7 @@ namespace AudioSwitch.Controls
         private bool _oldStyle;
         public bool OldStyle
         {
+            get { return _oldStyle; }
             set
             {
                 BackColor = value ? Color.Black : SystemColors.Control;
