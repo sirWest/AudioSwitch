@@ -370,10 +370,6 @@
     </Content>
     <None Include="app.manifest" />
     <None Include="Resources\spkr.png" />
-    <Content Include="Settings.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Resources\mute_highDPI.png" />
     <None Include="Resources\zero_highDPI.png" />
     <None Include="Resources\zero.png" />
