@@ -41,8 +41,8 @@ namespace AudioSwitch.Classes
             };
         }
 
-        [XmlIgnore] 
-        internal static string settingsxml = Program.Root + "Settings.xml";
+        [XmlIgnore]
+        private static readonly string settingsxml = Program.AppDataRoot + "Settings.xml";
 
         [XmlElement]
         public EDataFlow DefaultDataFlow;

@@ -29,8 +29,7 @@ namespace AudioSwitch.Controls
                 _mute = value;
                 Thumb.BackgroundImage.Dispose();
                 Thumb.BackgroundImage = value ? Resources.ThumbMute : Resources.ThumbNormal;
-                if (VolumeMuteChanged != null)
-                    VolumeMuteChanged(this, null);
+                VolumeMuteChanged?.Invoke(this, null);
             }
         }
 
@@ -42,8 +41,7 @@ namespace AudioSwitch.Controls
             {
                 _value = value;
                 MoveThumb();
-                if (VolumeMuteChanged != null)
-                    VolumeMuteChanged(this, null);
+                VolumeMuteChanged?.Invoke(this, null);
             }
         }
 
@@ -75,8 +73,7 @@ namespace AudioSwitch.Controls
         {
             _value = value;
             Device.AudioEndpointVolume.MasterVolumeLevelScalar = value;
-            if (VolumeMuteChanged != null)
-                VolumeMuteChanged(this, null);
+            VolumeMuteChanged?.Invoke(this, null);
         }
 
         private void MoveThumb()

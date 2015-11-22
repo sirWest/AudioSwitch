@@ -31,19 +31,26 @@ namespace AudioSwitch.Classes
             var pDevices = DeviceEnumerator.EnumerateAudioEndPoints(renderType, EDeviceState.Active);
             var defDeviceID = DeviceEnumerator.GetDefaultAudioEndpoint(renderType, ERole.eMultimedia).ID;
             var devCount = pDevices.Count;
+            var newCount = 0;
 
             for (var i = 0; i < devCount; i++)
             {
                 var device = pDevices[i];
                 var devID = device.ID;
-                var devName = device.FriendlyName;
-                DeviceNames.Add(devID, devName);
-                DeviceIDs.Add(i, devID);
-
-                if (devID == defDeviceID)
+                
+                var devSettings = Program.settings.Device.Find(x => x.DeviceID == devID);
+                if (devSettings == null || !devSettings.HideFromList)
                 {
-                    DefaultDeviceID = i;
-                    DefaultDeviceName = devName;
+                    var devName = device.FriendlyName;
+                    DeviceNames.Add(devID, devName);
+                    DeviceIDs.Add(newCount, devID);
+                    
+                    if (devID == defDeviceID)
+                    {
+                        DefaultDeviceID = newCount;
+                        DefaultDeviceName = devName;
+                    }
+                    newCount++;
                 }
             }
         }

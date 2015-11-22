@@ -34,7 +34,7 @@ namespace AudioSwitch.Classes
             [XmlAttribute] public int MaxHeight;
         }
 
-        internal static OSDskin Load(string SkinName)
+        internal static OSDskin Load()
         {
             var xs = new XmlSerializer(typeof(OSDskin));
             using (var fileStream = new StreamReader(Program.Root + "Skins\\" + Program.settings.OSD.Skin + "\\skin.xml"))

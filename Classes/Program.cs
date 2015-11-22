@@ -13,6 +13,7 @@ namespace AudioSwitch.Classes
     {
         static readonly Mutex mutex = new Mutex(true, "{579A9A19-7AE5-42CD-8147-E587F5C9DD50}");
         internal static string Root;
+        internal static string AppDataRoot = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\AudioSwitch\\";
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
@@ -221,7 +222,7 @@ namespace AudioSwitch.Classes
             try
             {
                 var ex = (Exception)e.ExceptionObject;
-                using (var w = File.AppendText(Root + "ErrorLog.txt"))
+                using (var w = File.AppendText(AppDataRoot + "ErrorLog.txt"))
                 {
                     w.WriteLine("Log Entry: {0}", DateTime.Now);
                     w.WriteLine("");

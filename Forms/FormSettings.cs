@@ -196,11 +196,8 @@ namespace AudioSwitch.Forms
 
         private void trackBarsHSB_Scroll(object sender, EventArgs e)
         {
-            if (pictureModded.Image != null)
-                pictureModded.Image.Dispose();
-
-            pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f,
-                                               trackBrightness.Value/100f);
+            pictureModded.Image?.Dispose();
+            pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value/100f);
         }
 
         private void buttonResetDevice_Click(object sender, EventArgs e)
@@ -266,12 +263,9 @@ namespace AudioSwitch.Forms
             trackBrightness.Value = devSettings.Brightness;
             trackHue.Value = devSettings.Hue;
             trackSaturation.Value = devSettings.Saturation;
-            
-            if (pictureModded.Image != null)
-                pictureModded.Image.Dispose();
 
-            pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f,
-                                               trackBrightness.Value / 100f);
+            pictureModded.Image?.Dispose();
+            pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value / 100f);
             checkHideDevice.Checked = devSettings.HideFromList;
         }
 

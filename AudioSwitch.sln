@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2013
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioSwitch", "AudioSwitch.csproj", "{27E9D710-5098-4F59-8E81-412B63705301}"
 EndProject
 Global

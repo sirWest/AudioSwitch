@@ -44,10 +44,7 @@ namespace AudioSwitch.Forms
             }
         }
 
-        protected override bool ShowWithoutActivation
-        {
-            get { return true; }
-        }
+        protected override bool ShowWithoutActivation => true;
 
         public FormOSD()
         {
@@ -112,7 +109,7 @@ namespace AudioSwitch.Forms
             }
             volBarImg = new Bitmap(Image.FromFile(skinPath + "\\meter.png"));
 
-            Skin = OSDskin.Load(Program.settings.OSD.Skin);
+            Skin = OSDskin.Load();
 
             if (volBarEffect != null)
             {
