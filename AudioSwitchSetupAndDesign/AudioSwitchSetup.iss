@@ -25,9 +25,6 @@ MinVersion=6.1
 Source: "..\bin\Release\AudioSwitch.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Skins\*"; DestDir: "{app}\Skins"; Flags: recursesubdirs
 
-[Dirs]
-Name: "{localappdata}\{#ApplicationName}"
-
 [Tasks]
 Name: "startupicon"; Description: "Start AudioSwitch when I log in to Windows"; GroupDescription: "Additional options:"
 

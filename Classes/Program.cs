@@ -13,7 +13,7 @@ namespace AudioSwitch.Classes
     {
         static readonly Mutex mutex = new Mutex(true, "{579A9A19-7AE5-42CD-8147-E587F5C9DD50}");
         internal static string Root;
-        internal static string AppDataRoot = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\AudioSwitch\\";
+        internal static readonly string AppDataRoot = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\AudioSwitch\\";
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
@@ -35,6 +35,9 @@ namespace AudioSwitch.Classes
             var uri = new UriBuilder(codeBase);
             var path = Uri.UnescapeDataString(uri.Path);
             Root = Path.GetDirectoryName(path) + "\\";
+
+            if (!Directory.Exists(AppDataRoot))
+                Directory.CreateDirectory(AppDataRoot);
 
             try
             {
@@ -66,7 +69,7 @@ namespace AudioSwitch.Classes
                             case "h":
                             case "?":
                                 Console.WriteLine();
-                                Console.WriteLine("AudioSwitch v2.0 command-line help");
+                                Console.WriteLine("AudioSwitch v2.1 command-line help");
                                 Console.WriteLine("----------------------------------");
                                 Console.WriteLine("Available commands:");
                                 Console.WriteLine("  /i - switch to input devices for the command. Default taken from settings.");

@@ -110,9 +110,9 @@ namespace AudioSwitch.Forms
             // 
             // tabSettings
             // 
-            this.tabSettings.Controls.Add(this.tabHotkeys);
-            this.tabSettings.Controls.Add(this.tabDevices);
             this.tabSettings.Controls.Add(this.tabGeneral);
+            this.tabSettings.Controls.Add(this.tabDevices);
+            this.tabSettings.Controls.Add(this.tabHotkeys);
             this.tabSettings.HotTrack = true;
             this.tabSettings.Location = new System.Drawing.Point(3, 4);
             this.tabSettings.Name = "tabSettings";

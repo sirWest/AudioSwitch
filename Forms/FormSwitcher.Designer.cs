@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
-using AudioSwitch.Classes;
 using AudioSwitch.Controls;
-using AudioSwitch.CoreAudioApi;
 
 namespace AudioSwitch.Forms
 {
@@ -29,6 +26,7 @@ namespace AudioSwitch.Forms
                 components.Dispose();
             }
             base.Dispose(disposing);
+            Environment.Exit(0);
         }
 
         #region Windows Form Designer generated code

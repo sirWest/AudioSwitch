@@ -198,6 +198,9 @@ namespace AudioSwitch.Forms
 
         private void FormSwitcher_Deactivate(object sender, EventArgs e)
         {
+            if (Disposing)
+                return;
+
             Hide();
             timer1.Enabled = false;
             RenderType = Program.settings.DefaultDataFlow;
