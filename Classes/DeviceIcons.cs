@@ -14,6 +14,8 @@ namespace AudioSwitch.Classes
         internal static ImageList ActiveIcons;
         internal static ImageList NormalIcons;
         internal static ImageList DefaultIcons;
+
+        private static bool is64bit = Environment.Is64BitOperatingSystem;
         
         internal static void InitImageLists(float dpifactor)
         {
@@ -54,6 +56,8 @@ namespace AudioSwitch.Classes
         {
             var path = Environment.ExpandEnvironmentVariables(iconPath);
             var iconAdr = path.Split(',');
+            if (is64bit)
+                iconAdr[0] = iconAdr[0].Replace(@"\System32\", @"\SysWOW64\");
 
             Icon icon;
             if (iconAdr.Length > 1)
