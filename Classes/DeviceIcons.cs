@@ -57,7 +57,7 @@ namespace AudioSwitch.Classes
             var path = Environment.ExpandEnvironmentVariables(iconPath);
             var iconAdr = path.Split(',');
             if (is64bit)
-                iconAdr[0] = iconAdr[0].Replace(@"\System32\", @"\SysWOW64\");
+                iconAdr[0] = iconAdr[0].Replace(@"\System32\", @"\Sysnative\");
 
             Icon icon;
             if (iconAdr.Length > 1)
