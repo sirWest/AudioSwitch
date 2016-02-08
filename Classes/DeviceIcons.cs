@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using AudioSwitch.Properties;
+using System.IO;
 
 namespace AudioSwitch.Classes
 {
@@ -57,16 +58,22 @@ namespace AudioSwitch.Classes
             var path = is64bit ? iconPath.ToLower().Replace("\\system32\\", "\\sysnative\\") : iconPath;
             path = Environment.ExpandEnvironmentVariables(path);
             var iconAdr = path.Split(',');
-
-            Icon icon;
-            if (iconAdr.Length > 1)
+            Icon icon = null;
+            if (File.Exists(iconAdr[0]))
             {
-                var hIconEx = new IntPtr[1];
-                ExtractIconEx(iconAdr[0], int.Parse(iconAdr[1]), hIconEx, null, 1);
-                icon = Icon.FromHandle(hIconEx[0]);
+                if (iconAdr.Length > 1)
+                {
+                    var hIconEx = new IntPtr[1];
+                    ExtractIconEx(iconAdr[0], int.Parse(iconAdr[1]), hIconEx, null, 1);
+                    icon = Icon.FromHandle(hIconEx[0]);
+                }
+                else
+                    icon = new Icon(iconAdr[0], NormalIcons.ImageSize.Width, NormalIcons.ImageSize.Height);
             }
             else
-                icon = new Icon(iconAdr[0], NormalIcons.ImageSize.Width, NormalIcons.ImageSize.Height);
+            {
+                icon = SystemIcons.Warning;
+            }
             return icon;
         }
 
