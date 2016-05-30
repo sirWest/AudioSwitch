@@ -149,12 +149,14 @@ namespace AudioSwitch.Forms
                             var device = pDevices[i];
                             DeviceIcons.Add(device.IconPath);
                             var devSettings = Program.settings.Device.Find(x => x.DeviceID == devID);
-                            if (devSettings == null || !devSettings.HideFromList)
+							var displayName = devSettings != null && devSettings.DisplayName != "" ? devSettings.DisplayName : device.FriendlyName;
+
+							if (devSettings == null || !devSettings.HideFromList)
                             {
                                 var item = new ListViewItem
                                 {
                                     ImageIndex = listDevices.Items.Count,
-                                    Text = device.FriendlyName,
+                                    Text = displayName,
                                     Tag = devID,
                                 };
 
@@ -422,12 +424,15 @@ namespace AudioSwitch.Forms
 
                     DeviceIcons.Add(device.IconPath);
                     var devSettings = Program.settings.Device.Find(x => x.DeviceID == devID);
-                    if (devSettings == null || !devSettings.HideFromList)
+
+					var displayName = devSettings != null && devSettings.DisplayName != "" ? devSettings.DisplayName : device.FriendlyName;
+
+					if (devSettings == null || !devSettings.HideFromList)
                     {
                         var item = new ListViewItem
                         {
                             ImageIndex = i,
-                            Text = device.FriendlyName,
+                            Text = displayName,
                             Selected = devID == defaultDev,
                             Tag = devID,
                         };

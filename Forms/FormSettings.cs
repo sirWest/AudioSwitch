@@ -59,6 +59,9 @@ namespace AudioSwitch.Forms
 
                     if (devSettings.HideFromList)
                         lvitem.Font = new Font(lvitem.Font, FontStyle.Italic);
+
+					if (devSettings.DisplayName != "")
+						lvitem.Text += " [" + devSettings.DisplayName + "]";
                 }
 
                 listDevices.LargeImageList.Images.Add(dev.Value);
@@ -207,8 +210,7 @@ namespace AudioSwitch.Forms
             trackBrightness.Value = 0;
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
             checkHideDevice.Checked = false;
-			// TODO: change this to load default device name
-			txtDisplayName.Text = "Default Name";
+			txtDisplayName.Text = "";
 
             listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font, FontStyle.Regular);
 
@@ -261,8 +263,7 @@ namespace AudioSwitch.Forms
                 trackSaturation.Value = 0;
                 pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
                 checkHideDevice.Checked = false;
-				// TODO: change this to load default device name
-				txtDisplayName.Text = "Default Name";
+				txtDisplayName.Text = "";
 
 				return;
             }
