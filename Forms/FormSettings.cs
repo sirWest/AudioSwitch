@@ -207,6 +207,8 @@ namespace AudioSwitch.Forms
             trackBrightness.Value = 0;
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
             checkHideDevice.Checked = false;
+			// TODO: change this to load default device name
+			txtDisplayName.Text = "Default Name";
 
             listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font, FontStyle.Regular);
 
@@ -230,17 +232,19 @@ namespace AudioSwitch.Forms
                 devSettings.Hue = trackHue.Value;
                 devSettings.Saturation = trackSaturation.Value;
                 devSettings.HideFromList = checkHideDevice.Checked;
+				devSettings.DisplayName = txtDisplayName.Text;
             }
             else
             {
-                devSettings = new Settings.CDevice
-                    {
-                        DeviceID = (string) listDevices.SelectedItems[0].Tag,
-                        HideFromList = checkHideDevice.Checked,
-                        Brightness = trackBrightness.Value,
-                        Hue = trackHue.Value,
-                        Saturation = trackSaturation.Value
-                    };
+				devSettings = new Settings.CDevice
+				{
+					DeviceID = (string)listDevices.SelectedItems[0].Tag,
+					HideFromList = checkHideDevice.Checked,
+					Brightness = trackBrightness.Value,
+					Hue = trackHue.Value,
+					Saturation = trackSaturation.Value,
+					DisplayName = txtDisplayName.Text
+                };
                 Program.settings.Device.Add(devSettings);
             }
         }
@@ -257,12 +261,16 @@ namespace AudioSwitch.Forms
                 trackSaturation.Value = 0;
                 pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
                 checkHideDevice.Checked = false;
-                return;
+				// TODO: change this to load default device name
+				txtDisplayName.Text = "Default Name";
+
+				return;
             }
 
             trackBrightness.Value = devSettings.Brightness;
             trackHue.Value = devSettings.Hue;
             trackSaturation.Value = devSettings.Saturation;
+			txtDisplayName.Text = devSettings.DisplayName;
 
             pictureModded.Image?.Dispose();
             pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value / 100f);
@@ -320,5 +328,5 @@ namespace AudioSwitch.Forms
         {
             checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
         }
-    }
+	}
 }
