@@ -160,7 +160,9 @@ namespace AudioSwitch.Forms
                                     Tag = devID,
                                 };
 
-                                listDevices.Items.Add(item);
+								item.ForeColor = Color.GhostWhite;
+
+								listDevices.Items.Add(item);
                             }
                             listDevices.Sort();
                             SetSizes();
@@ -436,8 +438,10 @@ namespace AudioSwitch.Forms
                             Selected = devID == defaultDev,
                             Tag = devID,
                         };
-                        
-                        listDevices.Items.Add(item);
+
+						item.ForeColor = Color.GhostWhite;
+
+						listDevices.Items.Add(item);
 
                         if (devID == defaultDev)
                         {
