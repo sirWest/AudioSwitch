@@ -3,6 +3,8 @@ Switch between default audio input or output + change volume
 
 [AudioSwitch releases](https://github.com/sirWest/AudioSwitch/releases)
 
+[Discord chat server](https://discord.gg/mAyqAez)
+
 [AudioSwitch Facebook page](https://www.facebook.com/AudioSwitchSoftware)
 
 ![](/gh-pages/output.png) ![](/gh-pages/input.png)
