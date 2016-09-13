@@ -154,7 +154,7 @@ namespace AudioSwitch.Forms
                                 var item = new ListViewItem
                                 {
                                     ImageIndex = listDevices.Items.Count,
-                                    Text = device.FriendlyName,
+                                    Text = (devSettings != null && devSettings.UseCustomName) ? devSettings.CustomName : device.FriendlyName,
                                     Tag = devID,
                                 };
 
@@ -427,7 +427,7 @@ namespace AudioSwitch.Forms
                         var item = new ListViewItem
                         {
                             ImageIndex = i,
-                            Text = device.FriendlyName,
+                            Text = (devSettings != null && devSettings.UseCustomName) ? devSettings.CustomName : device.FriendlyName,
                             Selected = devID == defaultDev,
                             Tag = devID,
                         };
