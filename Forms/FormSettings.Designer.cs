@@ -46,6 +46,8 @@ namespace AudioSwitch.Forms
             this.tabDevices = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.groupDevice = new System.Windows.Forms.GroupBox();
+            this.textCustomName = new System.Windows.Forms.TextBox();
+            this.checkCustomName = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.checkHideDevice = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -251,6 +253,8 @@ namespace AudioSwitch.Forms
             // 
             // groupDevice
             // 
+            this.groupDevice.Controls.Add(this.textCustomName);
+            this.groupDevice.Controls.Add(this.checkCustomName);
             this.groupDevice.Controls.Add(this.label7);
             this.groupDevice.Controls.Add(this.checkHideDevice);
             this.groupDevice.Controls.Add(this.label9);
@@ -269,6 +273,24 @@ namespace AudioSwitch.Forms
             this.groupDevice.TabStop = false;
             this.groupDevice.Text = "Selected Device Settings";
             // 
+            // textCustomName
+            // 
+            this.textCustomName.Enabled = false;
+            this.textCustomName.Location = new System.Drawing.Point(16, 187);
+            this.textCustomName.Name = "textCustomName";
+            this.textCustomName.Size = new System.Drawing.Size(223, 20);
+            this.textCustomName.TabIndex = 4;
+            // 
+            // checkCustomName
+            // 
+            this.checkCustomName.Location = new System.Drawing.Point(17, 163);
+            this.checkCustomName.Name = "checkCustomName";
+            this.checkCustomName.Size = new System.Drawing.Size(154, 17);
+            this.checkCustomName.TabIndex = 3;
+            this.checkCustomName.Text = "Customize display name";
+            this.checkCustomName.UseVisualStyleBackColor = true;
+            this.checkCustomName.CheckedChanged += new System.EventHandler(this.checkCustomName_CheckedChanged);
+            // 
             // label7
             // 
             this.label7.Location = new System.Drawing.Point(121, 27);
@@ -282,7 +304,7 @@ namespace AudioSwitch.Forms
             this.checkHideDevice.Location = new System.Drawing.Point(17, 237);
             this.checkHideDevice.Name = "checkHideDevice";
             this.checkHideDevice.Size = new System.Drawing.Size(154, 17);
-            this.checkHideDevice.TabIndex = 25;
+            this.checkHideDevice.TabIndex = 5;
             this.checkHideDevice.Text = "Hide device from switch list";
             this.checkHideDevice.UseVisualStyleBackColor = true;
             // 
@@ -315,7 +337,7 @@ namespace AudioSwitch.Forms
             this.buttonResetDevice.Location = new System.Drawing.Point(16, 263);
             this.buttonResetDevice.Name = "buttonResetDevice";
             this.buttonResetDevice.Size = new System.Drawing.Size(102, 27);
-            this.buttonResetDevice.TabIndex = 13;
+            this.buttonResetDevice.TabIndex = 6;
             this.buttonResetDevice.Text = "Remove Settings";
             this.buttonResetDevice.UseVisualStyleBackColor = true;
             this.buttonResetDevice.Click += new System.EventHandler(this.buttonResetDevice_Click);
@@ -325,7 +347,7 @@ namespace AudioSwitch.Forms
             this.buttonSaveDevice.Location = new System.Drawing.Point(137, 263);
             this.buttonSaveDevice.Name = "buttonSaveDevice";
             this.buttonSaveDevice.Size = new System.Drawing.Size(102, 27);
-            this.buttonSaveDevice.TabIndex = 18;
+            this.buttonSaveDevice.TabIndex = 7;
             this.buttonSaveDevice.Text = "Save Settings";
             this.buttonSaveDevice.UseVisualStyleBackColor = true;
             this.buttonSaveDevice.Click += new System.EventHandler(this.buttonSaveDevice_Click);
@@ -337,7 +359,7 @@ namespace AudioSwitch.Forms
             this.trackBrightness.Maximum = 60;
             this.trackBrightness.Name = "trackBrightness";
             this.trackBrightness.Size = new System.Drawing.Size(164, 45);
-            this.trackBrightness.TabIndex = 24;
+            this.trackBrightness.TabIndex = 2;
             this.trackBrightness.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBrightness.Scroll += new System.EventHandler(this.trackBarsHSB_Scroll);
             // 
@@ -348,7 +370,7 @@ namespace AudioSwitch.Forms
             this.trackSaturation.Maximum = 100;
             this.trackSaturation.Name = "trackSaturation";
             this.trackSaturation.Size = new System.Drawing.Size(164, 45);
-            this.trackSaturation.TabIndex = 23;
+            this.trackSaturation.TabIndex = 1;
             this.trackSaturation.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackSaturation.Scroll += new System.EventHandler(this.trackBarsHSB_Scroll);
             // 
@@ -359,7 +381,7 @@ namespace AudioSwitch.Forms
             this.trackHue.Maximum = 360;
             this.trackHue.Name = "trackHue";
             this.trackHue.Size = new System.Drawing.Size(164, 45);
-            this.trackHue.TabIndex = 22;
+            this.trackHue.TabIndex = 0;
             this.trackHue.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackHue.Scroll += new System.EventHandler(this.trackBarsHSB_Scroll);
             // 
@@ -384,7 +406,7 @@ namespace AudioSwitch.Forms
             this.listDevices.MultiSelect = false;
             this.listDevices.Name = "listDevices";
             this.listDevices.Size = new System.Drawing.Size(256, 285);
-            this.listDevices.TabIndex = 1;
+            this.listDevices.TabIndex = 0;
             this.listDevices.TileSize = new System.Drawing.Size(238, 40);
             this.listDevices.UseCompatibleStateImageBehavior = false;
             this.listDevices.View = System.Windows.Forms.View.Tile;
@@ -418,7 +440,7 @@ namespace AudioSwitch.Forms
             this.groupBox2.Location = new System.Drawing.Point(9, 194);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(510, 114);
-            this.groupBox2.TabIndex = 21;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Behavior";
             // 
@@ -428,7 +450,7 @@ namespace AudioSwitch.Forms
             this.checkQSShowOSD.Location = new System.Drawing.Point(334, 90);
             this.checkQSShowOSD.Name = "checkQSShowOSD";
             this.checkQSShowOSD.Size = new System.Drawing.Size(79, 17);
-            this.checkQSShowOSD.TabIndex = 26;
+            this.checkQSShowOSD.TabIndex = 6;
             this.checkQSShowOSD.Text = "Show OSD";
             this.checkQSShowOSD.UseVisualStyleBackColor = true;
             // 
@@ -437,7 +459,7 @@ namespace AudioSwitch.Forms
             this.radioQuickSwitch.Location = new System.Drawing.Point(315, 54);
             this.radioQuickSwitch.Name = "radioQuickSwitch";
             this.radioQuickSwitch.Size = new System.Drawing.Size(187, 33);
-            this.radioQuickSwitch.TabIndex = 24;
+            this.radioQuickSwitch.TabIndex = 5;
             this.radioQuickSwitch.Text = "menu when AudioSwitch is open, otherwise quick-switches device";
             this.radioQuickSwitch.UseVisualStyleBackColor = true;
             this.radioQuickSwitch.CheckedChanged += new System.EventHandler(this.radioQuickSwitch_CheckedChanged);
@@ -448,7 +470,7 @@ namespace AudioSwitch.Forms
             this.radioAlwaysMenu.Location = new System.Drawing.Point(315, 34);
             this.radioAlwaysMenu.Name = "radioAlwaysMenu";
             this.radioAlwaysMenu.Size = new System.Drawing.Size(86, 17);
-            this.radioAlwaysMenu.TabIndex = 23;
+            this.radioAlwaysMenu.TabIndex = 4;
             this.radioAlwaysMenu.TabStop = true;
             this.radioAlwaysMenu.Text = "always menu";
             this.radioAlwaysMenu.UseVisualStyleBackColor = true;
@@ -468,7 +490,7 @@ namespace AudioSwitch.Forms
             this.checkShowHWName.Location = new System.Drawing.Point(14, 69);
             this.checkShowHWName.Name = "checkShowHWName";
             this.checkShowHWName.Size = new System.Drawing.Size(186, 17);
-            this.checkShowHWName.TabIndex = 22;
+            this.checkShowHWName.TabIndex = 2;
             this.checkShowHWName.Text = "Show also device hardware name";
             this.checkShowHWName.UseVisualStyleBackColor = true;
             // 
@@ -477,7 +499,7 @@ namespace AudioSwitch.Forms
             this.checkColorVU.Location = new System.Drawing.Point(14, 91);
             this.checkColorVU.Name = "checkColorVU";
             this.checkColorVU.Size = new System.Drawing.Size(121, 17);
-            this.checkColorVU.TabIndex = 21;
+            this.checkColorVU.TabIndex = 3;
             this.checkColorVU.Text = "Color LED VU meter";
             this.checkColorVU.UseVisualStyleBackColor = true;
             // 
@@ -496,14 +518,14 @@ namespace AudioSwitch.Forms
             this.comboDefMode.Location = new System.Drawing.Point(125, 21);
             this.comboDefMode.Name = "comboDefMode";
             this.comboDefMode.Size = new System.Drawing.Size(121, 21);
-            this.comboDefMode.TabIndex = 19;
+            this.comboDefMode.TabIndex = 0;
             // 
             // checkDefaultMultiAndComm
             // 
             this.checkDefaultMultiAndComm.Location = new System.Drawing.Point(14, 47);
             this.checkDefaultMultiAndComm.Name = "checkDefaultMultiAndComm";
             this.checkDefaultMultiAndComm.Size = new System.Drawing.Size(232, 17);
-            this.checkDefaultMultiAndComm.TabIndex = 20;
+            this.checkDefaultMultiAndComm.TabIndex = 1;
             this.checkDefaultMultiAndComm.Text = "Switch also default communications device";
             this.checkDefaultMultiAndComm.UseVisualStyleBackColor = true;
             this.checkDefaultMultiAndComm.CheckedChanged += new System.EventHandler(this.checkDefaultMultiAndComm_CheckedChanged);
@@ -517,7 +539,7 @@ namespace AudioSwitch.Forms
             this.groupBox4.Location = new System.Drawing.Point(9, 135);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(510, 53);
-            this.groupBox4.TabIndex = 8;
+            this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Volume Scrolling";
             // 
@@ -526,7 +548,7 @@ namespace AudioSwitch.Forms
             this.checkVolScroll.Location = new System.Drawing.Point(14, 23);
             this.checkVolScroll.Name = "checkVolScroll";
             this.checkVolScroll.Size = new System.Drawing.Size(65, 17);
-            this.checkVolScroll.TabIndex = 22;
+            this.checkVolScroll.TabIndex = 0;
             this.checkVolScroll.Text = "Enabled";
             this.checkVolScroll.UseVisualStyleBackColor = true;
             this.checkVolScroll.CheckedChanged += new System.EventHandler(this.checkVolScroll_CheckedChanged);
@@ -536,7 +558,7 @@ namespace AudioSwitch.Forms
             this.checkScrShowOSD.Location = new System.Drawing.Point(390, 23);
             this.checkScrShowOSD.Name = "checkScrShowOSD";
             this.checkScrShowOSD.Size = new System.Drawing.Size(79, 17);
-            this.checkScrShowOSD.TabIndex = 8;
+            this.checkScrShowOSD.TabIndex = 2;
             this.checkScrShowOSD.Text = "Show OSD";
             this.checkScrShowOSD.UseVisualStyleBackColor = true;
             this.checkScrShowOSD.CheckedChanged += new System.EventHandler(this.checkScrShowOSD_CheckedChanged);
@@ -556,7 +578,7 @@ namespace AudioSwitch.Forms
             this.comboScrollKey.Location = new System.Drawing.Point(85, 21);
             this.comboScrollKey.Name = "comboScrollKey";
             this.comboScrollKey.Size = new System.Drawing.Size(161, 21);
-            this.comboScrollKey.TabIndex = 21;
+            this.comboScrollKey.TabIndex = 1;
             this.comboScrollKey.SelectedIndexChanged += new System.EventHandler(this.comboScrollKey_SelectedIndexChanged);
             // 
             // labelVolScroll
@@ -578,7 +600,7 @@ namespace AudioSwitch.Forms
             this.groupBox1.Location = new System.Drawing.Point(9, 9);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(510, 120);
-            this.groupBox1.TabIndex = 18;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "OSD Settings";
             // 
@@ -592,7 +614,7 @@ namespace AudioSwitch.Forms
             this.groupBox3.Location = new System.Drawing.Point(8, 16);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(273, 99);
-            this.groupBox3.TabIndex = 8;
+            this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Skin";
             // 
@@ -636,7 +658,7 @@ namespace AudioSwitch.Forms
             this.comboOSDSkin.Location = new System.Drawing.Point(18, 22);
             this.comboOSDSkin.Name = "comboOSDSkin";
             this.comboOSDSkin.Size = new System.Drawing.Size(205, 21);
-            this.comboOSDSkin.TabIndex = 12;
+            this.comboOSDSkin.TabIndex = 0;
             this.comboOSDSkin.SelectedIndexChanged += new System.EventHandler(this.comboOSDSkin_SelectedIndexChanged);
             // 
             // label1
@@ -664,7 +686,7 @@ namespace AudioSwitch.Forms
             -2147483648});
             this.numTimeout.Name = "numTimeout";
             this.numTimeout.Size = new System.Drawing.Size(56, 20);
-            this.numTimeout.TabIndex = 10;
+            this.numTimeout.TabIndex = 2;
             this.numTimeout.Value = new decimal(new int[] {
             2000,
             0,
@@ -679,7 +701,7 @@ namespace AudioSwitch.Forms
             this.trackTransparency.Maximum = 255;
             this.trackTransparency.Name = "trackTransparency";
             this.trackTransparency.Size = new System.Drawing.Size(160, 45);
-            this.trackTransparency.TabIndex = 14;
+            this.trackTransparency.TabIndex = 1;
             this.trackTransparency.Value = 255;
             this.trackTransparency.Scroll += new System.EventHandler(this.trackTransparency_ValueChanged);
             // 
@@ -846,5 +868,7 @@ namespace AudioSwitch.Forms
         private System.Windows.Forms.RadioButton radioQuickSwitch;
         private System.Windows.Forms.RadioButton radioAlwaysMenu;
         private System.Windows.Forms.CheckBox checkQSShowOSD;
+        private System.Windows.Forms.CheckBox checkCustomName;
+        private System.Windows.Forms.TextBox textCustomName;
     }
 }

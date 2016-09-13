@@ -207,6 +207,9 @@ namespace AudioSwitch.Forms
             trackBrightness.Value = 0;
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
             checkHideDevice.Checked = false;
+            checkCustomName.Checked = false;
+            textCustomName.Enabled = false;
+            textCustomName.Clear();
 
             listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font, FontStyle.Regular);
 
@@ -230,6 +233,8 @@ namespace AudioSwitch.Forms
                 devSettings.Hue = trackHue.Value;
                 devSettings.Saturation = trackSaturation.Value;
                 devSettings.HideFromList = checkHideDevice.Checked;
+                devSettings.UseCustomName = checkCustomName.Checked;
+                devSettings.CustomName = textCustomName.Text;
             }
             else
             {
@@ -239,7 +244,9 @@ namespace AudioSwitch.Forms
                         HideFromList = checkHideDevice.Checked,
                         Brightness = trackBrightness.Value,
                         Hue = trackHue.Value,
-                        Saturation = trackSaturation.Value
+                        Saturation = trackSaturation.Value,
+                        UseCustomName = checkCustomName.Checked,
+                        CustomName = textCustomName.Text
                     };
                 Program.settings.Device.Add(devSettings);
             }
@@ -257,6 +264,9 @@ namespace AudioSwitch.Forms
                 trackSaturation.Value = 0;
                 pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
                 checkHideDevice.Checked = false;
+                checkCustomName.Checked = false;
+                textCustomName.Enabled = false;
+                textCustomName.Clear();
                 return;
             }
 
@@ -319,6 +329,11 @@ namespace AudioSwitch.Forms
         private void radioQuickSwitch_CheckedChanged(object sender, EventArgs e)
         {
             checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
+        }
+
+        private void checkCustomName_CheckedChanged(object sender, EventArgs e)
+        {
+            textCustomName.Enabled = checkCustomName.Checked;
         }
     }
 }

@@ -124,6 +124,12 @@ namespace AudioSwitch.Classes
 
             [XmlAttribute]
             public int Brightness;
+
+            [XmlAttribute]
+            public bool UseCustomName;
+
+            [XmlAttribute]
+            public string CustomName;
         }
 
         internal void Save()
