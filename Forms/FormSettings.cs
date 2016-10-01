@@ -277,6 +277,9 @@ namespace AudioSwitch.Forms
             pictureModded.Image?.Dispose();
             pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value / 100f);
             checkHideDevice.Checked = devSettings.HideFromList;
+
+            checkCustomName.Checked = devSettings.UseCustomName;
+            textCustomName.Text = devSettings.CustomName;
         }
 
         private void comboOSDSkin_SelectedIndexChanged(object sender, EventArgs e)
