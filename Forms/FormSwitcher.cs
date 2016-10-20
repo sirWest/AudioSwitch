@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Xml;
 using Windows.UI.Notifications;
 using AudioSwitch.Classes;
 using AudioSwitch.CoreAudioApi;

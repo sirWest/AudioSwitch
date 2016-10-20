@@ -11,6 +11,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,7 +24,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -51,6 +51,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>AudioSwitch</RootNamespace>
@@ -246,12 +247,15 @@
     <Reference Include="UIAutomationClient" />
     <Reference Include="Windows.Data">
       <HintPath>..\..\..\..\..\WINDOWS\System32\WinMetadata\Windows.Data.winmd</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Windows.Foundation">
       <HintPath>..\..\..\..\..\WINDOWS\System32\WinMetadata\Windows.Foundation.winmd</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Windows.UI">
       <HintPath>..\..\..\..\..\WINDOWS\System32\WinMetadata\Windows.UI.winmd</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

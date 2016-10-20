@@ -66,38 +66,39 @@ namespace AudioSwitch.Forms
             // 
             // trayMenu
             // 
+            this.trayMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.trayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsToolStripMenuItem,
             this.audioDevicesToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.trayMenu.Name = "trayMenu";
-            this.trayMenu.Size = new System.Drawing.Size(150, 76);
+            this.trayMenu.Size = new System.Drawing.Size(174, 82);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
             this.settingsToolStripMenuItem.Text = "&Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // audioDevicesToolStripMenuItem
             // 
             this.audioDevicesToolStripMenuItem.Name = "audioDevicesToolStripMenuItem";
-            this.audioDevicesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.audioDevicesToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
             this.audioDevicesToolStripMenuItem.Text = "Audio Devices";
             this.audioDevicesToolStripMenuItem.Click += new System.EventHandler(this.audioDevicesToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(170, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(173, 24);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -175,7 +176,8 @@ namespace AudioSwitch.Forms
             // 
             // FormSwitcher
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(220, 234);
             this.ControlBox = false;
             this.Controls.Add(this.pictureShadow);

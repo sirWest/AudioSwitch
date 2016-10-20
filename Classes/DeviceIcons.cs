@@ -16,8 +16,6 @@ namespace AudioSwitch.Classes
         internal static ImageList NormalIcons;
         internal static ImageList DefaultIcons;
 
-        private static readonly bool is64bit = Environment.Is64BitOperatingSystem;
-        
         internal static void InitImageLists(float dpifactor)
         {
             var size = new Size((int)(32 * dpifactor), (int)(32 * dpifactor));
@@ -55,25 +53,47 @@ namespace AudioSwitch.Classes
 
         internal static Icon GetIcon(string iconPath)
         {
-            var path = is64bit ? iconPath.ToLower().Replace("\\system32\\", "\\sysnative\\") : iconPath;
-            path = Environment.ExpandEnvironmentVariables(path);
-            var iconAdr = path.Split(',');
+            var path32 = iconPath;
+            var path64 = iconPath.ToLower().Replace("\\system32\\", "\\sysnative\\");
+
+            path32 = Environment.ExpandEnvironmentVariables(path32);
+            path64 = Environment.ExpandEnvironmentVariables(path64);
+
+            var iconAdr32 = path32.Split(',');
+            var iconAdr64 = path64.Split(',');
+            var indx = "";
+
+            string finalPath;
             Icon icon;
-            if (File.Exists(iconAdr[0]))
+
+            if (File.Exists(iconAdr32[0]))
             {
-                if (iconAdr.Length > 1)
-                {
-                    var hIconEx = new IntPtr[1];
-                    ExtractIconEx(iconAdr[0], int.Parse(iconAdr[1]), hIconEx, null, 1);
-                    icon = Icon.FromHandle(hIconEx[0]);
-                }
-                else
-                    icon = new Icon(iconAdr[0], NormalIcons.ImageSize.Width, NormalIcons.ImageSize.Height);
+                finalPath = iconAdr32[0];
+
+                if (iconAdr32.Length > 1)
+                    indx = iconAdr32[1];
+            }
+            else if (File.Exists(iconAdr64[0]))
+            {
+                finalPath = iconAdr64[0];
+
+                if (iconAdr64.Length > 1)
+                    indx = iconAdr64[1];
             }
             else
             {
-                icon = SystemIcons.Warning;
+                return SystemIcons.Warning;
             }
+
+            if (indx != "")
+            {
+                var hIconEx = new IntPtr[1];
+                ExtractIconEx(finalPath, int.Parse(indx), hIconEx, null, 1);
+                icon = Icon.FromHandle(hIconEx[0]);
+            }
+            else
+                icon = new Icon(finalPath, NormalIcons.ImageSize.Width, NormalIcons.ImageSize.Height);
+
             return icon;
         }
 
@@ -127,20 +147,20 @@ namespace AudioSwitch.Classes
 
             if (0.5 < brightness)
             {
-                fMax = brightness - (brightness * saturation) + saturation;
-                fMin = brightness + (brightness * saturation) - saturation;
+                fMax = brightness - brightness * saturation + saturation;
+                fMin = brightness + brightness * saturation - saturation;
             }
             else
             {
-                fMax = brightness + (brightness * saturation);
-                fMin = brightness - (brightness * saturation);
+                fMax = brightness + brightness * saturation;
+                fMin = brightness - brightness * saturation;
             }
 
             var iSextant = (int)Math.Floor(hue / 60f);
             if (300f <= hue)
                 hue -= 360f;
             hue /= 60f;
-            hue -= 2f * (float)Math.Floor(((iSextant + 1f) % 6f) / 2f);
+            hue -= 2f * (float)Math.Floor((iSextant + 1f) % 6f / 2f);
 
             if (0 == iSextant % 2)
                 fMid = hue * (fMax - fMin) + fMin;

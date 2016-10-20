@@ -336,15 +336,14 @@ namespace AudioSwitch.Forms
             checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
         }
 
-<<<<<<< HEAD
         private void checkCustomOSD_CheckedChanged(object sender, EventArgs e)
         {
             groupOSD.Enabled = checkCustomOSD.Checked;
-=======
+        }
+
         private void checkCustomName_CheckedChanged(object sender, EventArgs e)
         {
             textCustomName.Enabled = checkCustomName.Checked;
->>>>>>> origin/master
         }
     }
 }

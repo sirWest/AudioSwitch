@@ -15,6 +15,9 @@ namespace AudioSwitch.Classes
         internal static string Root;
         internal static readonly string AppDataRoot = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\AudioSwitch\\";
 
+        [DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
+
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
 
@@ -202,6 +205,9 @@ namespace AudioSwitch.Classes
 
                 if (mutex.WaitOne(0, false))
                 {
+                    if (Environment.OSVersion.Version.Major >= 6)
+                        SetProcessDPIAware();
+
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     frmOSD = new FormOSD();
