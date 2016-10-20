@@ -209,6 +209,9 @@ namespace AudioSwitch.Forms
             trackBrightness.Value = 0;
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
             checkHideDevice.Checked = false;
+            checkCustomName.Checked = false;
+            textCustomName.Enabled = false;
+            textCustomName.Clear();
 
             listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font, FontStyle.Regular);
 
@@ -232,6 +235,8 @@ namespace AudioSwitch.Forms
                 devSettings.Hue = trackHue.Value;
                 devSettings.Saturation = trackSaturation.Value;
                 devSettings.HideFromList = checkHideDevice.Checked;
+                devSettings.UseCustomName = checkCustomName.Checked;
+                devSettings.CustomName = textCustomName.Text;
             }
             else
             {
@@ -241,7 +246,9 @@ namespace AudioSwitch.Forms
                         HideFromList = checkHideDevice.Checked,
                         Brightness = trackBrightness.Value,
                         Hue = trackHue.Value,
-                        Saturation = trackSaturation.Value
+                        Saturation = trackSaturation.Value,
+                        UseCustomName = checkCustomName.Checked,
+                        CustomName = textCustomName.Text
                     };
                 Program.settings.Device.Add(devSettings);
             }
@@ -259,6 +266,9 @@ namespace AudioSwitch.Forms
                 trackSaturation.Value = 0;
                 pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
                 checkHideDevice.Checked = false;
+                checkCustomName.Checked = false;
+                textCustomName.Enabled = false;
+                textCustomName.Clear();
                 return;
             }
 
@@ -269,6 +279,9 @@ namespace AudioSwitch.Forms
             pictureModded.Image?.Dispose();
             pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value / 100f);
             checkHideDevice.Checked = devSettings.HideFromList;
+
+            checkCustomName.Checked = devSettings.UseCustomName;
+            textCustomName.Text = devSettings.CustomName;
         }
 
         private void comboOSDSkin_SelectedIndexChanged(object sender, EventArgs e)
@@ -323,9 +336,15 @@ namespace AudioSwitch.Forms
             checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
         }
 
+<<<<<<< HEAD
         private void checkCustomOSD_CheckedChanged(object sender, EventArgs e)
         {
             groupOSD.Enabled = checkCustomOSD.Checked;
+=======
+        private void checkCustomName_CheckedChanged(object sender, EventArgs e)
+        {
+            textCustomName.Enabled = checkCustomName.Checked;
+>>>>>>> origin/master
         }
     }
 }
