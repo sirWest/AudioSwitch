@@ -323,7 +323,7 @@ namespace AudioSwitch.Forms
 
         private void tabDevices_Enter(object sender, EventArgs e)
         {
-            labelTips.Text = "Select a device and change the tray icon appearance. Don't forget to save!";
+            labelTips.Text = "Select a device and change it's icon appearance. Don't forget to save!";
         }
 
         private void tabHotkeys_Enter(object sender, EventArgs e)
