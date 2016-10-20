@@ -58,7 +58,7 @@ namespace AudioSwitch.Classes
             var path = is64bit ? iconPath.ToLower().Replace("\\system32\\", "\\sysnative\\") : iconPath;
             path = Environment.ExpandEnvironmentVariables(path);
             var iconAdr = path.Split(',');
-            Icon icon = null;
+            Icon icon;
             if (File.Exists(iconAdr[0]))
             {
                 if (iconAdr.Length > 1)

@@ -54,6 +54,9 @@ namespace AudioSwitch.Classes
         [DllImport("user32.dll", ExactSpelling = true)]
         public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
+        [DllImport("user32.dll")]
+        internal static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
         public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
 

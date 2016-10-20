@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Xml;
+using Windows.UI.Notifications;
 using AudioSwitch.Classes;
 using AudioSwitch.CoreAudioApi;
 using AudioSwitch.Properties;
@@ -96,7 +100,9 @@ namespace AudioSwitch.Forms
             SetTrayIcons();
 
             VolBar.VolumeMuteChanged += IconChanged;
-            VolBar.RegisterDevice(RenderType);
+            if (listDevices.Items.Count > 0)
+                VolBar.RegisterDevice(RenderType);
+
             EndPoints.NotifyClient.DefaultChanged += DefaultChanged;
             EndPoints.NotifyClient.DeviceAdded += DeviceAdded;
             EndPoints.NotifyClient.DeviceRemoved += DeviceRemoved;
@@ -281,25 +287,49 @@ namespace AudioSwitch.Forms
             var devName = previous ? EndPoints.SetPrevDefault(rType) : EndPoints.SetNextDefault(rType);
 
             if (showOSD)
-                Program.frmOSD.ChangeDevice(devName);
+            {
+                if (Program.settings.UseCustomOSD)
+                    Program.frmOSD.ChangeDevice(devName);
+                else
+                    ShowToast(devName);
+            }
         }
 
         private void ChangeDeviceState(EDataFlow rType, bool toggleMute, int volChange, bool showOSD)
         {
             var MMDevice = EndPoints.GetDefaultMMDevice(rType);
+
             if (toggleMute)
             {
-                var mute = MMDevice.AudioEndpointVolume.Mute = !MMDevice.AudioEndpointVolume.Mute;
-                if (showOSD)
-                    Program.frmOSD.ChangeMute(mute, MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar);
+                if (Program.settings.UseCustomOSD)
+                {
+                    var mute = MMDevice.AudioEndpointVolume.Mute = !MMDevice.AudioEndpointVolume.Mute;
+
+                    if (showOSD)
+                        Program.frmOSD.ChangeMute(mute, MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar);
+                }
+                else if (showOSD)
+                    Win32.keybd_event((byte) Keys.VolumeMute, 0, 0, 0);
+                else
+                    MMDevice.AudioEndpointVolume.Mute = !MMDevice.AudioEndpointVolume.Mute;
             }
             else if (volChange != 0)
             {
-                var vol = CalcVol(MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar, volChange);
-                MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar = vol;
+                if (Program.settings.UseCustomOSD)
+                {
+                    var vol = CalcVol(MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar, volChange);
+                    MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar = vol;
 
-                if (showOSD)
-                    Program.frmOSD.ChangeVolume(vol);
+                    if (showOSD)
+                        Program.frmOSD.ChangeVolume(vol);
+                }
+                else if (showOSD)
+                    Win32.keybd_event((byte) (volChange < 0 ? Keys.VolumeDown : Keys.VolumeUp), 0, 0, 0);
+                else
+                {
+                    var vol = CalcVol(MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar, volChange);
+                    MMDevice.AudioEndpointVolume.MasterVolumeLevelScalar = vol;
+                }
             }
         }
 
@@ -314,9 +344,15 @@ namespace AudioSwitch.Forms
 
         private bool ScrollTheVolume(int delta)
         {
-            VolBar.ChangeVolume(CalcVol(VolBar.Value, delta));
-            if (Program.settings.VolumeScroll.ShowOSD)
-                Program.frmOSD.ChangeVolume(VolBar.Value);
+            if (Program.settings.UseCustomOSD)
+            {
+                VolBar.ChangeVolume(CalcVol(VolBar.Value, delta));
+                if (Program.settings.VolumeScroll.ShowOSD)
+                    Program.frmOSD.ChangeVolume(VolBar.Value);
+            }
+            else
+                Win32.keybd_event((byte)(delta < 0 ? Keys.VolumeDown : Keys.VolumeUp), 0, 0, 0);
+
             return false;
         }
         
@@ -402,6 +438,18 @@ namespace AudioSwitch.Forms
                 listDevices.Focus();
         }
 
+        private static void ShowToast(string message)
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+            
+            var stringElements = toastXml.GetElementsByTagName("text");
+            stringElements[0].AppendChild(toastXml.CreateTextNode(message));
+
+            var toast = new ToastNotification(toastXml) {ExpirationTime = DateTimeOffset.Now.AddSeconds(2)};
+            
+            ToastNotificationManager.CreateToastNotifier("AudioSwitch").Show(toast);
+        }
+
         private void RefreshDevices(EDataFlow renderType)
         {
             listDevices.Clear();
@@ -463,7 +511,8 @@ namespace AudioSwitch.Forms
                 var dev = listDevices.SelectedItems[0];
                 return x.DeviceID == dev.Tag.ToString();
             });
-            if (devSettings == null ||
+            if (listDevices.SelectedItems.Count == 0 ||
+                devSettings == null ||
                 (devSettings.Hue == 0 &&
                  devSettings.Saturation == 0 &&
                  devSettings.Brightness == 0))
