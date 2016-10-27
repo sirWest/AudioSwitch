@@ -35,7 +35,7 @@ Name: "{userstartup}\AudioSwitch"; Filename: "{app}\AudioSwitch.exe"; Tasks: sta
 
 [Run]
 Filename: "{app}\AudioSwitch.exe"; Description: "Run AudioSwitch"; Flags: runasoriginaluser postinstall nowait skipifsilent
-Filename: "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3X7L4G8Y9CUUG"; Flags: shellexec runasoriginaluser postinstall; Description: "Go and donate a small amount :)"
+Filename: "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3X7L4G8Y9CUUG"; Flags: shellexec runasoriginaluser postinstall skipifsilent; Description: "Go and donate a small amount :)"
 
 [Code]
 function IsDotNetDetected(version: string; service: cardinal): boolean;
