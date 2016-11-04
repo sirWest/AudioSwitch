@@ -30,6 +30,8 @@ namespace AudioSwitch.Classes
                     Transparency = 255
                 },
 
+                ShowBothDataFlow = false,
+
                 VolumeScroll = new CVolScroll
                 {
                     Key = VolumeScrollKey.LWin,
@@ -52,6 +54,9 @@ namespace AudioSwitch.Classes
 
         [XmlElement]
         public bool ColorVU;
+
+        [XmlElement]
+        public bool ShowBothDataFlow;
 
         [XmlElement]
         public bool ShowHardwareName;

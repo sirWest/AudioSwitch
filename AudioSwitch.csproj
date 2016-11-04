@@ -98,6 +98,7 @@
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
+    <Reference Include="System.RunTime" />
     <Reference Include="System.Drawing" />
     <Compile Include="Classes\EndPoints.cs" />
     <Compile Include="Classes\OSDskin.cs" />
@@ -286,6 +287,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Resources\shadow.png" />
     <Content Include="Skins\Default\back.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

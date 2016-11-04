@@ -453,11 +453,28 @@ namespace AudioSwitch.Forms
             DeviceIcons.Clear();
 
             listDevices.BeginUpdate();
+            
+            if (Program.settings.ShowBothDataFlow)
+                renderType = EDataFlow.eAll;
 
             var pDevices = EndPoints.DeviceEnumerator.EnumerateAudioEndPoints(renderType, EDeviceState.Active);
+            
+
             if (pDevices.Count > 0)
             {
-                var defaultDev = EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(renderType, ERole.eMultimedia).ID;
+                var defaultDevcies = new List<string>();
+
+                if (renderType == EDataFlow.eAll)
+                {
+                    defaultDevcies.Add(EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(EDataFlow.eRender, ERole.eMultimedia).ID);
+                    defaultDevcies.Add(EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(EDataFlow.eCapture, ERole.eMultimedia).ID);
+                }
+                else
+                {
+                    defaultDevcies.Add(EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(renderType, ERole.eMultimedia).ID);
+                }
+
+                
                 var devCount = pDevices.Count;
 
                 for (var i = 0; i < devCount; i++)
@@ -473,13 +490,13 @@ namespace AudioSwitch.Forms
                         {
                             ImageIndex = i,
                             Text = (devSettings != null && devSettings.UseCustomName) ? devSettings.CustomName : device.FriendlyName,
-                            Selected = devID == defaultDev,
+                            Selected = defaultDevcies.Contains(devID),
                             Tag = devID,
                         };
                         
                         listDevices.Items.Add(item);
 
-                        if (devID == defaultDev)
+                        if (defaultDevcies.Contains(devID))
                         {
                             SetDeviceIcon(i, true);
                             SetTrayIcons();
@@ -563,6 +580,16 @@ namespace AudioSwitch.Forms
         private void audioDevicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("control", "mmsys.cpl sounds");
+        }
+
+        private void listDevices_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void VolBar_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
