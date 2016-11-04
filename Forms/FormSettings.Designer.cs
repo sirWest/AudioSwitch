@@ -31,9 +31,14 @@ namespace AudioSwitch.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabSettings = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.checkVolScroll = new System.Windows.Forms.CheckBox();
+            this.comboScrollKey = new System.Windows.Forms.ComboBox();
+            this.labelVolScroll = new System.Windows.Forms.Label();
+            this.checkScrShowOSD = new System.Windows.Forms.CheckBox();
             this.checkCustomOSD = new System.Windows.Forms.CheckBox();
             this.groupOSD = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -56,18 +61,12 @@ namespace AudioSwitch.Forms
             this.checkColorVU = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkDefaultMultiAndComm = new System.Windows.Forms.CheckBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.comboScrollKey = new System.Windows.Forms.ComboBox();
-            this.checkVolScroll = new System.Windows.Forms.CheckBox();
-            this.checkScrShowOSD = new System.Windows.Forms.CheckBox();
-            this.labelVolScroll = new System.Windows.Forms.Label();
             this.tabDevices = new System.Windows.Forms.TabPage();
-            this.listDevices = new AudioSwitch.Controls.CustomListView();
             this.label2 = new System.Windows.Forms.Label();
             this.groupDevice = new System.Windows.Forms.GroupBox();
+            this.checkCustomName = new System.Windows.Forms.CheckBox();
             this.pictureModded = new System.Windows.Forms.PictureBox();
             this.textCustomName = new System.Windows.Forms.TextBox();
-            this.checkCustomName = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.checkHideDevice = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -90,14 +89,16 @@ namespace AudioSwitch.Forms
             this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.labelTips = new System.Windows.Forms.Label();
             this.buttonClose = new System.Windows.Forms.Button();
+            this.listDevices = new AudioSwitch.Controls.CustomListView();
+            this.checkShowBoth = new System.Windows.Forms.CheckBox();
             this.tabSettings.SuspendLayout();
             this.tabGeneral.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupOSD.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackTransparency)).BeginInit();
             this.groupBox2.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.tabDevices.SuspendLayout();
             this.groupDevice.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureModded)).BeginInit();
@@ -118,11 +119,12 @@ namespace AudioSwitch.Forms
             this.tabSettings.Margin = new System.Windows.Forms.Padding(2);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.SelectedIndex = 0;
-            this.tabSettings.Size = new System.Drawing.Size(536, 323);
+            this.tabSettings.Size = new System.Drawing.Size(536, 342);
             this.tabSettings.TabIndex = 0;
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.buttonClose);
             this.tabGeneral.Controls.Add(this.groupBox4);
             this.tabGeneral.Controls.Add(this.checkCustomOSD);
             this.tabGeneral.Controls.Add(this.groupOSD);
@@ -130,12 +132,84 @@ namespace AudioSwitch.Forms
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Margin = new System.Windows.Forms.Padding(2);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Size = new System.Drawing.Size(528, 297);
+            this.tabGeneral.Size = new System.Drawing.Size(528, 316);
             this.tabGeneral.TabIndex = 2;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
             this.tabGeneral.Enter += new System.EventHandler(this.tabOSD_Enter);
             this.tabGeneral.Leave += new System.EventHandler(this.tabOSD_Leave);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.checkVolScroll);
+            this.groupBox4.Controls.Add(this.comboScrollKey);
+            this.groupBox4.Controls.Add(this.labelVolScroll);
+            this.groupBox4.Controls.Add(this.checkScrShowOSD);
+            this.groupBox4.Location = new System.Drawing.Point(355, 6);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox4.Size = new System.Drawing.Size(169, 115);
+            this.groupBox4.TabIndex = 1;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Volume Scrolling";
+            // 
+            // checkVolScroll
+            // 
+            this.checkVolScroll.Location = new System.Drawing.Point(11, 19);
+            this.checkVolScroll.Margin = new System.Windows.Forms.Padding(2);
+            this.checkVolScroll.Name = "checkVolScroll";
+            this.checkVolScroll.Size = new System.Drawing.Size(61, 21);
+            this.checkVolScroll.TabIndex = 0;
+            this.checkVolScroll.Text = "Enabled";
+            this.checkVolScroll.UseVisualStyleBackColor = true;
+            this.checkVolScroll.CheckedChanged += new System.EventHandler(this.checkVolScroll_CheckedChanged);
+            // 
+            // comboScrollKey
+            // 
+            this.comboScrollKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboScrollKey.FormattingEnabled = true;
+            this.comboScrollKey.Items.AddRange(new object[] {
+            "LeftMouseButton",
+            "RightMouseButton",
+            "Control",
+            "Alt",
+            "LWin",
+            "RWin",
+            "Shift",
+            "LeftMouseButton",
+            "RightMouseButton",
+            "Control",
+            "Alt",
+            "LWin",
+            "RWin",
+            "Shift"});
+            this.comboScrollKey.Location = new System.Drawing.Point(11, 42);
+            this.comboScrollKey.Margin = new System.Windows.Forms.Padding(2);
+            this.comboScrollKey.Name = "comboScrollKey";
+            this.comboScrollKey.Size = new System.Drawing.Size(149, 21);
+            this.comboScrollKey.TabIndex = 1;
+            this.comboScrollKey.SelectedIndexChanged += new System.EventHandler(this.comboScrollKey_SelectedIndexChanged);
+            // 
+            // labelVolScroll
+            // 
+            this.labelVolScroll.Location = new System.Drawing.Point(202, 20);
+            this.labelVolScroll.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVolScroll.Name = "labelVolScroll";
+            this.labelVolScroll.Size = new System.Drawing.Size(100, 19);
+            this.labelVolScroll.TabIndex = 23;
+            this.labelVolScroll.Text = " + Mouse Wheel";
+            // 
+            // checkScrShowOSD
+            // 
+            this.checkScrShowOSD.Location = new System.Drawing.Point(11, 69);
+            this.checkScrShowOSD.Margin = new System.Windows.Forms.Padding(2);
+            this.checkScrShowOSD.Name = "checkScrShowOSD";
+            this.checkScrShowOSD.Size = new System.Drawing.Size(90, 20);
+            this.checkScrShowOSD.TabIndex = 2;
+            this.checkScrShowOSD.Text = "Show OSD";
+            this.checkScrShowOSD.UseVisualStyleBackColor = true;
+            this.checkScrShowOSD.CheckedChanged += new System.EventHandler(this.checkScrShowOSD_CheckedChanged);
             // 
             // checkCustomOSD
             // 
@@ -301,6 +375,7 @@ namespace AudioSwitch.Forms
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.checkShowBoth);
             this.groupBox2.Controls.Add(this.comboDefMode);
             this.groupBox2.Controls.Add(this.checkQSShowOSD);
             this.groupBox2.Controls.Add(this.radioQuickSwitch);
@@ -314,7 +389,7 @@ namespace AudioSwitch.Forms
             this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox2.Size = new System.Drawing.Size(517, 126);
+            this.groupBox2.Size = new System.Drawing.Size(517, 150);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Behavior";
@@ -328,6 +403,7 @@ namespace AudioSwitch.Forms
             this.comboDefMode.Name = "comboDefMode";
             this.comboDefMode.Size = new System.Drawing.Size(120, 21);
             this.comboDefMode.TabIndex = 0;
+            this.comboDefMode.SelectedIndexChanged += new System.EventHandler(this.comboDefMode_SelectedIndexChanged);
             // 
             // checkQSShowOSD
             // 
@@ -414,78 +490,6 @@ namespace AudioSwitch.Forms
             this.checkDefaultMultiAndComm.UseVisualStyleBackColor = true;
             this.checkDefaultMultiAndComm.CheckedChanged += new System.EventHandler(this.checkDefaultMultiAndComm_CheckedChanged);
             // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.checkVolScroll);
-            this.groupBox4.Controls.Add(this.comboScrollKey);
-            this.groupBox4.Controls.Add(this.labelVolScroll);
-            this.groupBox4.Controls.Add(this.checkScrShowOSD);
-            this.groupBox4.Location = new System.Drawing.Point(355, 6);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox4.Size = new System.Drawing.Size(169, 115);
-            this.groupBox4.TabIndex = 1;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Volume Scrolling";
-            // 
-            // comboScrollKey
-            // 
-            this.comboScrollKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboScrollKey.FormattingEnabled = true;
-            this.comboScrollKey.Items.AddRange(new object[] {
-            "LeftMouseButton",
-            "RightMouseButton",
-            "Control",
-            "Alt",
-            "LWin",
-            "RWin",
-            "Shift",
-            "LeftMouseButton",
-            "RightMouseButton",
-            "Control",
-            "Alt",
-            "LWin",
-            "RWin",
-            "Shift"});
-            this.comboScrollKey.Location = new System.Drawing.Point(11, 42);
-            this.comboScrollKey.Margin = new System.Windows.Forms.Padding(2);
-            this.comboScrollKey.Name = "comboScrollKey";
-            this.comboScrollKey.Size = new System.Drawing.Size(149, 21);
-            this.comboScrollKey.TabIndex = 1;
-            this.comboScrollKey.SelectedIndexChanged += new System.EventHandler(this.comboScrollKey_SelectedIndexChanged);
-            // 
-            // checkVolScroll
-            // 
-            this.checkVolScroll.Location = new System.Drawing.Point(11, 19);
-            this.checkVolScroll.Margin = new System.Windows.Forms.Padding(2);
-            this.checkVolScroll.Name = "checkVolScroll";
-            this.checkVolScroll.Size = new System.Drawing.Size(61, 21);
-            this.checkVolScroll.TabIndex = 0;
-            this.checkVolScroll.Text = "Enabled";
-            this.checkVolScroll.UseVisualStyleBackColor = true;
-            this.checkVolScroll.CheckedChanged += new System.EventHandler(this.checkVolScroll_CheckedChanged);
-            // 
-            // checkScrShowOSD
-            // 
-            this.checkScrShowOSD.Location = new System.Drawing.Point(11, 69);
-            this.checkScrShowOSD.Margin = new System.Windows.Forms.Padding(2);
-            this.checkScrShowOSD.Name = "checkScrShowOSD";
-            this.checkScrShowOSD.Size = new System.Drawing.Size(90, 20);
-            this.checkScrShowOSD.TabIndex = 2;
-            this.checkScrShowOSD.Text = "Show OSD";
-            this.checkScrShowOSD.UseVisualStyleBackColor = true;
-            this.checkScrShowOSD.CheckedChanged += new System.EventHandler(this.checkScrShowOSD_CheckedChanged);
-            // 
-            // labelVolScroll
-            // 
-            this.labelVolScroll.Location = new System.Drawing.Point(202, 20);
-            this.labelVolScroll.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.labelVolScroll.Name = "labelVolScroll";
-            this.labelVolScroll.Size = new System.Drawing.Size(100, 19);
-            this.labelVolScroll.TabIndex = 23;
-            this.labelVolScroll.Text = " + Mouse Wheel";
-            // 
             // tabDevices
             // 
             this.tabDevices.Controls.Add(this.listDevices);
@@ -500,25 +504,6 @@ namespace AudioSwitch.Forms
             this.tabDevices.Text = "Devices";
             this.tabDevices.UseVisualStyleBackColor = true;
             this.tabDevices.Enter += new System.EventHandler(this.tabDevices_Enter);
-            // 
-            // listDevices
-            // 
-            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
-            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listDevices.FullRowSelect = true;
-            this.listDevices.HideSelection = false;
-            this.listDevices.Location = new System.Drawing.Point(5, 20);
-            this.listDevices.Margin = new System.Windows.Forms.Padding(2);
-            this.listDevices.MultiSelect = false;
-            this.listDevices.Name = "listDevices";
-            this.listDevices.Size = new System.Drawing.Size(194, 275);
-            this.listDevices.TabIndex = 1;
-            this.listDevices.TileSize = new System.Drawing.Size(238, 40);
-            this.listDevices.UseCompatibleStateImageBehavior = false;
-            this.listDevices.View = System.Windows.Forms.View.Tile;
-            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -553,6 +538,17 @@ namespace AudioSwitch.Forms
             this.groupDevice.TabStop = false;
             this.groupDevice.Text = "Selected Device Settings";
             // 
+            // checkCustomName
+            // 
+            this.checkCustomName.Location = new System.Drawing.Point(14, 109);
+            this.checkCustomName.Margin = new System.Windows.Forms.Padding(2);
+            this.checkCustomName.Name = "checkCustomName";
+            this.checkCustomName.Size = new System.Drawing.Size(149, 18);
+            this.checkCustomName.TabIndex = 3;
+            this.checkCustomName.Text = "Customize display name";
+            this.checkCustomName.UseVisualStyleBackColor = true;
+            this.checkCustomName.CheckedChanged += new System.EventHandler(this.checkCustomName_CheckedChanged);
+            // 
             // pictureModded
             // 
             this.pictureModded.Location = new System.Drawing.Point(288, 15);
@@ -571,17 +567,6 @@ namespace AudioSwitch.Forms
             this.textCustomName.Name = "textCustomName";
             this.textCustomName.Size = new System.Drawing.Size(190, 20);
             this.textCustomName.TabIndex = 4;
-            // 
-            // checkCustomName
-            // 
-            this.checkCustomName.Location = new System.Drawing.Point(14, 109);
-            this.checkCustomName.Margin = new System.Windows.Forms.Padding(2);
-            this.checkCustomName.Name = "checkCustomName";
-            this.checkCustomName.Size = new System.Drawing.Size(149, 18);
-            this.checkCustomName.TabIndex = 3;
-            this.checkCustomName.Text = "Customize display name";
-            this.checkCustomName.UseVisualStyleBackColor = true;
-            this.checkCustomName.CheckedChanged += new System.EventHandler(this.checkCustomName_CheckedChanged);
             // 
             // label7
             // 
@@ -726,12 +711,12 @@ namespace AudioSwitch.Forms
             this.gridHotkeys.Name = "gridHotkeys";
             this.gridHotkeys.RowHeadersWidth = 25;
             this.gridHotkeys.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridHotkeys.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.gridHotkeys.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHotkeys.Size = new System.Drawing.Size(520, 246);
@@ -809,7 +794,7 @@ namespace AudioSwitch.Forms
             // 
             // buttonClose
             // 
-            this.buttonClose.Location = new System.Drawing.Point(371, 285);
+            this.buttonClose.Location = new System.Drawing.Point(364, 279);
             this.buttonClose.Margin = new System.Windows.Forms.Padding(2);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(160, 32);
@@ -817,12 +802,40 @@ namespace AudioSwitch.Forms
             this.buttonClose.Text = "Close";
             this.buttonClose.UseVisualStyleBackColor = true;
             // 
+            // listDevices
+            // 
+            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
+            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listDevices.FullRowSelect = true;
+            this.listDevices.HideSelection = false;
+            this.listDevices.Location = new System.Drawing.Point(5, 20);
+            this.listDevices.Margin = new System.Windows.Forms.Padding(2);
+            this.listDevices.MultiSelect = false;
+            this.listDevices.Name = "listDevices";
+            this.listDevices.Size = new System.Drawing.Size(194, 275);
+            this.listDevices.TabIndex = 1;
+            this.listDevices.TileSize = new System.Drawing.Size(238, 40);
+            this.listDevices.UseCompatibleStateImageBehavior = false;
+            this.listDevices.View = System.Windows.Forms.View.Tile;
+            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
+            // 
+            // checkShowBoth
+            // 
+            this.checkShowBoth.Location = new System.Drawing.Point(12, 124);
+            this.checkShowBoth.Margin = new System.Windows.Forms.Padding(2);
+            this.checkShowBoth.Name = "checkShowBoth";
+            this.checkShowBoth.Size = new System.Drawing.Size(164, 17);
+            this.checkShowBoth.TabIndex = 8;
+            this.checkShowBoth.Text = "Show both Input and Output";
+            this.checkShowBoth.UseVisualStyleBackColor = true;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(537, 326);
-            this.Controls.Add(this.buttonClose);
+            this.ClientSize = new System.Drawing.Size(537, 347);
             this.Controls.Add(this.labelTips);
             this.Controls.Add(this.tabSettings);
             this.DoubleBuffered = true;
@@ -841,6 +854,7 @@ namespace AudioSwitch.Forms
             this.tabSettings.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             this.groupOSD.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -848,7 +862,6 @@ namespace AudioSwitch.Forms
             ((System.ComponentModel.ISupportInitialize)(this.trackTransparency)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
             this.tabDevices.ResumeLayout(false);
             this.groupDevice.ResumeLayout(false);
             this.groupDevice.PerformLayout();
@@ -922,5 +935,6 @@ namespace AudioSwitch.Forms
         private System.Windows.Forms.NumericUpDown numTimeout;
         private System.Windows.Forms.CheckBox checkCustomOSD;
         private System.Windows.Forms.Button buttonClose;
+        private System.Windows.Forms.CheckBox checkShowBoth;
     }
 }

@@ -111,7 +111,7 @@ namespace AudioSwitch.Forms
             // 
             this.pictureShadow.BackgroundImage = global::AudioSwitch.Properties.Resources.shadow;
             this.pictureShadow.Location = new System.Drawing.Point(0, 154);
-            this.pictureShadow.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureShadow.Margin = new System.Windows.Forms.Padding(2);
             this.pictureShadow.Name = "pictureShadow";
             this.pictureShadow.Size = new System.Drawing.Size(222, 5);
             this.pictureShadow.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -122,7 +122,7 @@ namespace AudioSwitch.Forms
             // 
             this.pictureItemsBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureItemsBack.Location = new System.Drawing.Point(-1, 157);
-            this.pictureItemsBack.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureItemsBack.Margin = new System.Windows.Forms.Padding(2);
             this.pictureItemsBack.Name = "pictureItemsBack";
             this.pictureItemsBack.Size = new System.Drawing.Size(286, 41);
             this.pictureItemsBack.TabIndex = 2;
@@ -137,6 +137,7 @@ namespace AudioSwitch.Forms
             this.VolBar.Size = new System.Drawing.Size(196, 9);
             this.VolBar.TabIndex = 7;
             this.VolBar.TabStop = false;
+            this.VolBar.Load += new System.EventHandler(this.VolBar_Load);
             // 
             // ledRight
             // 
@@ -178,6 +179,7 @@ namespace AudioSwitch.Forms
             this.listDevices.TileSize = new System.Drawing.Size(222, 40);
             this.listDevices.UseCompatibleStateImageBehavior = false;
             this.listDevices.View = System.Windows.Forms.View.Tile;
+            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
             this.listDevices.Click += new System.EventHandler(this.listDevices_Click);
             // 
             // FormSwitcher
@@ -193,7 +195,7 @@ namespace AudioSwitch.Forms
             this.Controls.Add(this.pictureItemsBack);
             this.Controls.Add(this.listDevices);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSwitcher";
