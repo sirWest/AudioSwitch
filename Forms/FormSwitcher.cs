@@ -125,7 +125,7 @@ namespace AudioSwitch.Forms
                         SetTrayIcons();
                         VolBar.RegisterDevice(RenderType);
                     }
-                    SetDeviceIcon(item.Index, item.Selected);
+                    SetDeviceIcon(item.ImageIndex, item.Selected);
                 }
             }
         }

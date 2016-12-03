@@ -10,6 +10,7 @@ namespace AudioSwitch.Controls
         public CustomListView()
         {
             DoubleBuffered = true;
+            Sorting = SortOrder.Ascending;
         }
 
         protected override void WndProc(ref Message m)
