@@ -44,7 +44,10 @@ namespace AudioSwitch.Classes
 
             try
             {
+#if !DEBUG
+                //log and handle error only if not debugging
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
+#endif
                 settings = Settings.Load();
 
                 if (args.Length > 0)
@@ -225,7 +228,7 @@ namespace AudioSwitch.Classes
                 }
             }
         }
-
+#if !DEBUG
         static void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             try
@@ -250,6 +253,7 @@ namespace AudioSwitch.Classes
                 Application.Exit();
             }
         }
+#endif
     }
 }
 
