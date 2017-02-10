@@ -225,7 +225,14 @@ namespace AudioSwitch.Controls
 
         internal void RegisterDevice(EDataFlow RenderType)
         {
-            Device = EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(RenderType, ERole.eMultimedia);
+            try
+            {
+                Device = EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(RenderType, ERole.eMultimedia);
+            }
+            catch (DeviceNotFoundException)
+            {//According to previous code state further code won't be called if no devices
+                return;
+            }
             Value = Device.AudioEndpointVolume.MasterVolumeLevelScalar;
             Mute = Device.AudioEndpointVolume.Mute;
             Stereo = Device.AudioMeterInformation.Channels.GetCount() > 1;

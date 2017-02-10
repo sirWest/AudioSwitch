@@ -97,8 +97,7 @@ namespace AudioSwitch.Forms
             SetTrayIcons();
 
             VolBar.VolumeMuteChanged += IconChanged;
-            if (listDevices.Items.Count > 0)
-                VolBar.RegisterDevice(RenderType);
+            VolBar.RegisterDevice(RenderType);
 
             EndPoints.NotifyClient.DefaultChanged += DefaultChanged;
             EndPoints.NotifyClient.DeviceAdded += DeviceAdded;
@@ -402,8 +401,7 @@ namespace AudioSwitch.Forms
                 return;
             }
 
-            if (listDevices.Items.Count > 0)
-                VolBar.RegisterDevice(RenderType);
+            VolBar.RegisterDevice(RenderType);
 
             if (e.Button == MouseButtons.Left)
             {
@@ -503,13 +501,16 @@ namespace AudioSwitch.Forms
 
         private void SetTrayIcons()
         {
-            var devSettings = Program.settings.Device.Find(x =>
-            {
-                var dev = listDevices.SelectedItems[0];
-                return x.DeviceID == dev.Tag.ToString();
-            });
-            if (listDevices.SelectedItems.Count == 0 ||
-                devSettings == null ||
+            Settings.CDevice devSettings=null;
+
+            if (listDevices.SelectedItems.Count > 0)
+                devSettings = Program.settings.Device.Find(x =>
+                {
+                    var dev = listDevices.SelectedItems[0];
+                    return x.DeviceID == dev.Tag.ToString();
+                });
+
+            if (devSettings == null ||
                 (devSettings.Hue == 0 &&
                  devSettings.Saturation == 0 &&
                  devSettings.Brightness == 0))
