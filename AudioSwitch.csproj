@@ -122,6 +122,7 @@
     <Compile Include="CoreAudioApi\AudioVolumeNotificationData.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CoreAudioApi\DeviceNotFoundException.cs" />
     <Compile Include="CoreAudioApi\EDeviceState.cs" />
     <Compile Include="CoreAudioApi\EDataFlow.cs">
       <SubType>Code</SubType>
