@@ -17,6 +17,7 @@ WizardImageFile=WizModernImage-IS.bmp
 WizardSmallImageFile=WizModernSmallImage-IS.bmp
 PrivilegesRequired=admin
 disablereadypage=yes
+DisableWelcomePage=no
 solidcompression=yes
 compression=lzma2/ultra64
 MinVersion=6.1
