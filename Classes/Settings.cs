@@ -10,7 +10,7 @@ namespace AudioSwitch.Classes
     [XmlRoot, Serializable]
     public class Settings
     {
-        public static Settings newSettings()
+        private static Settings newSettings()
         {
             return new Settings
             {
@@ -41,98 +41,61 @@ namespace AudioSwitch.Classes
             };
         }
 
-        [XmlIgnore]
-        private static readonly string settingsxml = Program.AppDataRoot + "Settings.xml";
+        [XmlIgnore] private static readonly string settingsxml = Program.AppDataRoot + "\\Settings.xml";
+        [XmlElement] public EDataFlow DefaultDataFlow;
+        [XmlElement] public bool DefaultMultimediaAndComm;
+        [XmlElement] public bool ColorVU;
+        [XmlElement] public bool ShowHardwareName;
+        [XmlElement] public bool QuickSwitchEnabled;
+        [XmlElement] public bool QuickSwitchShowOSD;
+        [XmlElement] public bool CloseAfterSelecting;
+
+        private bool _useCustomOSD;
 
         [XmlElement]
-        public EDataFlow DefaultDataFlow;
+        public bool UseCustomOSD
+        {
+            get => _useCustomOSD;
+            set => _useCustomOSD = Environment.OSVersion.Version.Major < 10 || value;
+        }
 
-        [XmlElement]
-        public bool DefaultMultimediaAndComm;
-
-        [XmlElement]
-        public bool ColorVU;
-
-        [XmlElement]
-        public bool ShowHardwareName;
-
-        [XmlElement]
-        public bool QuickSwitchEnabled;
-
-        [XmlElement]
-        public bool QuickSwitchShowOSD;
-
-        [XmlElement]
-        public bool UseCustomOSD;
-
-        [XmlElement]
-        public COSD OSD;
+        [XmlElement] public COSD OSD;
 
         public class COSD
         {
-            [XmlAttribute]
-            public string Skin;
-
-            [XmlAttribute]
-            public int Left;
-
-            [XmlAttribute]
-            public int Top;
-
-            [XmlAttribute]
-            public int ClosingTimeout;
-
-            [XmlAttribute]
-            public byte Transparency;
+            [XmlAttribute] public string Skin;
+            [XmlAttribute] public int Left;
+            [XmlAttribute] public int Top;
+            [XmlAttribute] public int ClosingTimeout;
+            [XmlAttribute] public byte Transparency;
         }
 
-        [XmlElement]
-        public CVolScroll VolumeScroll;
+        [XmlElement] public CVolScroll VolumeScroll;
 
         public class CVolScroll
         {
-            [XmlAttribute]
-            public bool Enabled
+            [XmlAttribute] public bool Enabled
             {
-                get { return ScrollVolume.IsEnabled; }
-                set { ScrollVolume.RegisterVolScroll(value); }
+                get => ScrollVolume.IsEnabled;
+                set => ScrollVolume.RegisterVolScroll(value);
             }
 
-            [XmlAttribute]
-            public VolumeScrollKey Key;
-
-            [XmlAttribute]
-            public bool ShowOSD;
+            [XmlAttribute] public VolumeScrollKey Key;
+            [XmlAttribute] public bool ShowOSD;
         }
 
-        [XmlElement]
-        public BindingList<Hotkey> Hotkey;
-
-        [XmlElement]
-        public List<CDevice> Device;
+        [XmlElement] public BindingList<Hotkey> Hotkey;
+        [XmlElement] public List<CDevice> Device;
  
         public class CDevice
         {
-            [XmlAttribute]
-            public string DeviceID;
-
-            [XmlAttribute]
-            public bool HideFromList;
-
-            [XmlAttribute]
-            public int Hue;
-
-            [XmlAttribute]
-            public int Saturation;
-
-            [XmlAttribute]
-            public int Brightness;
-
-            [XmlAttribute]
-            public bool UseCustomName;
-
-            [XmlAttribute]
-            public string CustomName;
+            [XmlAttribute] public string DeviceID;
+            [XmlAttribute] public bool HideFromList;
+            [XmlAttribute] public int Hue;
+            [XmlAttribute] public int Saturation;
+            [XmlAttribute] public int Brightness;
+            [XmlAttribute] public bool UseCustomName;
+            [XmlAttribute] public string CustomName;
         }
 
         internal void Save()

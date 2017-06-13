@@ -53,48 +53,55 @@ namespace AudioSwitch.Classes
 
         internal static Icon GetIcon(string iconPath)
         {
-            var path32 = iconPath;
-            var path64 = iconPath.ToLower().Replace("\\system32\\", "\\sysnative\\");
-
-            path32 = Environment.ExpandEnvironmentVariables(path32);
-            path64 = Environment.ExpandEnvironmentVariables(path64);
-
-            var iconAdr32 = path32.Split(',');
-            var iconAdr64 = path64.Split(',');
-            var indx = "";
-
-            string finalPath;
-            Icon icon;
-
-            if (File.Exists(iconAdr32[0]))
+            try
             {
-                finalPath = iconAdr32[0];
+                var path32 = iconPath;
+                var path64 = iconPath.ToLower().Replace("\\system32\\", "\\sysnative\\");
 
-                if (iconAdr32.Length > 1)
-                    indx = iconAdr32[1];
-            }
-            else if (File.Exists(iconAdr64[0]))
-            {
-                finalPath = iconAdr64[0];
+                path32 = Environment.ExpandEnvironmentVariables(path32);
+                path64 = Environment.ExpandEnvironmentVariables(path64);
 
-                if (iconAdr64.Length > 1)
-                    indx = iconAdr64[1];
+                var iconAdr32 = path32.Split(',');
+                var iconAdr64 = path64.Split(',');
+                var indx = "";
+
+                string finalPath;
+                Icon icon;
+
+                if (File.Exists(iconAdr32[0]))
+                {
+                    finalPath = iconAdr32[0];
+
+                    if (iconAdr32.Length > 1)
+                        indx = iconAdr32[1];
+                }
+                else if (File.Exists(iconAdr64[0]))
+                {
+                    finalPath = iconAdr64[0];
+
+                    if (iconAdr64.Length > 1)
+                        indx = iconAdr64[1];
+                }
+                else
+                {
+                    return SystemIcons.Warning;
+                }
+
+                if (indx != "")
+                {
+                    var hIconEx = new IntPtr[1];
+                    ExtractIconEx(finalPath, int.Parse(indx), hIconEx, null, 1);
+                    icon = Icon.FromHandle(hIconEx[0]);
+                }
+                else
+                    icon = new Icon(finalPath, NormalIcons.ImageSize.Width, NormalIcons.ImageSize.Height);
+
+                return icon;
             }
-            else
+            catch
             {
                 return SystemIcons.Warning;
             }
-
-            if (indx != "")
-            {
-                var hIconEx = new IntPtr[1];
-                ExtractIconEx(finalPath, int.Parse(indx), hIconEx, null, 1);
-                icon = Icon.FromHandle(hIconEx[0]);
-            }
-            else
-                icon = new Icon(finalPath, NormalIcons.ImageSize.Width, NormalIcons.ImageSize.Height);
-
-            return icon;
         }
 
         internal static void Clear()

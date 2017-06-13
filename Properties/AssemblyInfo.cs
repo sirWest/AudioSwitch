@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AudioSwitch")]
-[assembly: AssemblyCopyright("Copyright © Tanel Teede 2016")]
+[assembly: AssemblyCopyright("Copyright © Tanel Teede 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.1.5")]
-[assembly: AssemblyFileVersion("2.1.5")]
+[assembly: AssemblyVersion("2.1.6")]
+[assembly: AssemblyFileVersion("2.1.6")]

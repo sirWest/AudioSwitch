@@ -43,11 +43,27 @@ namespace AudioSwitch.CoreAudioApi
             return new MMDeviceCollection(result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataFlow"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        /// <exception cref="COMException"></exception>
+        /// <exception cref="DeviceNotFoundException">If there is no default device</exception>
         public MMDevice GetDefaultAudioEndpoint(EDataFlow dataFlow, ERole role)
         {
-            IMMDevice _Device;
-            Marshal.ThrowExceptionForHR(_realEnumerator.GetDefaultAudioEndpoint(dataFlow, role, out _Device));
-            return new MMDevice(_Device);
+            try
+            {
+                IMMDevice _Device;
+                Marshal.ThrowExceptionForHR(_realEnumerator.GetDefaultAudioEndpoint(dataFlow, role, out _Device));
+                return new MMDevice(_Device);
+
+            }
+            catch (COMException comException) when (comException.ErrorCode == DeviceNotFoundException.E_NOTFOUND)
+            {//if COMException will be used the same way in other methods consider create Exception Mapper instead of manual try/catch
+                throw new DeviceNotFoundException("No devices found during default device detection", comException);
+            }
         }
 
         public MMDevice GetDevice(string deviceId)

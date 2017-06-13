@@ -23,7 +23,7 @@ namespace AudioSwitch.Controls
         private bool _mute;
         internal bool Mute
         {
-            get { return _mute; }
+            get => _mute;
             private set
             {
                 _mute = value;
@@ -36,7 +36,7 @@ namespace AudioSwitch.Controls
         private float _value;
         internal float Value
         {
-            get { return _value; }
+            get => _value;
             private set
             {
                 _value = value;
@@ -225,7 +225,15 @@ namespace AudioSwitch.Controls
 
         internal void RegisterDevice(EDataFlow RenderType)
         {
-            Device = EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(RenderType, ERole.eMultimedia);
+            try
+            {
+                Device = EndPoints.DeviceEnumerator.GetDefaultAudioEndpoint(RenderType, ERole.eMultimedia);
+            }
+            catch (DeviceNotFoundException)
+            {
+                return;
+            }
+
             Value = Device.AudioEndpointVolume.MasterVolumeLevelScalar;
             Mute = Device.AudioEndpointVolume.Mute;
             Stereo = Device.AudioMeterInformation.Channels.GetCount() > 1;

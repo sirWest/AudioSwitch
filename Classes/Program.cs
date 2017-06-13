@@ -27,6 +27,11 @@ namespace AudioSwitch.Classes
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AttachConsole(int dwProcessId);
 
+        [DllImport("User32.Dll", EntryPoint = "PostMessageA")]
+        private static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
+        const int VK_RETURN = 0x0D;
+        const int WM_KEYDOWN = 0x100;
+
         internal static FormOSD frmOSD;
         private static bool isConsole;
         internal static Settings settings;
@@ -221,6 +226,8 @@ namespace AudioSwitch.Classes
                 if (isConsole)
                 {
                     SendKeys.SendWait("{ENTER}");
+                    var hWnd = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+                    PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0);
                     FreeConsole();
                 }
             }
@@ -231,7 +238,7 @@ namespace AudioSwitch.Classes
             try
             {
                 var ex = (Exception)e.ExceptionObject;
-                using (var w = File.AppendText(AppDataRoot + "ErrorLog.txt"))
+                using (var w = File.AppendText(AppDataRoot + "\\ErrorLog.txt"))
                 {
                     w.WriteLine("Log Entry: {0}", DateTime.Now);
                     w.WriteLine("");
@@ -241,7 +248,8 @@ namespace AudioSwitch.Classes
                     w.Close();
                 }
                 MessageBox.Show("An unexpected error has occurred - AudioSwitch will now close :(" + Environment.NewLine +
-                                "Error messages are written to a log file 'ErrorLog.txt' in the installation folder. " + Environment.NewLine + 
+                                "Error messages are written to a log file in the installation folder:" + Environment.NewLine +
+                                AppDataRoot + "\\ErrorLog.txt" + Environment.NewLine +
                                 "Please create an issue in GitHub issue tracker page with the contents of the log file.",
                                 "AudioSwitch - Unexpected Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

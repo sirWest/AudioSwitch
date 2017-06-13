@@ -45,12 +45,12 @@ namespace AudioSwitch.Forms
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.pictureShadow = new System.Windows.Forms.PictureBox();
-            this.pictureItemsBack = new System.Windows.Forms.PictureBox();
             this.VolBar = new AudioSwitch.Controls.VolumeBar();
             this.ledRight = new AudioSwitch.Controls.LedBar();
             this.ledLeft = new AudioSwitch.Controls.LedBar();
             this.listDevices = new AudioSwitch.Controls.CustomListView();
+            this.pictureShadow = new System.Windows.Forms.PictureBox();
+            this.pictureItemsBack = new System.Windows.Forms.PictureBox();
             this.trayMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureShadow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureItemsBack)).BeginInit();
@@ -107,27 +107,6 @@ namespace AudioSwitch.Forms
             this.timer1.Interval = 1;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // pictureShadow
-            // 
-            this.pictureShadow.BackgroundImage = global::AudioSwitch.Properties.Resources.shadow;
-            this.pictureShadow.Location = new System.Drawing.Point(0, 154);
-            this.pictureShadow.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.pictureShadow.Name = "pictureShadow";
-            this.pictureShadow.Size = new System.Drawing.Size(222, 5);
-            this.pictureShadow.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureShadow.TabIndex = 10;
-            this.pictureShadow.TabStop = false;
-            // 
-            // pictureItemsBack
-            // 
-            this.pictureItemsBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureItemsBack.Location = new System.Drawing.Point(-1, 157);
-            this.pictureItemsBack.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.pictureItemsBack.Name = "pictureItemsBack";
-            this.pictureItemsBack.Size = new System.Drawing.Size(286, 41);
-            this.pictureItemsBack.TabIndex = 2;
-            this.pictureItemsBack.TabStop = false;
-            // 
             // VolBar
             // 
             this.VolBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -174,16 +153,38 @@ namespace AudioSwitch.Forms
             this.listDevices.MultiSelect = false;
             this.listDevices.Name = "listDevices";
             this.listDevices.Size = new System.Drawing.Size(219, 350);
+            this.listDevices.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listDevices.TabIndex = 0;
             this.listDevices.TileSize = new System.Drawing.Size(222, 40);
             this.listDevices.UseCompatibleStateImageBehavior = false;
             this.listDevices.View = System.Windows.Forms.View.Tile;
             this.listDevices.Click += new System.EventHandler(this.listDevices_Click);
             // 
+            // pictureShadow
+            // 
+            this.pictureShadow.BackgroundImage = global::AudioSwitch.Properties.Resources.shadow;
+            this.pictureShadow.Location = new System.Drawing.Point(0, 154);
+            this.pictureShadow.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureShadow.Name = "pictureShadow";
+            this.pictureShadow.Size = new System.Drawing.Size(222, 5);
+            this.pictureShadow.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureShadow.TabIndex = 10;
+            this.pictureShadow.TabStop = false;
+            // 
+            // pictureItemsBack
+            // 
+            this.pictureItemsBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureItemsBack.Location = new System.Drawing.Point(-1, 157);
+            this.pictureItemsBack.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureItemsBack.Name = "pictureItemsBack";
+            this.pictureItemsBack.Size = new System.Drawing.Size(286, 41);
+            this.pictureItemsBack.TabIndex = 2;
+            this.pictureItemsBack.TabStop = false;
+            // 
             // FormSwitcher
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(219, 197);
             this.ControlBox = false;
             this.Controls.Add(this.VolBar);
@@ -193,7 +194,7 @@ namespace AudioSwitch.Forms
             this.Controls.Add(this.pictureItemsBack);
             this.Controls.Add(this.listDevices);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSwitcher";

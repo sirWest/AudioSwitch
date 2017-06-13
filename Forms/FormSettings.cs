@@ -81,7 +81,18 @@ namespace AudioSwitch.Forms
             checkVolScroll.Checked = Program.settings.VolumeScroll.Enabled;
             comboScrollKey.Text = Program.settings.VolumeScroll.Key.ToString();
             checkScrShowOSD.Checked = Program.settings.VolumeScroll.ShowOSD;
-            checkCustomOSD.Checked = Program.settings.UseCustomOSD;
+            checkCloseSelect.Checked = Program.settings.CloseAfterSelecting;
+
+            if (Environment.OSVersion.Version.Major < 10)
+            {
+                checkCustomOSD.Checked = true;
+                checkCustomOSD.Enabled = false;
+            }
+            else
+            {
+                checkCustomOSD.Checked = Program.settings.UseCustomOSD;
+            }
+
             checkShowHWName.Checked = Program.settings.ShowHardwareName;
 
             radioQuickSwitch.Checked = Program.settings.QuickSwitchEnabled;
@@ -160,6 +171,7 @@ namespace AudioSwitch.Forms
             Program.settings.QuickSwitchEnabled = radioQuickSwitch.Checked;
             Program.settings.QuickSwitchShowOSD = checkQSShowOSD.Checked;
             Program.settings.UseCustomOSD = checkCustomOSD.Checked;
+            Program.settings.CloseAfterSelecting = checkCloseSelect.Checked;
 
             Program.settings.Save();
         }

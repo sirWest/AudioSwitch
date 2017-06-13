@@ -110,16 +110,16 @@ namespace AudioSwitch.Classes
         {
             Rectangle taskbar;
             var position = GetTaskbarPosition(out taskbar);
-            
+            taskbar.Location = new Point((int)(taskbar.Left / FormSwitcher.DpiFactor), (int)(taskbar.Top / FormSwitcher.DpiFactor));
             if (position == TaskbarPosition.Unknown)
                 return new Point((Screen.PrimaryScreen.WorkingArea.Width + windowwidth)/2,
                                  (Screen.PrimaryScreen.WorkingArea.Height + windowheight)/2);
 
             var rect = GetNotifyIconArea(notifyicon);
-            var iconPos = new Point(rect.left + (rect.right - rect.left) / 2, rect.top + (rect.bottom - rect.top) / 2);
+            var iconPos = new Point((int)(rect.left / FormSwitcher.DpiFactor) + ((int)(rect.right / FormSwitcher.DpiFactor) - (int)(rect.left / FormSwitcher.DpiFactor)) / 2, (int)(rect.top / FormSwitcher.DpiFactor) + ((int)(rect.bottom / FormSwitcher.DpiFactor) - (int)(rect.top / FormSwitcher.DpiFactor)) / 2);
 
-            var windowOffset = (int)Math.Round(8 * FormSwitcher.DpiFactor);
-            var iconOffset = (int)Math.Round(8 * FormSwitcher.DpiFactor);
+            var windowOffset = (int)Math.Round(8 / FormSwitcher.DpiFactor);
+            var iconOffset = (int)Math.Round(8 / FormSwitcher.DpiFactor);
             var maxLeft = taskbar.Left + taskbar.Width - windowwidth - windowOffset;
             var maxTop = taskbar.Top + taskbar.Height - windowheight + windowOffset;
             int left;

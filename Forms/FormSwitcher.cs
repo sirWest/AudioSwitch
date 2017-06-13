@@ -25,6 +25,31 @@ namespace AudioSwitch.Forms
         private bool DeactivatedOnIcon;
         private readonly bool IsWin10;
 
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+        private enum DeviceCap
+        {
+            VERTRES = 10,
+            DESKTOPVERTRES = 117,
+
+            // http://pinvoke.net/default.aspx/gdi32/GetDeviceCaps.html
+        }
+
+
+        private float getScalingFactor()
+        {
+            var g = Graphics.FromHwnd(IntPtr.Zero);
+            var desktop = g.GetHdc();
+            var LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            g.ReleaseHdc();
+
+            var ScreenScalingFactor = PhysicalScreenHeight / (float)LogicalScreenHeight;
+            return ScreenScalingFactor; // 1.25 = 125%
+        }
+
+
         protected override void WndProc(ref Message m)
         {
             switch (m.Msg)
@@ -51,9 +76,8 @@ namespace AudioSwitch.Forms
         public FormSwitcher()
         {
             InitializeComponent();
-
-            var winVer = FileVersionInfo.GetVersionInfo(Environment.GetEnvironmentVariable("windir") + "\\explorer.exe");
-            IsWin10 = winVer.ProductMajorPart == 10;
+            
+            IsWin10 = Environment.OSVersion.Version.Major == 10;
             if (IsWin10)
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
             SetWindowTheme(listDevices.Handle, "explorer", null);
@@ -63,8 +87,7 @@ namespace AudioSwitch.Forms
             ledRight.OldStyle = Program.settings.ColorVU;
             ledRight.SetValue((float)0.1);
             
-            using (var gr = CreateGraphics())
-                DpiFactor = gr.DpiX / 96;
+            DpiFactor = getScalingFactor();
             var tile = new Size(listDevices.ClientSize.Width + 2, (int)(listDevices.TileSize.Height * DpiFactor));
 
             DeviceIcons.InitImageLists(DpiFactor);
@@ -97,8 +120,7 @@ namespace AudioSwitch.Forms
             SetTrayIcons();
 
             VolBar.VolumeMuteChanged += IconChanged;
-            if (listDevices.Items.Count > 0)
-                VolBar.RegisterDevice(RenderType);
+            VolBar.RegisterDevice(RenderType);
 
             EndPoints.NotifyClient.DefaultChanged += DefaultChanged;
             EndPoints.NotifyClient.DeviceAdded += DeviceAdded;
@@ -125,7 +147,7 @@ namespace AudioSwitch.Forms
                         SetTrayIcons();
                         VolBar.RegisterDevice(RenderType);
                     }
-                    SetDeviceIcon(item.Index, item.Selected);
+                    SetDeviceIcon(item.ImageIndex, item.Selected);
                 }
             }
         }
@@ -210,8 +232,8 @@ namespace AudioSwitch.Forms
             RefreshDevices(RenderType);
             VolBar.RegisterDevice(RenderType);
 
-            var iconpos = WindowPosition.GetNotifyIconArea(notifyIcon);
-            var iconrect = new Rectangle(iconpos.left, iconpos.top, iconpos.right - iconpos.left, iconpos.bottom - iconpos.top);
+            var rect = WindowPosition.GetNotifyIconArea(notifyIcon);
+            var iconrect = new Rectangle((int)(rect.left / DpiFactor), (int)(rect.top / DpiFactor), (int)(rect.right / DpiFactor) - (int)(rect.left / DpiFactor), (int)(rect.bottom / DpiFactor) - (int)(rect.top / DpiFactor));
 
             if (iconrect.Contains(Cursor.Position))
                 DeactivatedOnIcon = true;
@@ -402,8 +424,7 @@ namespace AudioSwitch.Forms
                 return;
             }
 
-            if (listDevices.Items.Count > 0)
-                VolBar.RegisterDevice(RenderType);
+            VolBar.RegisterDevice(RenderType);
 
             if (e.Button == MouseButtons.Left)
             {
@@ -421,8 +442,8 @@ namespace AudioSwitch.Forms
             ledLeft.Top = VolBar.Top - ledLeft.Height - 1;
             ledRight.Top = VolBar.Top + VolBar.Height + 1;
             var point = WindowPosition.GetWindowPosition(notifyIcon, Width, Height);
-            Left = point.X;
-            Top = point.Y;
+            Left = point.X;// (int)(point.X / DpiFactor);
+            Top = point.Y;// (int)(point.Y / DpiFactor);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -503,16 +524,21 @@ namespace AudioSwitch.Forms
 
         private void SetTrayIcons()
         {
-            var devSettings = Program.settings.Device.Find(x =>
-            {
-                var dev = listDevices.SelectedItems[0];
-                return x.DeviceID == dev.Tag.ToString();
-            });
+            Settings.CDevice devSettings = null;
+
+            if (listDevices.SelectedItems.Count > 0)
+                devSettings = Program.settings.Device.Find(x =>
+                {
+                    var dev = listDevices.SelectedItems[0];
+                    return x.DeviceID == dev.Tag.ToString();
+                });
+
             if (listDevices.SelectedItems.Count == 0 ||
                 devSettings == null ||
-                (devSettings.Hue == 0 &&
-                 devSettings.Saturation == 0 &&
-                 devSettings.Brightness == 0))
+                devSettings.HideFromList ||
+                devSettings.Hue == 0 &&
+                devSettings.Saturation == 0 &&
+                devSettings.Brightness == 0)
             {
                 ActiveTrayIcons = DefaultTrayIcons;
                 return;
@@ -547,7 +573,7 @@ namespace AudioSwitch.Forms
         {
             foreach (ListViewItem item in listDevices.Items)
             {
-                SetDeviceIcon(item.Index, item.Selected);
+                SetDeviceIcon(item.ImageIndex, item.Selected);
 
                 if (item.Selected)
                 {
@@ -558,11 +584,13 @@ namespace AudioSwitch.Forms
                     listDevices.EndUpdate();
                 }
             }
+            if (Program.settings.CloseAfterSelecting)
+                FormSwitcher_Deactivate(sender, e);
         }
 
         private void audioDevicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("control", "mmsys.cpl sounds");
+            Process.Start("mmsys.cpl", ",,1");
         }
     }
 }
