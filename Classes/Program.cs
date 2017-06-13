@@ -27,11 +27,6 @@ namespace AudioSwitch.Classes
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AttachConsole(int dwProcessId);
 
-        [DllImport("User32.Dll", EntryPoint = "PostMessageA")]
-        private static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
-        const int VK_RETURN = 0x0D;
-        const int WM_KEYDOWN = 0x100;
-
         internal static FormOSD frmOSD;
         private static bool isConsole;
         internal static Settings settings;
@@ -226,8 +221,6 @@ namespace AudioSwitch.Classes
                 if (isConsole)
                 {
                     SendKeys.SendWait("{ENTER}");
-                    var hWnd = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
-                    PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0);
                     FreeConsole();
                 }
             }
@@ -260,4 +253,3 @@ namespace AudioSwitch.Classes
         }
     }
 }
-

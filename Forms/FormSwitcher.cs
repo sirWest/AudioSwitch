@@ -590,7 +590,7 @@ namespace AudioSwitch.Forms
 
         private void audioDevicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("mmsys.cpl", ",,1");
+            Process.Start(Environment.ExpandEnvironmentVariables("%WinDir%") + "\\Sysnative\\rundll32.exe", "Shell32.dll,Control_RunDLL Mmsys.cpl,,0");
         }
     }
 }
