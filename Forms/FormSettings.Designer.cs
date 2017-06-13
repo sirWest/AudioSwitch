@@ -31,8 +31,8 @@ namespace AudioSwitch.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.tabSettings = new System.Windows.Forms.TabControl();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.checkVolScroll = new System.Windows.Forms.CheckBox();
@@ -52,6 +52,7 @@ namespace AudioSwitch.Forms
             this.comboOSDSkin = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkCloseSelect = new System.Windows.Forms.CheckBox();
             this.comboDefMode = new System.Windows.Forms.ComboBox();
             this.checkQSShowOSD = new System.Windows.Forms.CheckBox();
             this.radioQuickSwitch = new System.Windows.Forms.RadioButton();
@@ -61,22 +62,8 @@ namespace AudioSwitch.Forms
             this.checkColorVU = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkDefaultMultiAndComm = new System.Windows.Forms.CheckBox();
-            this.tabDevices = new System.Windows.Forms.TabPage();
-            this.listDevices = new AudioSwitch.Controls.CustomListView();
-            this.label2 = new System.Windows.Forms.Label();
-            this.groupDevice = new System.Windows.Forms.GroupBox();
-            this.checkCustomName = new System.Windows.Forms.CheckBox();
-            this.textCustomName = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.checkHideDevice = new System.Windows.Forms.CheckBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.buttonResetDevice = new System.Windows.Forms.Button();
-            this.buttonSaveDevice = new System.Windows.Forms.Button();
-            this.trackBrightness = new System.Windows.Forms.TrackBar();
-            this.trackSaturation = new System.Windows.Forms.TrackBar();
-            this.trackHue = new System.Windows.Forms.TrackBar();
+            this.tabPlaybackDevices = new System.Windows.Forms.TabPage();
+            this.tabRecordingDevices = new System.Windows.Forms.TabPage();
             this.tabHotkeys = new System.Windows.Forms.TabPage();
             this.gridHotkeys = new System.Windows.Forms.DataGridView();
             this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -88,10 +75,10 @@ namespace AudioSwitch.Forms
             this.ShowOSD = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.labelTips = new System.Windows.Forms.Label();
-            this.pictureModded = new System.Windows.Forms.PictureBox();
             this.buttonClose = new System.Windows.Forms.Button();
-            this.checkCloseSelect = new System.Windows.Forms.CheckBox();
-            this.tabSettings.SuspendLayout();
+            this.recordingDevices = new AudioSwitch.Forms.Devices();
+            this.playbackDevices = new AudioSwitch.Forms.Devices();
+            this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupOSD.SuspendLayout();
@@ -99,28 +86,25 @@ namespace AudioSwitch.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackTransparency)).BeginInit();
             this.groupBox2.SuspendLayout();
-            this.tabDevices.SuspendLayout();
-            this.groupDevice.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBrightness)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackSaturation)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackHue)).BeginInit();
+            this.tabPlaybackDevices.SuspendLayout();
+            this.tabRecordingDevices.SuspendLayout();
             this.tabHotkeys.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHotkeys)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureModded)).BeginInit();
             this.SuspendLayout();
             // 
-            // tabSettings
+            // tabControl
             // 
-            this.tabSettings.Controls.Add(this.tabGeneral);
-            this.tabSettings.Controls.Add(this.tabDevices);
-            this.tabSettings.Controls.Add(this.tabHotkeys);
-            this.tabSettings.HotTrack = true;
-            this.tabSettings.Location = new System.Drawing.Point(2, 3);
-            this.tabSettings.Margin = new System.Windows.Forms.Padding(2);
-            this.tabSettings.Name = "tabSettings";
-            this.tabSettings.SelectedIndex = 0;
-            this.tabSettings.Size = new System.Drawing.Size(536, 353);
-            this.tabSettings.TabIndex = 0;
+            this.tabControl.Controls.Add(this.tabGeneral);
+            this.tabControl.Controls.Add(this.tabPlaybackDevices);
+            this.tabControl.Controls.Add(this.tabRecordingDevices);
+            this.tabControl.Controls.Add(this.tabHotkeys);
+            this.tabControl.HotTrack = true;
+            this.tabControl.Location = new System.Drawing.Point(2, 3);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(536, 376);
+            this.tabControl.TabIndex = 0;
             // 
             // tabGeneral
             // 
@@ -131,7 +115,7 @@ namespace AudioSwitch.Forms
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Margin = new System.Windows.Forms.Padding(2);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Size = new System.Drawing.Size(528, 327);
+            this.tabGeneral.Size = new System.Drawing.Size(528, 350);
             this.tabGeneral.TabIndex = 2;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
@@ -393,6 +377,16 @@ namespace AudioSwitch.Forms
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Behavior";
             // 
+            // checkCloseSelect
+            // 
+            this.checkCloseSelect.Location = new System.Drawing.Point(12, 121);
+            this.checkCloseSelect.Margin = new System.Windows.Forms.Padding(2);
+            this.checkCloseSelect.Name = "checkCloseSelect";
+            this.checkCloseSelect.Size = new System.Drawing.Size(186, 24);
+            this.checkCloseSelect.TabIndex = 26;
+            this.checkCloseSelect.Text = "Close menu after selecting device";
+            this.checkCloseSelect.UseVisualStyleBackColor = true;
+            // 
             // comboDefMode
             // 
             this.comboDefMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -488,197 +482,28 @@ namespace AudioSwitch.Forms
             this.checkDefaultMultiAndComm.UseVisualStyleBackColor = true;
             this.checkDefaultMultiAndComm.CheckedChanged += new System.EventHandler(this.checkDefaultMultiAndComm_CheckedChanged);
             // 
-            // tabDevices
+            // tabPlaybackDevices
             // 
-            this.tabDevices.Controls.Add(this.listDevices);
-            this.tabDevices.Controls.Add(this.label2);
-            this.tabDevices.Controls.Add(this.groupDevice);
-            this.tabDevices.Location = new System.Drawing.Point(4, 22);
-            this.tabDevices.Margin = new System.Windows.Forms.Padding(2);
-            this.tabDevices.Name = "tabDevices";
-            this.tabDevices.Padding = new System.Windows.Forms.Padding(2);
-            this.tabDevices.Size = new System.Drawing.Size(528, 327);
-            this.tabDevices.TabIndex = 1;
-            this.tabDevices.Text = "Devices";
-            this.tabDevices.UseVisualStyleBackColor = true;
-            this.tabDevices.Enter += new System.EventHandler(this.tabDevices_Enter);
+            this.tabPlaybackDevices.Controls.Add(this.playbackDevices);
+            this.tabPlaybackDevices.Location = new System.Drawing.Point(4, 22);
+            this.tabPlaybackDevices.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPlaybackDevices.Name = "tabPlaybackDevices";
+            this.tabPlaybackDevices.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPlaybackDevices.Size = new System.Drawing.Size(528, 350);
+            this.tabPlaybackDevices.TabIndex = 1;
+            this.tabPlaybackDevices.Text = "Playback Devices";
+            this.tabPlaybackDevices.UseVisualStyleBackColor = true;
+            this.tabPlaybackDevices.Enter += new System.EventHandler(this.tabDevices_Enter);
             // 
-            // listDevices
+            // tabRecordingDevices
             // 
-            this.listDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listDevices.BackColor = System.Drawing.SystemColors.Window;
-            this.listDevices.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listDevices.FullRowSelect = true;
-            this.listDevices.HideSelection = false;
-            this.listDevices.Location = new System.Drawing.Point(5, 20);
-            this.listDevices.Margin = new System.Windows.Forms.Padding(2);
-            this.listDevices.MultiSelect = false;
-            this.listDevices.Name = "listDevices";
-            this.listDevices.Size = new System.Drawing.Size(194, 300);
-            this.listDevices.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.listDevices.TabIndex = 1;
-            this.listDevices.TileSize = new System.Drawing.Size(238, 40);
-            this.listDevices.UseCompatibleStateImageBehavior = false;
-            this.listDevices.View = System.Windows.Forms.View.Tile;
-            this.listDevices.SelectedIndexChanged += new System.EventHandler(this.listDevices_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(5, 5);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(133, 20);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Connected Devices";
-            // 
-            // groupDevice
-            // 
-            this.groupDevice.Controls.Add(this.checkCustomName);
-            this.groupDevice.Controls.Add(this.pictureModded);
-            this.groupDevice.Controls.Add(this.textCustomName);
-            this.groupDevice.Controls.Add(this.label7);
-            this.groupDevice.Controls.Add(this.checkHideDevice);
-            this.groupDevice.Controls.Add(this.label9);
-            this.groupDevice.Controls.Add(this.label10);
-            this.groupDevice.Controls.Add(this.label11);
-            this.groupDevice.Controls.Add(this.buttonResetDevice);
-            this.groupDevice.Controls.Add(this.buttonSaveDevice);
-            this.groupDevice.Controls.Add(this.trackBrightness);
-            this.groupDevice.Controls.Add(this.trackSaturation);
-            this.groupDevice.Controls.Add(this.trackHue);
-            this.groupDevice.Location = new System.Drawing.Point(203, 5);
-            this.groupDevice.Margin = new System.Windows.Forms.Padding(2);
-            this.groupDevice.Name = "groupDevice";
-            this.groupDevice.Padding = new System.Windows.Forms.Padding(2);
-            this.groupDevice.Size = new System.Drawing.Size(321, 246);
-            this.groupDevice.TabIndex = 8;
-            this.groupDevice.TabStop = false;
-            this.groupDevice.Text = "Selected Device Settings";
-            // 
-            // checkCustomName
-            // 
-            this.checkCustomName.Location = new System.Drawing.Point(14, 109);
-            this.checkCustomName.Margin = new System.Windows.Forms.Padding(2);
-            this.checkCustomName.Name = "checkCustomName";
-            this.checkCustomName.Size = new System.Drawing.Size(149, 18);
-            this.checkCustomName.TabIndex = 3;
-            this.checkCustomName.Text = "Customize display name";
-            this.checkCustomName.UseVisualStyleBackColor = true;
-            this.checkCustomName.CheckedChanged += new System.EventHandler(this.checkCustomName_CheckedChanged);
-            // 
-            // textCustomName
-            // 
-            this.textCustomName.Enabled = false;
-            this.textCustomName.Location = new System.Drawing.Point(14, 131);
-            this.textCustomName.Margin = new System.Windows.Forms.Padding(2);
-            this.textCustomName.Name = "textCustomName";
-            this.textCustomName.Size = new System.Drawing.Size(190, 20);
-            this.textCustomName.TabIndex = 4;
-            // 
-            // label7
-            // 
-            this.label7.Location = new System.Drawing.Point(233, 19);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(66, 17);
-            this.label7.TabIndex = 26;
-            this.label7.Text = "Tray Icon Color";
-            // 
-            // checkHideDevice
-            // 
-            this.checkHideDevice.Location = new System.Drawing.Point(4, 225);
-            this.checkHideDevice.Margin = new System.Windows.Forms.Padding(2);
-            this.checkHideDevice.Name = "checkHideDevice";
-            this.checkHideDevice.Size = new System.Drawing.Size(177, 16);
-            this.checkHideDevice.TabIndex = 5;
-            this.checkHideDevice.Text = "Hide device from switch list";
-            this.checkHideDevice.UseVisualStyleBackColor = true;
-            // 
-            // label9
-            // 
-            this.label9.Location = new System.Drawing.Point(50, 30);
-            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(27, 20);
-            this.label9.TabIndex = 16;
-            this.label9.Text = "Hue";
-            // 
-            // label10
-            // 
-            this.label10.Location = new System.Drawing.Point(21, 50);
-            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(56, 18);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "Saturation";
-            // 
-            // label11
-            // 
-            this.label11.Location = new System.Drawing.Point(20, 71);
-            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(57, 14);
-            this.label11.TabIndex = 21;
-            this.label11.Text = "Brightness";
-            // 
-            // buttonResetDevice
-            // 
-            this.buttonResetDevice.Location = new System.Drawing.Point(108, 177);
-            this.buttonResetDevice.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonResetDevice.Name = "buttonResetDevice";
-            this.buttonResetDevice.Size = new System.Drawing.Size(100, 33);
-            this.buttonResetDevice.TabIndex = 6;
-            this.buttonResetDevice.Text = "Remove Settings";
-            this.buttonResetDevice.UseVisualStyleBackColor = true;
-            this.buttonResetDevice.Click += new System.EventHandler(this.buttonResetDevice_Click);
-            // 
-            // buttonSaveDevice
-            // 
-            this.buttonSaveDevice.Location = new System.Drawing.Point(212, 177);
-            this.buttonSaveDevice.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonSaveDevice.Name = "buttonSaveDevice";
-            this.buttonSaveDevice.Size = new System.Drawing.Size(100, 33);
-            this.buttonSaveDevice.TabIndex = 7;
-            this.buttonSaveDevice.Text = "Save Settings";
-            this.buttonSaveDevice.UseVisualStyleBackColor = true;
-            this.buttonSaveDevice.Click += new System.EventHandler(this.buttonSaveDevice_Click);
-            // 
-            // trackBrightness
-            // 
-            this.trackBrightness.BackColor = System.Drawing.SystemColors.Window;
-            this.trackBrightness.Location = new System.Drawing.Point(70, 70);
-            this.trackBrightness.Margin = new System.Windows.Forms.Padding(2);
-            this.trackBrightness.Maximum = 60;
-            this.trackBrightness.Name = "trackBrightness";
-            this.trackBrightness.Size = new System.Drawing.Size(131, 45);
-            this.trackBrightness.TabIndex = 2;
-            this.trackBrightness.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBrightness.Scroll += new System.EventHandler(this.trackBarsHSB_Scroll);
-            // 
-            // trackSaturation
-            // 
-            this.trackSaturation.BackColor = System.Drawing.SystemColors.Window;
-            this.trackSaturation.Location = new System.Drawing.Point(70, 49);
-            this.trackSaturation.Margin = new System.Windows.Forms.Padding(2);
-            this.trackSaturation.Maximum = 100;
-            this.trackSaturation.Name = "trackSaturation";
-            this.trackSaturation.Size = new System.Drawing.Size(131, 45);
-            this.trackSaturation.TabIndex = 1;
-            this.trackSaturation.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackSaturation.Scroll += new System.EventHandler(this.trackBarsHSB_Scroll);
-            // 
-            // trackHue
-            // 
-            this.trackHue.BackColor = System.Drawing.SystemColors.Window;
-            this.trackHue.Location = new System.Drawing.Point(70, 29);
-            this.trackHue.Margin = new System.Windows.Forms.Padding(2);
-            this.trackHue.Maximum = 360;
-            this.trackHue.Name = "trackHue";
-            this.trackHue.Size = new System.Drawing.Size(131, 45);
-            this.trackHue.TabIndex = 22;
-            this.trackHue.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackHue.Scroll += new System.EventHandler(this.trackBarsHSB_Scroll);
+            this.tabRecordingDevices.Controls.Add(this.recordingDevices);
+            this.tabRecordingDevices.Location = new System.Drawing.Point(4, 22);
+            this.tabRecordingDevices.Name = "tabRecordingDevices";
+            this.tabRecordingDevices.Size = new System.Drawing.Size(528, 350);
+            this.tabRecordingDevices.TabIndex = 3;
+            this.tabRecordingDevices.Text = "Recording devices";
+            this.tabRecordingDevices.UseVisualStyleBackColor = true;
             // 
             // tabHotkeys
             // 
@@ -687,7 +512,7 @@ namespace AudioSwitch.Forms
             this.tabHotkeys.Margin = new System.Windows.Forms.Padding(2);
             this.tabHotkeys.Name = "tabHotkeys";
             this.tabHotkeys.Padding = new System.Windows.Forms.Padding(2);
-            this.tabHotkeys.Size = new System.Drawing.Size(528, 327);
+            this.tabHotkeys.Size = new System.Drawing.Size(528, 350);
             this.tabHotkeys.TabIndex = 0;
             this.tabHotkeys.Text = "Hot Keys";
             this.tabHotkeys.UseVisualStyleBackColor = true;
@@ -719,12 +544,12 @@ namespace AudioSwitch.Forms
             this.gridHotkeys.Name = "gridHotkeys";
             this.gridHotkeys.RowHeadersWidth = 25;
             this.gridHotkeys.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gridHotkeys.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.gridHotkeys.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHotkeys.Size = new System.Drawing.Size(520, 318);
@@ -792,23 +617,13 @@ namespace AudioSwitch.Forms
             // labelTips
             // 
             this.labelTips.ForeColor = System.Drawing.Color.Green;
-            this.labelTips.Location = new System.Drawing.Point(170, 3);
+            this.labelTips.Location = new System.Drawing.Point(322, 3);
             this.labelTips.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelTips.Name = "labelTips";
-            this.labelTips.Size = new System.Drawing.Size(362, 18);
+            this.labelTips.Size = new System.Drawing.Size(210, 18);
             this.labelTips.TabIndex = 7;
             this.labelTips.Text = "labelTips";
             this.labelTips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // pictureModded
-            // 
-            this.pictureModded.Location = new System.Drawing.Point(288, 15);
-            this.pictureModded.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureModded.Name = "pictureModded";
-            this.pictureModded.Size = new System.Drawing.Size(24, 24);
-            this.pictureModded.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureModded.TabIndex = 20;
-            this.pictureModded.TabStop = false;
             // 
             // buttonClose
             // 
@@ -821,24 +636,30 @@ namespace AudioSwitch.Forms
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 
-            // checkCloseSelect
+            // recordingDevices
             // 
-            this.checkCloseSelect.Location = new System.Drawing.Point(12, 121);
-            this.checkCloseSelect.Margin = new System.Windows.Forms.Padding(2);
-            this.checkCloseSelect.Name = "checkCloseSelect";
-            this.checkCloseSelect.Size = new System.Drawing.Size(186, 24);
-            this.checkCloseSelect.TabIndex = 26;
-            this.checkCloseSelect.Text = "Close menu after selecting device";
-            this.checkCloseSelect.UseVisualStyleBackColor = true;
+            this.recordingDevices.Location = new System.Drawing.Point(0, 4);
+            this.recordingDevices.Name = "recordingDevices";
+            this.recordingDevices.Size = new System.Drawing.Size(528, 319);
+            this.recordingDevices.TabIndex = 0;
+            this.recordingDevices.Load += new System.EventHandler(this.recordingDevices_Load);
+            // 
+            // playbackDevices
+            // 
+            this.playbackDevices.Location = new System.Drawing.Point(0, 4);
+            this.playbackDevices.Name = "playbackDevices";
+            this.playbackDevices.Size = new System.Drawing.Size(528, 319);
+            this.playbackDevices.TabIndex = 0;
+            this.playbackDevices.Load += new System.EventHandler(this.devices2_Load);
             // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 356);
+            this.ClientSize = new System.Drawing.Size(536, 377);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.labelTips);
-            this.Controls.Add(this.tabSettings);
+            this.Controls.Add(this.tabControl);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -852,7 +673,7 @@ namespace AudioSwitch.Forms
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSettings_FormClosing);
             this.Load += new System.EventHandler(this.FormSettings_Load);
-            this.tabSettings.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -863,38 +684,20 @@ namespace AudioSwitch.Forms
             ((System.ComponentModel.ISupportInitialize)(this.trackTransparency)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.tabDevices.ResumeLayout(false);
-            this.groupDevice.ResumeLayout(false);
-            this.groupDevice.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBrightness)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackSaturation)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackHue)).EndInit();
+            this.tabPlaybackDevices.ResumeLayout(false);
+            this.tabRecordingDevices.ResumeLayout(false);
             this.tabHotkeys.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridHotkeys)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureModded)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabSettings;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabHotkeys;
-        private System.Windows.Forms.TabPage tabDevices;
+        private System.Windows.Forms.TabPage tabPlaybackDevices;
         private System.Windows.Forms.DataGridView gridHotkeys;
-        private Controls.CustomListView listDevices;
-        private System.Windows.Forms.GroupBox groupDevice;
-        private System.Windows.Forms.CheckBox checkHideDevice;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button buttonResetDevice;
-        private System.Windows.Forms.Button buttonSaveDevice;
-        private System.Windows.Forms.TrackBar trackBrightness;
-        private System.Windows.Forms.TrackBar trackSaturation;
-        private System.Windows.Forms.TrackBar trackHue;
-        private System.Windows.Forms.PictureBox pictureModded;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label6;
@@ -912,7 +715,6 @@ namespace AudioSwitch.Forms
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.ComboBox comboOSDSkin;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkColorVU;
         private System.Windows.Forms.DataGridViewComboBoxColumn Function;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Control;
@@ -928,14 +730,15 @@ namespace AudioSwitch.Forms
         private System.Windows.Forms.RadioButton radioQuickSwitch;
         private System.Windows.Forms.RadioButton radioAlwaysMenu;
         private System.Windows.Forms.CheckBox checkQSShowOSD;
-        private System.Windows.Forms.CheckBox checkCustomName;
-        private System.Windows.Forms.TextBox textCustomName;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TrackBar trackTransparency;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numTimeout;
         private System.Windows.Forms.CheckBox checkCustomOSD;
         private System.Windows.Forms.CheckBox checkCloseSelect;
+        private System.Windows.Forms.TabPage tabRecordingDevices;
         private System.Windows.Forms.Button buttonClose;
+        private Devices playbackDevices;
+        private Devices recordingDevices;
     }
 }
