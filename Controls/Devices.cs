@@ -1,12 +1,12 @@
-﻿using AudioSwitch.Classes;
-using AudioSwitch.CoreAudioApi;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using AudioSwitch.Classes;
+using AudioSwitch.CoreAudioApi;
+using AudioSwitch.Forms;
 
-namespace AudioSwitch.Forms
+namespace AudioSwitch.Controls
 {
     public partial class Devices : UserControl
     {
@@ -38,8 +38,7 @@ namespace AudioSwitch.Forms
                 cnt++;
             }
         }
-
-
+        
         private void Devices_Load(object sender, EventArgs e)
         {
             pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
@@ -62,8 +61,6 @@ namespace AudioSwitch.Forms
                 ImageSize = size,
                 ColorDepth = ColorDepth.Depth32Bit
             };
-
-
         }
 
         private void buttonRemove_Click(object sender, EventArgs e)
@@ -94,7 +91,7 @@ namespace AudioSwitch.Forms
 
             listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font,
                                                          checkHideDevice.Checked ? FontStyle.Italic : FontStyle.Bold);
-            IEnumerable<ListViewItem> lv = listDevices.Items.Cast<ListViewItem>();
+            var lv = listDevices.Items.Cast<ListViewItem>().ToArray();
 
             if (checkEnableAsMultimediaOnStartup.Checked)
             {
@@ -148,8 +145,7 @@ namespace AudioSwitch.Forms
             }
 
         }
-
-
+        
         private void listDevices_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             if (listDevices.SelectedItems.Count == 0) return;
@@ -188,7 +184,6 @@ namespace AudioSwitch.Forms
         private void checkCustomName_CheckedChanged_1(object sender, EventArgs e)
         {
             textCustomName.Enabled = checkCustomName.Checked;
-
         }
 
         private void trackBarsHSB_Scroll()

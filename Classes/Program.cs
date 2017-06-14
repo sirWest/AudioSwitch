@@ -47,7 +47,7 @@ namespace AudioSwitch.Classes
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
                 settings = Settings.Load();
 
-                if (args.Length > 0)
+                if (args[0] != "/startup" && args.Length > 0)
                 {
                     if (!AttachConsole(-1))
                         AllocConsole();
@@ -85,6 +85,7 @@ namespace AudioSwitch.Classes
                                 Console.WriteLine("  /k - set a key for a new hotkey. Case sensitive.");
                                 Console.WriteLine("  /f - choose a function for the new hotkey. Case sensitive.");
                                 Console.WriteLine();
+                                Console.WriteLine("  /startup - Runs after user logs in and sets any preferred default devices that may have been set.");
                                 Console.WriteLine("  /m, /k, /f (blank) - shows all possible values for the parameter.");
                                 break;
 
@@ -214,9 +215,9 @@ namespace AudioSwitch.Classes
                     frmOSD = new FormOSD();
                     var formSwitcher = new FormSwitcher();
 
+                    if (args[0] == "/startup")
+                        new StartupDeviceTask().Run();
 
-                    StartupDeviceTask startupDeviceTask = new StartupDeviceTask();
-                    startupDeviceTask.Run();
                     Application.Run();
 
                     mutex.Close();

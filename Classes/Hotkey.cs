@@ -24,50 +24,50 @@ namespace AudioSwitch.Classes
         [XmlIgnore]
         public string Key
         {
-            get { return HotKey.ToString(); }
-            set { HotKey = (Keys) Enum.Parse(typeof (Keys), value); }
+            get => HotKey.ToString();
+            set => HotKey = (Keys) Enum.Parse(typeof (Keys), value);
         }
 
         [XmlIgnore]
         public string HKFunction
         {
-            get { return Function.ToString(); }
-            set { Function = (HotkeyFunction)Enum.Parse(typeof(HotkeyFunction), value); }
+            get => Function.ToString();
+            set => Function = (HotkeyFunction)Enum.Parse(typeof(HotkeyFunction), value);
         }
 
         [XmlIgnore]
         public bool Control
         {
-            get { return ModifierKeys.HasFlag(HotModifierKeys.Control); }
-            set { ModHotFlag(value, HotModifierKeys.Control); }
+            get => ModifierKeys.HasFlag(HotModifierKeys.Control);
+            set => ModHotFlag(value, HotModifierKeys.Control);
         }
 
         [XmlIgnore]
         public bool Alt
         {
-            get { return ModifierKeys.HasFlag(HotModifierKeys.Alt); }
-            set { ModHotFlag(value, HotModifierKeys.Alt); }
+            get => ModifierKeys.HasFlag(HotModifierKeys.Alt);
+            set => ModHotFlag(value, HotModifierKeys.Alt);
         }
 
         [XmlIgnore]
         public bool Shift
         {
-            get { return ModifierKeys.HasFlag(HotModifierKeys.Shift); }
-            set { ModHotFlag(value, HotModifierKeys.Shift); }
+            get => ModifierKeys.HasFlag(HotModifierKeys.Shift);
+            set => ModHotFlag(value, HotModifierKeys.Shift);
         }
 
         [XmlIgnore]
         public bool LWin
         {
-            get { return ModifierKeys.HasFlag(HotModifierKeys.LWin); }
-            set { ModHotFlag(value, HotModifierKeys.LWin); }
+            get => ModifierKeys.HasFlag(HotModifierKeys.LWin);
+            set => ModHotFlag(value, HotModifierKeys.LWin);
         }
 
         [XmlIgnore]
         public bool RWin
         {
-            get { return ModifierKeys.HasFlag(HotModifierKeys.RWin); }
-            set { ModHotFlag(value, HotModifierKeys.RWin); }
+            get => ModifierKeys.HasFlag(HotModifierKeys.RWin);
+            set => ModHotFlag(value, HotModifierKeys.RWin);
         }
 
         public void Dispose()

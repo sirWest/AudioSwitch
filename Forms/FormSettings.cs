@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows.Forms;
 using AudioSwitch.Classes;
 using AudioSwitch.CoreAudioApi;
-using System.Collections.Generic;
 
 namespace AudioSwitch.Forms
 {
@@ -16,10 +15,7 @@ namespace AudioSwitch.Forms
         public FormSettings()
         {
             InitializeComponent();
-
-
-
-
+            
             Function.DataSource = Enum.GetNames(typeof(HotkeyFunction));
             Function.DataPropertyName = "HKFunction";
 
@@ -38,8 +34,6 @@ namespace AudioSwitch.Forms
 
         private void FormSettings_Load(object sender, EventArgs e)
         {
-
-
             var OSDskins = Directory.GetDirectories(Program.Root + "Skins");
             foreach (var skinDir in OSDskins)
                 comboOSDSkin.Items.Add(skinDir.Substring(skinDir.LastIndexOf('\\') + 1));
@@ -75,8 +69,6 @@ namespace AudioSwitch.Forms
             checkQSShowOSD.Checked = Program.settings.QuickSwitchShowOSD;
             
             gridHotkeys.CellEndEdit += gridHotkeys_CellEndEdit;
-            gridHotkeys.RowsAdded += gridHotkeys_RowsAdded;
-            gridHotkeys.RowsRemoved += gridHotkeys_RowsRemoved;
         }
 
         private void buttonClose_Click(object sender, EventArgs e)
@@ -84,14 +76,14 @@ namespace AudioSwitch.Forms
             Close();
         }
 
-        private void gridHotkeys_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void gridHotkeys_UserAddedRow(object sender, DataGridViewRowEventArgs e)
         {
             SetEditedHotKeys();
         }
 
-        private void gridHotkeys_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        private void gridHotkeys_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            SetEditedHotKeys();
+            Program.settings.Hotkey[e.Row.Index].Unregister();
         }
 
         private void gridHotkeys_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -180,22 +172,6 @@ namespace AudioSwitch.Forms
             Program.settings.OSD.Transparency = Program.frmOSD.Transparency = (byte)trackTransparency.Value;
             Program.frmOSD.SetVolImage(0.75f);
         }
-
-        private void trackBarsHSB_Scroll(object sender, EventArgs e)
-        {
-        }
-
-        private void buttonResetDevice_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonSaveDevice_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
 
         private void comboOSDSkin_SelectedIndexChanged(object sender, EventArgs e)
         {
