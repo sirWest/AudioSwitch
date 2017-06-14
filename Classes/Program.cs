@@ -47,7 +47,7 @@ namespace AudioSwitch.Classes
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
                 settings = Settings.Load();
 
-                if (args[0] != "/startup" && args.Length > 0)
+                if (args.Length > 0 && args[0] != "/startup")
                 {
                     if (!AttachConsole(-1))
                         AllocConsole();
@@ -215,7 +215,7 @@ namespace AudioSwitch.Classes
                     frmOSD = new FormOSD();
                     var formSwitcher = new FormSwitcher();
 
-                    if (args[0] == "/startup")
+                    if (args.Length > 0 && args[0] == "/startup")
                         new StartupDeviceTask().Run();
 
                     Application.Run();
