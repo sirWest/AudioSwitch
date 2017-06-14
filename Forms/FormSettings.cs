@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using AudioSwitch.Classes;
 using AudioSwitch.CoreAudioApi;
+using System.Collections.Generic;
 
 namespace AudioSwitch.Forms
 {
@@ -16,16 +17,8 @@ namespace AudioSwitch.Forms
         {
             InitializeComponent();
 
-            FormSwitcher.SetWindowTheme(listDevices.Handle, "explorer", null);
-            var tile = new Size(listDevices.ClientSize.Width - 18, (int)(listDevices.TileSize.Height * FormSwitcher.DpiFactor));
-            listDevices.TileSize = tile;
 
-            var size = new Size((int)(32 * FormSwitcher.DpiFactor), (int)(32 * FormSwitcher.DpiFactor));
-            listDevices.LargeImageList = new ImageList
-            {
-                ImageSize = size,
-                ColorDepth = ColorDepth.Depth32Bit
-            };
+
 
             Function.DataSource = Enum.GetNames(typeof(HotkeyFunction));
             Function.DataPropertyName = "HKFunction";
@@ -45,27 +38,7 @@ namespace AudioSwitch.Forms
 
         private void FormSettings_Load(object sender, EventArgs e)
         {
-            var devices = EndPoints.GetAllDeviceList();
-            var cnt = 0;
-            foreach (var dev in devices)
-            {
-                var devID = dev.Key.ID;
-                var lvitem = new ListViewItem { Text = dev.Key.FriendlyName, ImageIndex = cnt, Tag = devID };
 
-                var devSettings = Program.settings.Device.Find(x => x.DeviceID == devID);
-                if (devSettings != null)
-                {
-                    lvitem.Font = new Font(lvitem.Font, FontStyle.Bold);
-
-                    if (devSettings.HideFromList)
-                        lvitem.Font = new Font(lvitem.Font, FontStyle.Italic);
-                }
-
-                listDevices.LargeImageList.Images.Add(dev.Value);
-                listDevices.Items.Add(lvitem);
-                cnt++;
-            }
-            pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
 
             var OSDskins = Directory.GetDirectories(Program.Root + "Skins");
             foreach (var skinDir in OSDskins)
@@ -210,91 +183,19 @@ namespace AudioSwitch.Forms
 
         private void trackBarsHSB_Scroll(object sender, EventArgs e)
         {
-            pictureModded.Image?.Dispose();
-            pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value/100f);
         }
 
         private void buttonResetDevice_Click(object sender, EventArgs e)
         {
-            trackHue.Value = 0;
-            trackSaturation.Value = 0;
-            trackBrightness.Value = 0;
-            pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
-            checkHideDevice.Checked = false;
-            checkCustomName.Checked = false;
-            textCustomName.Enabled = false;
-            textCustomName.Clear();
 
-            listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font, FontStyle.Regular);
-
-            var devSettings = Program.settings.Device.Find(x => x.DeviceID == (string)listDevices.SelectedItems[0].Tag);
-            if (devSettings != null)
-                Program.settings.Device.Remove(devSettings);
         }
 
         private void buttonSaveDevice_Click(object sender, EventArgs e)
         {
-            if (listDevices.SelectedItems.Count == 0) return;
 
-            var devSettings = Program.settings.Device.Find(x => x.DeviceID == (string) listDevices.SelectedItems[0].Tag);
-
-            listDevices.SelectedItems[0].Font = new Font(listDevices.SelectedItems[0].Font,
-                                                         checkHideDevice.Checked ? FontStyle.Italic : FontStyle.Bold);
-
-            if (devSettings != null)
-            {
-                devSettings.Brightness = trackBrightness.Value;
-                devSettings.Hue = trackHue.Value;
-                devSettings.Saturation = trackSaturation.Value;
-                devSettings.HideFromList = checkHideDevice.Checked;
-                devSettings.UseCustomName = checkCustomName.Checked;
-                devSettings.CustomName = textCustomName.Text;
-            }
-            else
-            {
-                devSettings = new Settings.CDevice
-                    {
-                        DeviceID = (string) listDevices.SelectedItems[0].Tag,
-                        HideFromList = checkHideDevice.Checked,
-                        Brightness = trackBrightness.Value,
-                        Hue = trackHue.Value,
-                        Saturation = trackSaturation.Value,
-                        UseCustomName = checkCustomName.Checked,
-                        CustomName = textCustomName.Text
-                    };
-                Program.settings.Device.Add(devSettings);
-            }
         }
 
-        private void listDevices_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listDevices.SelectedItems.Count == 0) return;
 
-            var devSettings = Program.settings.Device.Find(x => x.DeviceID == (string)listDevices.SelectedItems[0].Tag);
-            if (devSettings == null)
-            {
-                trackBrightness.Value = 0;
-                trackHue.Value = 0;
-                trackSaturation.Value = 0;
-                pictureModded.Image = new Bitmap(Properties.Resources._66_100_highDPI);
-                checkHideDevice.Checked = false;
-                checkCustomName.Checked = false;
-                textCustomName.Enabled = false;
-                textCustomName.Clear();
-                return;
-            }
-
-            trackBrightness.Value = devSettings.Brightness;
-            trackHue.Value = devSettings.Hue;
-            trackSaturation.Value = devSettings.Saturation;
-
-            pictureModded.Image?.Dispose();
-            pictureModded.Image = DeviceIcons.ChangeColors(new Bitmap(Properties.Resources._66_100_highDPI), trackHue.Value, trackSaturation.Value / 100f, trackBrightness.Value / 100f);
-            checkHideDevice.Checked = devSettings.HideFromList;
-
-            checkCustomName.Checked = devSettings.UseCustomName;
-            textCustomName.Text = devSettings.CustomName;
-        }
 
         private void comboOSDSkin_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -353,9 +254,16 @@ namespace AudioSwitch.Forms
             groupOSD.Enabled = checkCustomOSD.Checked;
         }
 
-        private void checkCustomName_CheckedChanged(object sender, EventArgs e)
+
+        private void recordingDevices_Load(object sender, EventArgs e)
         {
-            textCustomName.Enabled = checkCustomName.Checked;
+            recordingDevices.PostConstructor(EDataFlow.eCapture);
+        }
+
+        private void playbackDevices_Load(object sender, EventArgs e)
+        {
+            playbackDevices.PostConstructor(EDataFlow.eRender);
+
         }
     }
 }

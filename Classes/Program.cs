@@ -210,9 +210,15 @@ namespace AudioSwitch.Classes
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
+
                     frmOSD = new FormOSD();
                     var formSwitcher = new FormSwitcher();
+
+
+                    StartupDeviceTask startupDeviceTask = new StartupDeviceTask();
+                    startupDeviceTask.Run();
                     Application.Run();
+
                     mutex.Close();
                 }
             }

@@ -96,6 +96,8 @@ namespace AudioSwitch.Classes
             [XmlAttribute] public int Brightness;
             [XmlAttribute] public bool UseCustomName;
             [XmlAttribute] public string CustomName;
+            [XmlAttribute] public bool DefaultMultimediaDevice;
+            [XmlAttribute] public bool DefaultCommunicationsDevice;
         }
 
         internal void Save()

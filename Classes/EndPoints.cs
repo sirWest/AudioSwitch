@@ -85,7 +85,12 @@ namespace AudioSwitch.Classes
         {
             return DeviceEnumerator.GetDefaultAudioEndpoint(renderType, ERole.eMultimedia);
         }
-        
+
+        internal static MMDevice GetDefaultMMDevice(EDataFlow renderType, ERole erole)
+        {
+            return DeviceEnumerator.GetDefaultAudioEndpoint(renderType, erole);
+        }
+
         internal static Dictionary<MMDevice, Icon> GetAllDeviceList()
         {
             var devices = new Dictionary<MMDevice, Icon>();
@@ -124,6 +129,11 @@ namespace AudioSwitch.Classes
             pPolicyConfig.SetDefaultEndpoint(devID, ERole.eMultimedia);
             if (Program.settings.DefaultMultimediaAndComm)
                 pPolicyConfig.SetDefaultEndpoint(devID, ERole.eCommunications);
+        }
+
+        internal static void SetDefaultDevice(string devID, ERole erole)
+        {
+            pPolicyConfig.SetDefaultEndpoint(devID, erole);
         }
     }
 }
