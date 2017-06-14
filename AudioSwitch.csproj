@@ -95,17 +95,27 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Compile Include="Classes\Device.cs" />
+    <Compile Include="Classes\DeviceRepository.cs" />
     <Compile Include="Classes\EndPoints.cs" />
     <Compile Include="Classes\OSDskin.cs" />
     <Compile Include="Classes\ScrollVolume.cs" />
+    <Compile Include="Classes\StartupDeviceTask,.cs" />
     <Compile Include="Classes\Win32.cs" />
     <Compile Include="Classes\GlobalHotkeys.cs" />
     <Compile Include="Classes\Hotkey.cs" />
     <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Controls\Devices.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Devices.Designer.cs">
+      <DependentUpon>Devices.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoreAudioApi\AudioEndpointVolume.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -263,6 +273,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\CustomListView.resx">
       <DependentUpon>CustomListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Devices.resx">
+      <DependentUpon>Devices.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormOSD.resx">
       <DependentUpon>FormOSD.cs</DependentUpon>

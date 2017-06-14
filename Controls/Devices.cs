@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using AudioSwitch.Classes;
 using AudioSwitch.CoreAudioApi;
-using AudioSwitch.Classes;
-using System.Collections;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace AudioSwitch.Forms
 {
@@ -52,8 +47,16 @@ namespace AudioSwitch.Forms
             FormSwitcher.SetWindowTheme(listDevices.Handle, "explorer", null);
 
             var tile = new Size(listDevices.ClientSize.Width - 18, (int)(listDevices.TileSize.Height * FormSwitcher.DpiFactor));
+            if(tile.Width < 1 || tile.Height < 1)
+            {
+                tile = new Size(15, 15);
+            }
             listDevices.TileSize = tile;
             var size = new Size((int)(32 * FormSwitcher.DpiFactor), (int)(32 * FormSwitcher.DpiFactor));
+            if (size.Width < 1 || size.Height < 1)
+            {
+                size = new Size(15, 15);
+            }
             listDevices.LargeImageList = new ImageList
             {
                 ImageSize = size,

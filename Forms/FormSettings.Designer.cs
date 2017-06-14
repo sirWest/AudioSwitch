@@ -31,7 +31,7 @@ namespace AudioSwitch.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -63,7 +63,9 @@ namespace AudioSwitch.Forms
             this.label6 = new System.Windows.Forms.Label();
             this.checkDefaultMultiAndComm = new System.Windows.Forms.CheckBox();
             this.tabPlaybackDevices = new System.Windows.Forms.TabPage();
+            this.playbackDevices = new AudioSwitch.Forms.Devices();
             this.tabRecordingDevices = new System.Windows.Forms.TabPage();
+            this.recordingDevices = new AudioSwitch.Forms.Devices();
             this.tabHotkeys = new System.Windows.Forms.TabPage();
             this.gridHotkeys = new System.Windows.Forms.DataGridView();
             this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -76,8 +78,6 @@ namespace AudioSwitch.Forms
             this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.labelTips = new System.Windows.Forms.Label();
             this.buttonClose = new System.Windows.Forms.Button();
-            this.recordingDevices = new AudioSwitch.Forms.Devices();
-            this.playbackDevices = new AudioSwitch.Forms.Devices();
             this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -495,6 +495,14 @@ namespace AudioSwitch.Forms
             this.tabPlaybackDevices.UseVisualStyleBackColor = true;
             this.tabPlaybackDevices.Enter += new System.EventHandler(this.tabDevices_Enter);
             // 
+            // playbackDevices
+            // 
+            this.playbackDevices.Location = new System.Drawing.Point(0, 4);
+            this.playbackDevices.Name = "playbackDevices";
+            this.playbackDevices.Size = new System.Drawing.Size(528, 319);
+            this.playbackDevices.TabIndex = 0;
+            this.playbackDevices.Load += new System.EventHandler(this.playbackDevices_Load);
+            // 
             // tabRecordingDevices
             // 
             this.tabRecordingDevices.Controls.Add(this.recordingDevices);
@@ -504,6 +512,14 @@ namespace AudioSwitch.Forms
             this.tabRecordingDevices.TabIndex = 3;
             this.tabRecordingDevices.Text = "Recording devices";
             this.tabRecordingDevices.UseVisualStyleBackColor = true;
+            // 
+            // recordingDevices
+            // 
+            this.recordingDevices.Location = new System.Drawing.Point(0, 4);
+            this.recordingDevices.Name = "recordingDevices";
+            this.recordingDevices.Size = new System.Drawing.Size(528, 319);
+            this.recordingDevices.TabIndex = 0;
+            this.recordingDevices.Load += new System.EventHandler(this.recordingDevices_Load);
             // 
             // tabHotkeys
             // 
@@ -544,12 +560,12 @@ namespace AudioSwitch.Forms
             this.gridHotkeys.Name = "gridHotkeys";
             this.gridHotkeys.RowHeadersWidth = 25;
             this.gridHotkeys.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.gridHotkeys.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridHotkeys.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.gridHotkeys.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHotkeys.Size = new System.Drawing.Size(520, 318);
@@ -635,22 +651,6 @@ namespace AudioSwitch.Forms
             this.buttonClose.Text = "Close";
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
-            // 
-            // recordingDevices
-            // 
-            this.recordingDevices.Location = new System.Drawing.Point(0, 4);
-            this.recordingDevices.Name = "recordingDevices";
-            this.recordingDevices.Size = new System.Drawing.Size(528, 319);
-            this.recordingDevices.TabIndex = 0;
-            this.recordingDevices.Load += new System.EventHandler(this.recordingDevices_Load);
-            // 
-            // playbackDevices
-            // 
-            this.playbackDevices.Location = new System.Drawing.Point(0, 4);
-            this.playbackDevices.Name = "playbackDevices";
-            this.playbackDevices.Size = new System.Drawing.Size(528, 319);
-            this.playbackDevices.TabIndex = 0;
-            this.playbackDevices.Load += new System.EventHandler(this.devices2_Load);
             // 
             // FormSettings
             // 

@@ -255,15 +255,15 @@ namespace AudioSwitch.Forms
         }
 
 
-
-        private void devices2_Load(object sender, EventArgs e)
-        {
-            playbackDevices.PostConstructor(EDataFlow.eRender);
-        }
-
         private void recordingDevices_Load(object sender, EventArgs e)
         {
             recordingDevices.PostConstructor(EDataFlow.eCapture);
+        }
+
+        private void playbackDevices_Load(object sender, EventArgs e)
+        {
+            playbackDevices.PostConstructor(EDataFlow.eRender);
+
         }
     }
 }
