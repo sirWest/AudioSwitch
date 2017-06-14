@@ -1,4 +1,4 @@
-﻿namespace AudioSwitch.Forms
+﻿namespace AudioSwitch.Controls
 {
     partial class Devices
     {

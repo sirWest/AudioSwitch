@@ -105,7 +105,7 @@
     <Compile Include="Classes\EndPoints.cs" />
     <Compile Include="Classes\OSDskin.cs" />
     <Compile Include="Classes\ScrollVolume.cs" />
-    <Compile Include="Classes\StartupDeviceTask,.cs" />
+    <Compile Include="Classes\StartupDeviceTask.cs" />
     <Compile Include="Classes\Win32.cs" />
     <Compile Include="Classes\GlobalHotkeys.cs" />
     <Compile Include="Classes\Hotkey.cs" />

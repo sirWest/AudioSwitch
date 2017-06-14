@@ -32,7 +32,7 @@ Name: "startupicon"; Description: "Start AudioSwitch when I log in to Windows"; 
 [Icons]
 Name: "{group}\AudioSwitch"; Filename: "{app}\AudioSwitch.exe"
 Name: "{group}\Uninstall"; Filename: "{uninstallexe}"
-Name: "{userstartup}\AudioSwitch"; Filename: "{app}\AudioSwitch.exe"; Tasks: startupicon
+Name: "{userstartup}\AudioSwitch"; Filename: "{app}\AudioSwitch.exe"; Tasks: startupicon; Parameters: "/startup"
 
 [Run]
 Filename: "{app}\AudioSwitch.exe"; Description: "Run AudioSwitch"; Flags: runasoriginaluser postinstall nowait skipifsilent
