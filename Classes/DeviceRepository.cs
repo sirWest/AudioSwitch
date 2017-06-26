@@ -53,16 +53,12 @@ namespace AudioSwitch.Classes
         {
             var devId = mmDevice.ID;
             var devSettings = Program.settings.Device.Find(x => x.DeviceID == devId);
-            if (devSettings == null || !devSettings.HideFromList)
+            var device = new Device
             {
-                var device = new Device
-                {
-                    MMDevice = mmDevice,
-                    DataFlow = dataFlow
-                };
-                return device;
-            }
-            return null;
+                MMDevice = mmDevice,
+                DataFlow = dataFlow
+            };
+            return device;
         }
     }
 }
