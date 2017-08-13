@@ -49,6 +49,9 @@ namespace AudioSwitch.Classes
         [XmlElement] public bool QuickSwitchEnabled;
         [XmlElement] public bool QuickSwitchShowOSD;
         [XmlElement] public bool CloseAfterSelecting;
+        [XmlElement] public bool AlwaysVisible;
+        [XmlElement] public int FreePosLeft;
+        [XmlElement] public int FreePosTop;
 
         private bool _useCustomOSD;
 

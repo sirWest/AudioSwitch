@@ -67,7 +67,8 @@ namespace AudioSwitch.Forms
             checkQSShowOSD.Enabled = radioQuickSwitch.Checked;
 
             checkQSShowOSD.Checked = Program.settings.QuickSwitchShowOSD;
-            
+            checkAlwaysVisible.Checked = Program.settings.AlwaysVisible;
+
             gridHotkeys.CellEndEdit += gridHotkeys_CellEndEdit;
         }
 
@@ -137,6 +138,7 @@ namespace AudioSwitch.Forms
             Program.settings.QuickSwitchShowOSD = checkQSShowOSD.Checked;
             Program.settings.UseCustomOSD = checkCustomOSD.Checked;
             Program.settings.CloseAfterSelecting = checkCloseSelect.Checked;
+            Program.settings.AlwaysVisible = checkAlwaysVisible.Checked;
 
             Program.settings.Save();
         }
@@ -240,6 +242,15 @@ namespace AudioSwitch.Forms
         {
             playbackDevices.PostConstructor(EDataFlow.eRender);
 
+        }
+
+        private void checkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!checkAlwaysVisible.Checked)
+            {
+                Program.settings.FreePosLeft = 0;
+                Program.settings.FreePosTop = 0;
+            }
         }
     }
 }

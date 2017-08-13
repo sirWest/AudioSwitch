@@ -152,6 +152,7 @@ namespace AudioSwitch.Forms
             this.listDevices.Margin = new System.Windows.Forms.Padding(2);
             this.listDevices.MultiSelect = false;
             this.listDevices.Name = "listDevices";
+            this.listDevices.Scrollable = false;
             this.listDevices.Size = new System.Drawing.Size(219, 350);
             this.listDevices.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listDevices.TabIndex = 0;

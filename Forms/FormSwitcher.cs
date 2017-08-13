@@ -131,6 +131,31 @@ namespace AudioSwitch.Forms
 
             ScrollVolume.VolumeScroll += ScrollTheVolume;
             ScrollVolume.RegisterVolScroll(Program.settings.VolumeScroll.Enabled);
+
+            if (Program.settings.AlwaysVisible)
+            OpenAlwaysVisible();
+        }
+
+        private void OpenAlwaysVisible()
+        {
+            if (Program.settings.FreePosLeft == 0 || Program.settings.FreePosTop == 0)
+            {
+                var point = WindowPosition.GetWindowPosition(notifyIcon, Width, Height);
+                Left = point.X;
+                Top = point.Y;
+            }
+            else
+            {
+                Left = Program.settings.FreePosLeft;
+                Top = Program.settings.FreePosTop;
+            }
+            RenderType = Program.settings.DefaultDataFlow;
+            RefreshDevices(RenderType);
+            SetSizes();
+            VolBar.RegisterDevice(RenderType);
+            timer1.Enabled = true;
+            Show();
+            Activate();
         }
 
         private void DefaultChanged(string devID)
@@ -218,12 +243,14 @@ namespace AudioSwitch.Forms
         private void FormSwitcher_FormClosing(object sender, FormClosingEventArgs e)
         {
             GlobalHotkeys.UnregisterAll();
+            Program.settings.FreePosLeft = Left;
+            Program.settings.FreePosTop = Top;
             Program.settings.Save();
         }
 
         private void FormSwitcher_Deactivate(object sender, EventArgs e)
         {
-            if (Disposing)
+            if (Disposing || Program.settings.AlwaysVisible)
                 return;
 
             Hide();
@@ -437,10 +464,13 @@ namespace AudioSwitch.Forms
         private void SetSizes()
         {
             Height = listDevices.Items.Count * listDevices.TileSize.Height + pictureItemsBack.ClientSize.Height + (IsWin10 ? 2 : SystemInformation.FrameBorderSize.Width * 2);
-            pictureShadow.Top = pictureItemsBack.Top = ClientSize.Height - pictureItemsBack.ClientSize.Height;
+            listDevices.Height = pictureShadow.Top = pictureItemsBack.Top = ClientSize.Height - pictureItemsBack.ClientSize.Height;
             VolBar.Top = pictureItemsBack.Top + pictureItemsBack.Height/2 - VolBar.Height/2;
             ledLeft.Top = VolBar.Top - ledLeft.Height - 1;
             ledRight.Top = VolBar.Top + VolBar.Height + 1;
+            if (Program.settings.AlwaysVisible)
+                return;
+
             var point = WindowPosition.GetWindowPosition(notifyIcon, Width, Height);
             Left = point.X;// (int)(point.X / DpiFactor);
             Top = point.Y;// (int)(point.Y / DpiFactor);
@@ -452,7 +482,7 @@ namespace AudioSwitch.Forms
             ledLeft.SetValue(peaks[0]);
             ledRight.SetValue(peaks[VolBar.Stereo ? 1 : 0]);
 
-            if (!listDevices.Focused)
+            if (!listDevices.Focused && !Program.settings.AlwaysVisible)
                 listDevices.Focus();
         }
 
@@ -560,6 +590,11 @@ namespace AudioSwitch.Forms
                 ledLeft.OldStyle = Program.settings.ColorVU;
                 ledRight.OldStyle = Program.settings.ColorVU;
                 SetTrayIcons();
+
+                if (Program.settings.AlwaysVisible)
+                    OpenAlwaysVisible();
+                else
+                    FormSwitcher_Deactivate(sender, e);
             }
         }
 
