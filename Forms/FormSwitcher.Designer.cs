@@ -202,7 +202,6 @@ namespace AudioSwitch.Forms
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.TopMost = true;
             this.Deactivate += new System.EventHandler(this.FormSwitcher_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSwitcher_FormClosing);
             this.trayMenu.ResumeLayout(false);
