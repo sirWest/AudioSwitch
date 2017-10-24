@@ -204,7 +204,7 @@ namespace AudioSwitch.Classes
                     return;
                 }
 
-                if (mutex.WaitOne(0, false))
+                if (mutex.WaitOne(10, false))
                 {
                     if (Environment.OSVersion.Version.Major >= 6)
                         SetProcessDPIAware();

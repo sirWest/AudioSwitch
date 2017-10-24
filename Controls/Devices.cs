@@ -48,7 +48,7 @@ namespace AudioSwitch.Controls
             var tile = new Size(listDevices.ClientSize.Width - 18, (int)(listDevices.TileSize.Height * FormSwitcher.DpiFactor));
             if(tile.Width < 1 || tile.Height < 1)
             {
-                tile = new Size(15, 15);
+                tile = new Size(listDevices.ClientSize.Width - 18, listDevices.TileSize.Height);
             }
             listDevices.TileSize = tile;
             var size = new Size((int)(32 * FormSwitcher.DpiFactor), (int)(32 * FormSwitcher.DpiFactor));
