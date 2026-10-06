@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>5HORiZONS</Author>
+  <Website>http://matt.malensek.net/</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="10" X="78" Y="13" />
+  <DeviceText X="85" Y="16" Font="Arial" ColorHex="#F0F4F7" FontSize="10" MaxWidth="239" MaxHeight="43" Alignment="Center" VerticalAlignment="Center" Wrap="true" />
+</OSDskin>

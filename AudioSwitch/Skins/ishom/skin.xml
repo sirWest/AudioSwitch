@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Jeton Aliji</Author>
+  <Website>http://post.malensek.net</Website>
+  <VolBar Type="horizontal" Steps="10" X="91" Y="44" />
+  <DeviceText X="93" Y="1" Font="Arial" ColorHex="#FFFFFF" FontSize="11" MaxWidth="380" MaxHeight="42" Alignment="Left" VerticalAlignment="Center" Wrap="true" Shadow="true" BackgroundHex="#D9202020" Padding="6" />
+</OSDskin>

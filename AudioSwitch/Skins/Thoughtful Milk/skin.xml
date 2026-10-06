@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Manpreet Singh</Author>
+  <Website>http://djboy0007punjab.deviantart.com</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="26" X="50" Y="135" />
+  <DeviceText X="46" Y="135" Font="Arial" ColorHex="#555555" FontSize="10" MaxWidth="164" MaxHeight="42" Alignment="Center" VerticalAlignment="Center" Wrap="true" />
+</OSDskin>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Lazar Daniel</Author>
+  <Website>http://blaezer.deviantart.com</Website>
+  <VolBar Type="horizontal" Steps="97" X="46" Y="20" Effect="true" />
+  <DeviceText X="48" Y="6" Font="Arial" ColorHex="#303030" FontSize="9" MaxWidth="290" MaxHeight="20" Alignment="Center" VerticalAlignment="Center" Wrap="false" />
+</OSDskin>

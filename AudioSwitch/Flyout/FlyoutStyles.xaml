@@ -1,0 +1,179 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:flyout="clr-namespace:AudioSwitch.Flyout"
+>
+  <!--
+        Translucent surfaces placed over the Windows Acrylic backdrop.
+
+        Top = lighter device-selection area.
+        Bottom = darker volume / VU area.
+    -->
+  <SolidColorBrush
+    x:Key="FlyoutTopSurfaceBrush"
+    Color="{DynamicResource SolidBackgroundFillColorBase}"
+    Opacity="0.45"
+  />
+  <SolidColorBrush
+    x:Key="FlyoutBottomSurfaceBrush"
+    Color="{DynamicResource SolidBackgroundFillColorSecondary}"
+    Opacity="0.627451"
+  />
+  <!-- Device list item -->
+  <Style x:Key="CompactDeviceItem" TargetType="ListBoxItem">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Padding" Value="5,4" />
+    <Setter Property="Margin" Value="0,1" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border
+            x:Name="Surface"
+            Background="{TemplateBinding Background}"
+            BorderBrush="Transparent"
+            BorderThickness="1"
+            Padding="{TemplateBinding Padding}"
+            CornerRadius="4"
+            SnapsToDevicePixels="True"
+          >
+            <ContentPresenter
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="Center"
+            />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter
+                TargetName="Surface"
+                Property="Background"
+                Value="{DynamicResource SubtleFillColorSecondaryBrush}"
+              />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter
+                TargetName="Surface"
+                Property="Background"
+                Value="{DynamicResource SubtleFillColorSecondaryBrush}"
+              />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style
+    x:Key="DeviceGroupHeading"
+    TargetType="ListBoxItem"
+    BasedOn="{StaticResource CompactDeviceItem}"
+  >
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border
+            BorderThickness="1"
+            Padding="{TemplateBinding Padding}"
+            SnapsToDevicePixels="True"
+          >
+            <ContentPresenter
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="Center"
+            />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <!-- Invisible slider track buttons -->
+  <Style x:Key="FaderTrackButton" TargetType="RepeatButton">
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="RepeatButton">
+          <Border Background="Transparent" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <!-- Volume slider -->
+  <Style x:Key="AudioVolumeSlider" TargetType="Slider">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Height" Value="16" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="MinWidth" Value="40" />
+    <Setter Property="IsMoveToPointEnabled" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Slider">
+          <Grid Background="Transparent" SnapsToDevicePixels="True">
+            <!-- Background tick/fader pattern -->
+            <Rectangle Height="7" VerticalAlignment="Center" IsHitTestVisible="False">
+              <Rectangle.Fill>
+                <DrawingBrush
+                  TileMode="Tile"
+                  Viewport="0,0,7,7"
+                  ViewportUnits="Absolute"
+                  Viewbox="0,0,7,7"
+                  ViewboxUnits="Absolute"
+                  Stretch="None"
+                >
+                  <DrawingBrush.Drawing>
+                    <GeometryDrawing Brush="#808080" Geometry="M 0,0 L 1,0 1,7 0,7 Z" />
+                  </DrawingBrush.Drawing>
+                </DrawingBrush>
+              </Rectangle.Fill>
+            </Rectangle>
+            <Track
+              x:Name="PART_Track"
+              Orientation="Horizontal"
+              VerticalAlignment="Center"
+              Height="16"
+            >
+              <Track.DecreaseRepeatButton>
+                <RepeatButton
+                  Command="Slider.DecreaseLarge"
+                  Style="{StaticResource FaderTrackButton}"
+                />
+              </Track.DecreaseRepeatButton>
+              <Track.Thumb>
+                <Thumb Width="31" Height="16" Cursor="Hand" FocusVisualStyle="{x:Null}">
+                  <Thumb.Template>
+                    <ControlTemplate TargetType="Thumb">
+                      <Grid Background="Transparent">
+                        <flyout:VolumeThumb x:Name="Cap" Height="9" VerticalAlignment="Center" />
+                      </Grid>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                          <Setter TargetName="Cap" Property="Active" Value="True" />
+                        </Trigger>
+                        <Trigger Property="IsDragging" Value="True">
+                          <Setter TargetName="Cap" Property="Active" Value="True" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </Thumb.Template>
+                </Thumb>
+              </Track.Thumb>
+              <Track.IncreaseRepeatButton>
+                <RepeatButton
+                  Command="Slider.IncreaseLarge"
+                  Style="{StaticResource FaderTrackButton}"
+                />
+              </Track.IncreaseRepeatButton>
+            </Track>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Opacity" Value="0.4" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

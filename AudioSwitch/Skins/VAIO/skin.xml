@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Irza Alexandr</Author>
+  <Website>http://my.opera.com/irzyxa/blog/</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="20" X="40" Y="49" />
+  <DeviceText X="296" Y="15" Font="Arial" ColorHex="#FFFFFF" FontSize="10" MaxWidth="230" MaxHeight="54" Alignment="Left" VerticalAlignment="Center" Wrap="true" Shadow="true" BackgroundHex="#D9202020" Padding="8" />
+</OSDskin>

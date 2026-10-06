@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>../Setup/AudioSwitchIcon.ico</ApplicationIcon>
+    <Description>AudioSwitch tray application</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="AudioSwitch.Tests" />
+    <ProjectReference Include="../AudioSwitch.Core/AudioSwitch.Core.csproj" />
+    <Content
+      Include="Skins/**/*.png;Skins/**/*.xml"
+      CopyToOutputDirectory="PreserveNewest"
+      CopyToPublishDirectory="PreserveNewest"
+    />
+    <Resource Include="Assets/*.png" />
+    <Resource Include="../Setup/AudioSwitchIcon.ico" Link="Assets/AudioSwitchIcon.ico" />
+  </ItemGroup>
+</Project>

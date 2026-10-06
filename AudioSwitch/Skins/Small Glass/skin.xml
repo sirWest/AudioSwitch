@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Jake Lauer</Author>
+  <Website>http://isthatclear.com</Website>
+  <VolBar Type="horizontal" Steps="21" X="43" Y="8" />
+  <DeviceText X="46" Y="6" Font="Arial" ColorHex="#F0F0F0" FontSize="8" MaxWidth="144" MaxHeight="28" Alignment="Center" VerticalAlignment="Center" Wrap="true" />
+</OSDskin>

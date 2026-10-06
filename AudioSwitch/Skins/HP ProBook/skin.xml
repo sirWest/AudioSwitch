@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>7Azimuth</Author>
+  <Website>-</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="100" X="51" Y="13" />
+  <DeviceText X="57" Y="15" Font="Arial" ColorHex="#F4F4F4" FontSize="9" MaxWidth="186" MaxHeight="23" Alignment="Center" VerticalAlignment="Center" Wrap="false" />
+</OSDskin>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="3.0">
+  <Author>AudioSwitch</Author>
+  <Images DeviceBackground="device.png">
+    <Light Background="back.png" Mute="mute.png" Meter="meter.png" DeviceBackground="device.png" />
+    <Dark Background="back-dark.png" Mute="mute-dark.png" Meter="meter-dark.png" DeviceBackground="device-dark.png" />
+  </Images>
+  <VolBar Type="horizontal" Steps="100" X="16" Y="17" CornerRadius="3" />
+  <DeviceText X="16" Y="5" Font="Segoe UI" ColorHex="#202020" ColorHexLight="#202020" ColorHexDark="#F5F5F5" FontSize="8" MaxWidth="168" MaxHeight="30" Alignment="Center" VerticalAlignment="Center" Wrap="true" />
+</OSDskin>

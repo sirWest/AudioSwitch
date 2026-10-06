@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Edward.Lee</Author>
+  <Website>-</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="100" X="8" Y="3" Effect="true" />
+  <DeviceText X="15" Y="4" Font="Arial" ColorHex="#EAF7FF" FontSize="9" MaxWidth="285" MaxHeight="18" Alignment="Center" VerticalAlignment="Center" Wrap="false" />
+</OSDskin>

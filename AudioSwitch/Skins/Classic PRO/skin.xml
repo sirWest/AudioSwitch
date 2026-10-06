@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Gleb Panteleew</Author>
+  <Website>http://panteleew.ru</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="500" X="83" Y="15" />
+  <DeviceText X="91" Y="16" Font="Arial" ColorHex="#FFFFFF" FontSize="10" MaxWidth="477" MaxHeight="27" Alignment="Center" VerticalAlignment="Center" Wrap="false" Shadow="true" />
+</OSDskin>

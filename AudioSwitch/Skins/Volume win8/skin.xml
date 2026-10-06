@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Alexandr Irza</Author>
+  <Website>http://volume2.googlecode.com/</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="bitstrip" Steps="89" X="0" Y="0" />
+  <DeviceText X="76" Y="4" Font="Arial" ColorHex="#F5F5F5" FontSize="9" MaxWidth="264" MaxHeight="19" Alignment="Center" VerticalAlignment="Center" Wrap="false" />
+</OSDskin>

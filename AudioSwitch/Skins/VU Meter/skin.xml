@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>Salo Hernan</Author>
+  <Website>http://www.salohdigital.net</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="bitstrip" Steps="9" X="0" Y="0" />
+  <DeviceText X="51" Y="35" Font="Arial" ColorHex="#FFFFFF" FontSize="10" MaxWidth="166" MaxHeight="45" Alignment="Center" VerticalAlignment="Center" Wrap="true" Shadow="true" />
+</OSDskin>

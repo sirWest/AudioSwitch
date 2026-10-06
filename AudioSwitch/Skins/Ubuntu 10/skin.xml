@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>MacGadger</Author>
+  <Website>http://macgadger.deviantart.com</Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="horizontal" Steps="47" X="72" Y="39" />
+  <DeviceText X="76" Y="14" Font="Arial" ColorHex="#F6F2ED" FontSize="9" MaxWidth="228" MaxHeight="22" Alignment="Center" VerticalAlignment="Center" Wrap="false" />
+</OSDskin>

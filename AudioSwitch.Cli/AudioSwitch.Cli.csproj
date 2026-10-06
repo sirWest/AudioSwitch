@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>audioswitch-cli</AssemblyName>
+    <ApplicationIcon>../Setup/AudioSwitchIcon.ico</ApplicationIcon>
+    <Description>AudioSwitch command-line interface</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AudioSwitch.Core/AudioSwitch.Core.csproj" />
+  </ItemGroup>
+</Project>

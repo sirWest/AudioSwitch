@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OSDskin Version="2.0">
+  <Author>1</Author>
+  <Website></Website>
+  <Images DeviceBackground="back.png" />
+  <VolBar Type="bitstrip" Steps="20" X="0" Y="0" />
+  <DeviceText X="18" Y="30" Font="Arial" ColorHex="#FFF3DA" FontSize="10" MaxWidth="320" MaxHeight="43" Alignment="Center" VerticalAlignment="Center" Wrap="true" />
+</OSDskin>
