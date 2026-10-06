@@ -106,7 +106,10 @@ public sealed class SettingsStore(string? path = null)
                 );
             }
 
-            var text = JsonSerializer.Serialize(settings, Json);
+            // Prune the saved snapshot without changing objects held by an open device editor.
+            var snapshot = settings.Clone();
+            snapshot.Devices.RemoveAll(device => !device.HasCustomSettings);
+            var text = JsonSerializer.Serialize(snapshot, Json);
             // Flush the complete replacement before atomically swapping it into place.
             using (
                 var stream = new FileStream(

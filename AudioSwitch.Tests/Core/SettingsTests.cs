@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.Json;
 using AudioSwitch.Core.Audio;
 using AudioSwitch.Core.Placement;
 using AudioSwitch.Core.Settings;
@@ -14,6 +15,81 @@ public sealed class SettingsTests : IDisposable
         Guid.NewGuid().ToString("N")
     );
     private string FilePath => Path.Combine(directory, "settings.json");
+
+    [Theory]
+    [InlineData(Direction.Playback)]
+    [InlineData(Direction.Recording)]
+    public void DefaultDevicePreferencesAreOmittedWithoutChangingTheEditor(Direction direction)
+    {
+        var store = new SettingsStore(FilePath);
+        var settings = store.Load();
+        var device = new DeviceSettings { Id = "device", Direction = direction };
+        settings.Devices.Add(device);
+
+        store.Save(settings);
+
+        Assert.Empty(new SettingsStore(FilePath).Load().Devices);
+        Assert.Same(device, Assert.Single(settings.Devices));
+    }
+
+    [Fact]
+    public void ExistingDefaultDevicePreferencesAreRemovedOnNextSave()
+    {
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(
+            FilePath,
+            """
+            {"Devices":[
+              {"Id":"speakers","Direction":"Playback"},
+              {"Id":"microphone","Direction":"Recording"},
+              {"Id":"custom","Hidden":true}
+            ]}
+            """
+        );
+        var store = new SettingsStore(FilePath);
+        var settings = store.Load();
+        Assert.Equal(3, settings.Devices.Count);
+
+        store.Save(settings);
+
+        var device = Assert.Single(new SettingsStore(FilePath).Load().Devices);
+        Assert.Equal("custom", device.Id);
+        Assert.True(device.Hidden);
+    }
+
+    [Theory]
+    [InlineData("\"Hidden\":true")]
+    [InlineData("\"ExcludeFromHotkeyMute\":true")]
+    [InlineData("\"UseCustomName\":true")]
+    [InlineData("\"CustomName\":\"Remembered name\"")]
+    [InlineData("\"Hue\":1")]
+    [InlineData("\"Saturation\":-1")]
+    [InlineData("\"Brightness\":-1")]
+    [InlineData("\"StartupMultimedia\":true")]
+    [InlineData("\"StartupCommunications\":true")]
+    public void EachCustomDevicePreferenceIsPreservedUntilReverted(string preference)
+    {
+        var store = new SettingsStore(FilePath);
+        var settings = store.Load();
+        var device = JsonSerializer.Deserialize<DeviceSettings>(
+            "{\"Id\":\"device\",\"Direction\":\"Recording\"," + preference + "}",
+            SettingsStore.Json
+        )!;
+        settings.Devices.Add(device);
+
+        store.Save(settings);
+
+        var restored = Assert.Single(new SettingsStore(FilePath).Load().Devices);
+        Assert.Equal(
+            JsonSerializer.Serialize(device, SettingsStore.Json),
+            JsonSerializer.Serialize(restored, SettingsStore.Json)
+        );
+
+        settings.Devices[0] = new() { Id = device.Id, Direction = device.Direction };
+        store.Save(settings);
+
+        Assert.Empty(new SettingsStore(FilePath).Load().Devices);
+    }
 
     [Fact]
     public void DeviceGroupDefaultsToPlaybackAndBothSurvivesSaveAndClone()

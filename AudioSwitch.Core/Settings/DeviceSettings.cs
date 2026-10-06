@@ -15,4 +15,15 @@ public sealed class DeviceSettings
     public int Brightness { get; set; }
     public bool StartupMultimedia { get; set; }
     public bool StartupCommunications { get; set; }
+
+    internal bool HasCustomSettings =>
+        Hidden
+        || ExcludeFromHotkeyMute
+        || UseCustomName
+        || !string.IsNullOrEmpty(CustomName)
+        || Hue != 0
+        || Saturation != 0
+        || Brightness != 0
+        || StartupMultimedia
+        || StartupCommunications;
 }
