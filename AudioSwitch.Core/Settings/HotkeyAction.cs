@@ -12,4 +12,5 @@ public enum HotkeyAction
     PlaybackVolumeDown,
     RecordingVolumeUp,
     RecordingVolumeDown,
+    SelectAudioDevices,
 }

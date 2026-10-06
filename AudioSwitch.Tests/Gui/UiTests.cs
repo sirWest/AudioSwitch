@@ -8,7 +8,7 @@ using Xunit;
 
 namespace AudioSwitch.Tests;
 
-public sealed class UiTests
+public sealed partial class UiTests
 {
     [DllImport("user32.dll")]
     private static extern nint GetForegroundWindow();

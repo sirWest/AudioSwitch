@@ -28,6 +28,19 @@ code and changes, check how things behave, and keep an eye on unnecessary bulk
 or odd design choices. The aim is a useful, maintainable AudioSwitch that I can
 keep looking after. Thank you for giving it another look.
 
+## Coming in v3.1
+
+The next release is in development. These changes are implemented in the current
+source but are not included in the v3.0 download. This list will grow as work on
+v3.1 continues.
+
+- Direct hotkeys for a specific playback device, recording device, or input/output pair.
+- Windows playback volume and mute OSD when custom OSD is disabled, instead of
+  volume notifications. Recording feedback still requires custom OSD.
+
+See [Device Hotkeys](docs/DEVICE-HOTKEYS.md) for setup examples and the
+[technical reference](docs/TECHNICAL.md) for native OSD behavior and limitations.
+
 ## What's New in v3.0
 
 - A refreshed app built for Windows 10 and 11, using .NET 10 and WPF.

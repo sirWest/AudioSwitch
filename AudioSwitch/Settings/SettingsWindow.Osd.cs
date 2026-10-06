@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using AudioSwitch.Osd;
 
 namespace AudioSwitch.Settings;
@@ -15,10 +16,21 @@ internal sealed partial class SettingsWindow
 
     private UIElement CreateOsdTab()
     {
-        var panel = new StackPanel();
-        panel.Children.Add(
-            Check("Use custom OSD (otherwise Windows notification)", draft, nameof(draft.CustomOsd))
+        var root = new StackPanel();
+        var customOsd = Check(
+            "Use custom OSD (otherwise Windows volume OSD)",
+            draft,
+            nameof(draft.CustomOsd)
         );
+        root.Children.Add(customOsd);
+        var panel = new StackPanel();
+        panel.SetBinding(
+            IsEnabledProperty,
+            new Binding(nameof(CheckBox.IsChecked)) { Source = customOsd }
+        );
+        root.Children.Add(panel);
+        customOsd.Checked += (_, _) => Dispatcher.BeginInvoke(new Action(Preview));
+        customOsd.Unchecked += (_, _) => app.Osd.EndPreview();
         var skins = Choices(panel, "Skin", draft.Osd, nameof(draft.Osd.Skin), OsdWindow.Skins);
         skins.SelectionChanged += (_, _) => Preview();
         panel.Children.Add(skinInfo);
@@ -92,7 +104,7 @@ internal sealed partial class SettingsWindow
                 }
             )
         );
-        return panel;
+        return root;
     }
 
     private void Preview() => PreviewState(false);
@@ -101,6 +113,12 @@ internal sealed partial class SettingsWindow
     {
         if (!initialized || tabs.SelectedItem != osdTab)
         {
+            return;
+        }
+
+        if (!draft.CustomOsd)
+        {
+            app.Osd.EndPreview();
             return;
         }
 

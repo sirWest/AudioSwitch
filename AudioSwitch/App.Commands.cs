@@ -121,6 +121,14 @@ public sealed partial class App
     {
         switch (hotkey.Function)
         {
+            case HotkeyAction.SelectAudioDevices:
+                var completed = new DeviceHotkeyExecutor(Audio).Execute(hotkey, Settings);
+                audioRefresh?.Request();
+                if (hotkey.ShowOsd && completed.Count > 0)
+                {
+                    ShowFeedback(string.Join("; ", completed), null);
+                }
+                break;
             case HotkeyAction.PreviousPlaybackDevice:
                 Cycle(Direction.Playback, previous: true, hotkey.ShowOsd);
                 break;
@@ -162,10 +170,15 @@ public sealed partial class App
 
     private void ToggleMute(Direction direction, bool showOsd)
     {
-        var state = Audio.SetMute(RequireDefault(direction));
+        var id = RequireDefault(direction);
+        if (Settings.ForDevice(id)?.ExcludeFromHotkeyMute == true)
+        {
+            return;
+        }
+        var state = Audio.SetMute(id);
         if (showOsd)
         {
-            ShowFeedback(null, state);
+            ShowVolumeFeedback(direction, state);
         }
     }
 
@@ -185,7 +198,7 @@ public sealed partial class App
         state = Audio.SetVolume(id, state.Volume + Math.Sign(delta) * step);
         if (show)
         {
-            ShowFeedback(null, state);
+            ShowVolumeFeedback(direction, state);
         }
     }
 
@@ -200,9 +213,26 @@ public sealed partial class App
         {
             Osd.Display(Settings.Osd, state?.Volume ?? .75f, state?.Muted ?? false, device);
         }
-        else
+        else if (device is not null)
         {
-            tray.Notify(device ?? (state!.Muted ? "Muted" : $"Volume {state.Volume:P0}"));
+            tray.Notify(device);
+        }
+    }
+
+    private void ShowVolumeFeedback(Direction direction, AudioState state)
+    {
+        if (Osd.Preview)
+        {
+            return;
+        }
+
+        if (Settings.CustomOsd)
+        {
+            ShowFeedback(null, state);
+        }
+        else if (direction == Direction.Playback)
+        {
+            Native.TryShowVolumeOsd();
         }
     }
 

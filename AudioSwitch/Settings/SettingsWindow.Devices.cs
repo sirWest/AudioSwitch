@@ -24,8 +24,14 @@ internal sealed partial class SettingsWindow
         ScrollViewer.SetHorizontalScrollBarVisibility(list, ScrollBarVisibility.Disabled);
         ScrollViewer.SetVerticalScrollBarVisibility(list, ScrollBarVisibility.Auto);
         var editor = new StackPanel();
-        Grid.SetColumn(editor, 1);
-        panel.Children.Add(editor);
+        var editorScroll = new ScrollViewer
+        {
+            Content = editor,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+        };
+        Grid.SetColumn(editorScroll, 1);
+        panel.Children.Add(editorScroll);
         DeviceSettings? editing = null;
         var refreshing = false;
         void RefreshNames()
@@ -102,6 +108,13 @@ internal sealed partial class SettingsWindow
                 Check("Hide from device list and cycling", editing, nameof(editing.Hidden))
             );
             var custom = Check("Use custom name", editing, nameof(editing.UseCustomName));
+            editor.Children.Add(
+                Check(
+                    "Exclude from hotkey mute/unmute",
+                    editing,
+                    nameof(editing.ExcludeFromHotkeyMute)
+                )
+            );
             editor.Children.Add(custom);
             var name = new TextBox { Margin = new Thickness(0, 3, 0, 5) };
             name.SetBinding(

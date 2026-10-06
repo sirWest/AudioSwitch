@@ -119,6 +119,18 @@ public sealed class AppSettings
                 || !Enum.IsDefined(h.Function)
                 || h.VirtualKey is < 1 or > 254
                 || h.Modifiers > 15
+                || h.Playback is null
+                || h.Recording is null
+                || !Enum.IsDefined(h.Playback.MuteAction)
+                || !Enum.IsDefined(h.Recording.MuteAction)
+                || (
+                    h.Playback.DeviceId is not null
+                    && string.IsNullOrWhiteSpace(h.Playback.DeviceId)
+                )
+                || (
+                    h.Recording.DeviceId is not null
+                    && string.IsNullOrWhiteSpace(h.Recording.DeviceId)
+                )
             )
         )
         {

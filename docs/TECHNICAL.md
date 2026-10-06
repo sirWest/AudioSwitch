@@ -2,9 +2,14 @@
 
 See the [main README](../README.md) for an introduction and testing information.
 
-AudioSwitch 3.0 is a Windows tray application and command-line tool for switching
+AudioSwitch is a Windows tray application and command-line tool for switching
 audio devices, controlling volume, and configuring global shortcuts. It uses
 .NET 10 and WPF, with no third-party runtime packages.
+
+This reference describes the current source, including unreleased v3.1 changes.
+The v3.0 download does not include the new device-specific hotkeys or native
+Windows volume OSD behavior described below. See
+[Coming in v3.1](../README.md#coming-in-v31) for the evolving release notes.
 
 ## Requirements
 
@@ -73,6 +78,22 @@ legacy switch aliases, redirected stdout/stderr and exit codes: `0` for success,
 
 ## Settings and Upgrades
 
+### Device Hotkeys (Coming in v3.1)
+
+The **Select audio devices** action stores independent playback and recording
+endpoint IDs and mute policies. Either direction can be left unchanged while
+muting its devices. Per-device exclusions apply to hotkey mute/unmute operations,
+including toggle-mute shortcuts, but do not prevent device selection.
+
+Targets are resolved on each press. Missing targets are skipped without blocking
+the available member of a pair; a missing explicit target also skips its category's
+mute-other-devices operation. No replacement device is selected automatically.
+The communications checkbox initially uses the General setting and saves an
+explicit choice for that hotkey. See the
+[Device Hotkeys guide](DEVICE-HOTKEYS.md) for the user workflow.
+
+### Persistence
+
 Settings are stored in `%LOCALAPPDATA%/AudioSwitch/settings.json`. On the first
 normal tray launch, AudioSwitch imports
 `%LOCALAPPDATA%/AudioSwitch/Settings.xml` from the legacy .NET Framework application.
@@ -120,8 +141,10 @@ installation. It does not automatically download or install the runtime.
 The donation link on the finish page is optional and unchecked by default.
 
 Product, assembly and file versions are centralized in `Directory.Build.props`.
-The application manifest also declares `3.0.0.0`. The installer reads its version
-from the published application assembly.
+The application manifest also declares `3.0.0.0`. These build versions still
+identify v3.0 during development; update both for the v3.1 release. The installer
+reads its version from the published application assembly, so its filename will
+follow that release version.
 
 ## Tests and Contributions
 
@@ -130,9 +153,23 @@ tests and pull request guidance.
 
 The default suite does not change system audio. Hardware switching, mixed-DPI
 monitor placement, hot-plug, sleep/resume and full-screen games require a Windows
-hardware pass. Native feedback uses a Windows notification and follows system
-notification settings. OSD windows are not guaranteed to appear over exclusive
-full-screen games.
+hardware pass.
+
+### Native Volume OSD (Coming in v3.1)
+
+With custom OSD disabled, playback volume and mute feedback request
+the Windows media-key volume OSD; device changes use Windows notifications and
+follow system notification settings. Recording volume and mute feedback require
+the custom OSD, because the native volume display represents playback only.
+The native OSD uses the private Immersive Shell flyout dispatcher on Windows 10/11;
+availability depends on the Windows shell and session. If unavailable, volume and
+mute changes still apply silently, without notification spam or simulated keys
+that would change audio again. OSD windows are not guaranteed to appear over
+exclusive full-screen games.
+
+Custom OSD controls and previews are disabled while custom OSD is off. This
+native volume OSD path is an unreleased v3.1 change; v3.0 uses Windows notifications
+for volume and mute feedback when custom OSD is disabled.
 
 ## OSD Skin Themes
 

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,18 +13,9 @@ internal sealed partial class SettingsWindow
     private UIElement CreateHotkeysTab()
     {
         var panel = new DockPanel();
-        var toolbar = new DockPanel();
+        var toolbar = new StackPanel { Orientation = Orientation.Horizontal };
         DockPanel.SetDock(toolbar, Dock.Bottom);
         panel.Children.Add(toolbar);
-        var buttons = new StackPanel { Orientation = Orientation.Horizontal };
-        DockPanel.SetDock(buttons, Dock.Left);
-        toolbar.Children.Add(buttons);
-        var pager = new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-            HorizontalAlignment = HorizontalAlignment.Right,
-        };
-        toolbar.Children.Add(pager);
         var grid = new DataGrid
         {
             AutoGenerateColumns = false,
@@ -32,86 +24,22 @@ internal sealed partial class SettingsWindow
             CanUserResizeRows = false,
             IsReadOnly = true,
             SelectionMode = DataGridSelectionMode.Single,
-            RowHeight = 36,
+            MinRowHeight = 40,
             ColumnHeaderHeight = 34,
             HeadersVisibility = DataGridHeadersVisibility.Column,
+            ItemsSource = hotkeys,
         };
         ScrollViewer.SetHorizontalScrollBarVisibility(grid, ScrollBarVisibility.Disabled);
-        ScrollViewer.SetVerticalScrollBarVisibility(grid, ScrollBarVisibility.Disabled);
-        var page = 0;
-        const int pageSize = 8;
-        var pageLabel = new TextBlock
-        {
-            Width = 64,
-            TextAlignment = TextAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-        };
-        Button previous = null!,
-            next = null!;
-        void RefreshPage()
-        {
-            var pages = Math.Max(1, (hotkeys.Count + pageSize - 1) / pageSize);
-            page = Math.Clamp(page, 0, pages - 1);
-            var selected = grid.SelectedItem;
-            grid.ItemsSource = hotkeys.Skip(page * pageSize).Take(pageSize).ToArray();
-            if (selected is not null)
-            {
-                grid.SelectedItem = selected;
-            }
-
-            pageLabel.Text = $"{page + 1} / {pages}";
-            previous.IsEnabled = page > 0;
-            next.IsEnabled = page < pages - 1;
-        }
-
-        previous = Button(
-            "\u2039",
-            () =>
-            {
-                page--;
-                RefreshPage();
-            }
-        );
-        previous.MinWidth = 32;
-        previous.ToolTip = "Previous page";
-        next = Button(
-            "\u203a",
-            () =>
-            {
-                page++;
-                RefreshPage();
-            }
-        );
-        next.MinWidth = 32;
-        next.ToolTip = "Next page";
-        System.Windows.Automation.AutomationProperties.SetName(previous, "Previous page");
-        System.Windows.Automation.AutomationProperties.SetName(next, "Next page");
-        pager.Children.Add(previous);
-        pager.Children.Add(pageLabel);
-        pager.Children.Add(next);
-        hotkeys.CollectionChanged += (_, e) =>
-        {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-            {
-                page = (hotkeys.Count - 1) / pageSize;
-            }
-
-            RefreshPage();
-        };
-        RefreshPage();
-        grid.PreviewKeyDown += (_, e) =>
-        {
-            if (e.Key == Key.Delete && grid.SelectedItem is HotkeySettings selected)
-            {
-                hotkeys.Remove(selected);
-                e.Handled = true;
-            }
-        };
+        ScrollViewer.SetVerticalScrollBarVisibility(grid, ScrollBarVisibility.Auto);
+        var textStyle = new Style(typeof(TextBlock));
+        textStyle.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
+        textStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(6)));
         grid.Columns.Add(
             new DataGridTextColumn
             {
                 Header = "Action",
-                Binding = new Binding(nameof(HotkeySettings.Function)),
+                Binding = new Binding { Converter = new HotkeyDescriptionConverter(draft) },
+                ElementStyle = textStyle,
                 Width = new DataGridLength(1, DataGridLengthUnitType.Star),
             }
         );
@@ -120,33 +48,90 @@ internal sealed partial class SettingsWindow
             {
                 Header = "Shortcut",
                 Binding = new Binding { Converter = new ShortcutConverter() },
-                Width = 170,
+                ElementStyle = textStyle,
+                Width = 180,
             }
         );
-        grid.Columns.Add(
-            new DataGridCheckBoxColumn
+        void Delete()
+        {
+            if (grid.SelectedItem is HotkeySettings selected)
             {
-                Header = "OSD",
-                Binding = new Binding(nameof(HotkeySettings.ShowOsd)),
-                Width = 50,
+                hotkeys.Remove(selected);
             }
-        );
-        buttons.Children.Add(Button("Add", () => EditHotkey(true, grid)));
-        buttons.Children.Add(Button("Edit", () => EditHotkey(false, grid)));
-        buttons.Children.Add(
-            Button(
-                "Delete",
-                () =>
+        }
+        toolbar.Children.Add(Button("Add", () => EditHotkey(true, grid)));
+        var edit = Button("Edit", () => EditHotkey(false, grid));
+        var duplicate = Button("Duplicate", () => EditHotkey(true, grid, duplicate: true));
+        var delete = Button("Delete", Delete);
+        toolbar.Children.Add(edit);
+        toolbar.Children.Add(duplicate);
+        toolbar.Children.Add(delete);
+        void UpdateSelection()
+        {
+            edit.IsEnabled =
+                duplicate.IsEnabled =
+                delete.IsEnabled =
+                    grid.SelectedItem is HotkeySettings;
+        }
+        grid.SelectionChanged += (_, _) => UpdateSelection();
+        grid.IsVisibleChanged += (_, _) =>
+        {
+            if (grid.IsVisible)
+            {
+                foreach (var commit in commitEditors)
                 {
-                    if (grid.SelectedItem is HotkeySettings selected)
-                    {
-                        hotkeys.Remove(selected);
-                    }
+                    commit();
                 }
+                grid.Items.Refresh();
+            }
+        };
+        UpdateSelection();
+        grid.PreviewKeyDown += (_, e) =>
+        {
+            if (e.Key == Key.Delete)
+            {
+                Delete();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Enter)
+            {
+                EditHotkey(false, grid);
+                e.Handled = true;
+            }
+        };
+        grid.MouseDoubleClick += (_, e) =>
+        {
+            if (
+                ItemsControl.ContainerFromElement(grid, e.OriginalSource as DependencyObject)
+                is DataGridRow
             )
-        );
-        grid.MouseDoubleClick += (_, _) => EditHotkey(false, grid);
+            {
+                EditHotkey(false, grid);
+            }
+        };
         panel.Children.Add(grid);
         return panel;
+    }
+
+    private sealed class HotkeyDescriptionConverter(AppSettings settings) : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var hotkey = (HotkeySettings)value;
+            var action = HotkeyPresentation.ActionName(hotkey.Function);
+            var title = string.IsNullOrWhiteSpace(hotkey.Name) ? action : hotkey.Name;
+            if (hotkey.Function != HotkeyAction.SelectAudioDevices)
+            {
+                return title == action ? title : $"{title}\n{action}";
+            }
+            return $"{title}\n{HotkeyPresentation.Describe(hotkey, settings)}";
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        ) => throw new NotSupportedException();
     }
 }
