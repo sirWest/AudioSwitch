@@ -12,7 +12,10 @@ public sealed class AudioOperationException : Exception
         )
     {
         HResult = cause.HResult;
+        Operation = operation;
     }
+
+    public string Operation { get; }
 
     public static bool IsDeviceFailure(Exception exception) =>
         exception is AudioOperationException or COMException or InvalidCastException
@@ -27,7 +30,12 @@ public sealed class AudioOperationException : Exception
         {
             // Keep native failures identifiable even when .NET maps them to ArgumentException,
             // FileNotFoundException, etc. Do not hide unrelated managed programming errors.
-            throw new AudioOperationException(operation, Marshal.GetExceptionForHR(result, -1)!);
+            var error = new AudioOperationException(
+                operation,
+                Marshal.GetExceptionForHR(result, -1)!
+            );
+            AudioDiagnostics.Log.Failure(operation, error);
+            throw error;
         }
     }
 }

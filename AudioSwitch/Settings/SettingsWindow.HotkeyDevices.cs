@@ -23,6 +23,7 @@ internal sealed partial class SettingsWindow
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
+            AudioDiagnostics.Log.Failure($"list {direction} hotkey choices", ex);
             available = [];
         }
         var choices = new List<HotkeyOption<string>> { new("", "Leave unchanged") };

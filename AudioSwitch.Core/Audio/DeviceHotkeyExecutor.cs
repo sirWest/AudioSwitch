@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AudioSwitch.Core.Settings;
 
 namespace AudioSwitch.Core.Audio;
@@ -8,6 +7,7 @@ public sealed class DeviceHotkeyExecutor
     private readonly Func<Direction, IReadOnlyList<AudioDevice>> list;
     private readonly Action<AudioDevice, bool> select;
     private readonly Action<string, bool> mute;
+    public List<Exception> Failures { get; } = new();
 
     public DeviceHotkeyExecutor(AudioService audio)
         : this(
@@ -35,6 +35,7 @@ public sealed class DeviceHotkeyExecutor
 
     public IReadOnlyList<string> Execute(HotkeySettings hotkey, AppSettings settings)
     {
+        Failures.Clear();
         var completed = new List<string>();
         Action? unmuteRecording = null;
         // Finish requested microphone muting before changing playback routing.
@@ -128,7 +129,7 @@ public sealed class DeviceHotkeyExecutor
         }
     }
 
-    private static bool Try(Action action)
+    private bool Try(Action action)
     {
         try
         {
@@ -137,9 +138,8 @@ public sealed class DeviceHotkeyExecutor
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
-            Trace.TraceWarning(
-                $"Device hotkey skipped an unavailable audio operation: {ex.Message}"
-            );
+            Failures.Add(ex);
+            AudioDiagnostics.Log.Failure("execute device hotkey operation", ex);
             return false;
         }
     }

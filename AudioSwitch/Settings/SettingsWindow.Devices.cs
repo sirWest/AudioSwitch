@@ -235,7 +235,7 @@ internal sealed partial class SettingsWindow
 
     private static void AddTrayIconEditor(StackPanel editor, DeviceSettings editing)
     {
-        Label(editor, "Tray icon colour");
+        Label(editor, "Tray icon color");
         var previews = new StackPanel { Orientation = Orientation.Horizontal, Height = 32 };
         var previewAssets = new[]
         {

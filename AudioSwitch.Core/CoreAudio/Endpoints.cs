@@ -21,7 +21,8 @@
 */
 // Modified for AudioSwitch: focused wrappers with deterministic ownership,
 // explicit settings-independent properties, and safe notification teardown.
-using System.Diagnostics;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using AudioSwitch.Core.Audio;
 
@@ -33,6 +34,38 @@ internal sealed class MMDeviceEnumerator : IDisposable
 
     internal MMDeviceEnumerator(IMMDeviceEnumerator native) => this.native = native;
 
+    private readonly ConcurrentDictionary<string, DeviceSession> sessions = new();
+
+    internal void Invalidate(string? id)
+    {
+        if (id is null)
+        {
+            foreach (var session in sessions.Values)
+                session.Reset();
+        }
+        else if (sessions.TryGetValue(id, out var session))
+            session.Reset();
+    }
+
+    private MMDevice Wrap(IMMDevice nativeDevice, string? knownId = null, DataFlow? flow = null)
+    {
+        var device = new MMDevice(nativeDevice);
+        try
+        {
+            var id = knownId ?? device.ID;
+            device.Session = sessions.GetOrAdd(id, key => new DeviceSession(key));
+            device.Session.Note("id", id);
+            if (flow is not null)
+                device.Session.Note("direction", flow.ToString()!);
+            return device;
+        }
+        catch
+        {
+            device.Dispose();
+            throw;
+        }
+    }
+
     private IMMDeviceEnumerator? native;
     private bool disposed;
     private IMMDeviceEnumerator Native
@@ -40,7 +73,14 @@ internal sealed class MMDeviceEnumerator : IDisposable
         get
         {
             ObjectDisposedException.ThrowIf(disposed, this);
-            return native ??= (IMMDeviceEnumerator)new EnumeratorObject();
+            try
+            {
+                return native ??= (IMMDeviceEnumerator)new EnumeratorObject();
+            }
+            catch (Exception ex)
+            {
+                throw new AudioOperationException("create audio enumerator", ex);
+            }
         }
     }
 
@@ -48,14 +88,29 @@ internal sealed class MMDeviceEnumerator : IDisposable
 
     internal MMDevice GetDefaultAudioEndpoint(DataFlow flow, Role role)
     {
-        AudioOperationException.Check(Native.GetDefaultAudioEndpoint(flow, role, out var device));
-        return new(device);
+        AudioOperationException.Check(
+            Native.GetDefaultAudioEndpoint(flow, role, out var device),
+            $"get default {flow}/{role}"
+        );
+        return Wrap(device, flow: flow);
     }
 
     internal MMDevice GetDevice(string id)
     {
-        AudioOperationException.Check(Native.GetDevice(id, out var device));
-        return new(device);
+        AudioOperationException.Check(Native.GetDevice(id, out var device), $"get endpoint '{id}'");
+        var wrapped = Wrap(device, id);
+        try
+        {
+            wrapped.Session.Note("name", wrapped.FriendlyName);
+            wrapped.Session.Note("description", wrapped.DeviceFriendlyName);
+            wrapped.Session.Note("icon", wrapped.IconPath);
+            return wrapped;
+        }
+        catch
+        {
+            wrapped.Dispose();
+            throw;
+        }
     }
 
     // The caller owns each yielded device; the iterator owns the collection.
@@ -72,18 +127,34 @@ internal sealed class MMDeviceEnumerator : IDisposable
                 result = collection.Item(i, out var device);
                 if (result < 0)
                 {
-                    Trace.TraceWarning($"Skipping audio endpoint {i}: 0x{result:X8}");
+                    AudioDiagnostics.Log.Failure(
+                        $"enumerate {flow} endpoint index {i}",
+                        new AudioOperationException(
+                            "read collection item",
+                            Marshal.GetExceptionForHR(result, -1)!
+                        )
+                    );
                     continue;
                 }
 
-                yield return new(device);
+                MMDevice wrapped;
+                try
+                {
+                    wrapped = Wrap(device, flow: flow);
+                }
+                catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
+                {
+                    AudioDiagnostics.Log.Failure($"identify {flow} endpoint index {i}", ex);
+                    continue;
+                }
+                yield return wrapped;
             }
         }
         finally
         {
             if (Marshal.IsComObject(collection))
             {
-                Marshal.ReleaseComObject(collection);
+                MMDevice.Release(collection);
             }
         }
     }
@@ -115,7 +186,10 @@ internal sealed class MMDeviceEnumerator : IDisposable
                 var hr = instance.UnregisterEndpointNotificationCallback(callback);
                 if (hr < 0)
                 {
-                    Trace.TraceError($"Endpoint callback cleanup failed: 0x{hr:X8}");
+                    AudioDiagnostics.Log.Failure(
+                        "unregister endpoint callback",
+                        new COMException("Endpoint callback cleanup failed", hr)
+                    );
                 }
 
                 callback = null;
@@ -123,13 +197,13 @@ internal sealed class MMDeviceEnumerator : IDisposable
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
-            Trace.TraceWarning($"Endpoint callback cleanup failed: {ex.Message}");
+            AudioDiagnostics.Log.Failure("unregister endpoint callback", ex);
         }
         finally
         {
             if (Marshal.IsComObject(instance))
             {
-                Marshal.ReleaseComObject(instance);
+                MMDevice.Release(instance);
             }
         }
     }
@@ -137,7 +211,18 @@ internal sealed class MMDeviceEnumerator : IDisposable
 
 internal sealed class MMDevice(IMMDevice native) : IDisposable
 {
+    internal DeviceSession Session { get; set; } = new();
     private IMMDevice? native = native;
+
+    private void Check(int result, [CallerMemberName] string operation = "")
+    {
+        if (result >= 0)
+            return;
+        var error = new AudioOperationException(operation, Marshal.GetExceptionForHR(result, -1)!);
+        Session.Failed(operation, error);
+        throw error;
+    }
+
     private IMMDevice Native => native ?? throw new ObjectDisposedException(nameof(MMDevice));
 
     private AudioEndpointVolume? volume;
@@ -146,7 +231,8 @@ internal sealed class MMDevice(IMMDevice native) : IDisposable
     {
         get
         {
-            AudioOperationException.Check(Native.GetId(out var id));
+            Check(Native.GetId(out var id), "read endpoint ID");
+            Session.Note("id", id);
             return id;
         }
     }
@@ -155,21 +241,22 @@ internal sealed class MMDevice(IMMDevice native) : IDisposable
     {
         get
         {
-            AudioOperationException.Check(Native.GetState(out var state));
+            Check(Native.GetState(out var state), "read endpoint state");
+            Session.Note("state", state.ToString());
             return state;
         }
     }
 
     internal string FriendlyName =>
-        Property(new(new Guid("A45C254E-DF1C-4EFD-8020-67D146A850E0"), 14)) ?? "Unknown";
+        Property(new(new Guid("A45C254E-DF1C-4EFD-8020-67D146A850E0"), 14)) ?? "<Unknown name>";
     internal string DeviceFriendlyName =>
         Property(new(new Guid("A45C254E-DF1C-4EFD-8020-67D146A850E0"), 2)) ?? FriendlyName;
     internal string IconPath =>
         Property(new(new Guid("259ABFFC-50A7-47CE-AF08-68C9A7D73366"), 12)) ?? "";
     internal AudioEndpointVolume AudioEndpointVolume =>
-        volume ??= new(Activate<IAudioEndpointVolume>());
+        volume ??= new(Activate<IAudioEndpointVolume>(), Session);
     internal AudioMeterInformation AudioMeterInformation =>
-        meter ??= new(Activate<IAudioMeterInformation>());
+        meter ??= new(Activate<IAudioMeterInformation>(), Session);
 
     internal void ResetMeter()
     {
@@ -180,47 +267,79 @@ internal sealed class MMDevice(IMMDevice native) : IDisposable
 
     private T Activate<T>()
     {
-        var iid = typeof(T).GUID;
-        AudioOperationException.Check(Native.Activate(ref iid, 23, 0, out var result));
+        var operation = "activate " + typeof(T).Name;
+        if (Session.Blocked(operation) is { } previous)
+            throw previous;
         try
         {
-            return (T)result;
-        }
-        catch
-        {
-            if (Marshal.IsComObject(result))
+            var iid = typeof(T).GUID;
+            Check(Native.Activate(ref iid, 23, 0, out var result), operation);
+            try
             {
-                Marshal.ReleaseComObject(result);
+                var value = (T)result;
+                Session.Succeeded(operation);
+                return value;
             }
+            catch
+            {
+                Release(result);
+                throw;
+            }
+        }
+        catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
+        {
+            Session.Failed(operation, ex);
             throw;
         }
     }
 
     private string? Property(PropertyKey key)
     {
+        var operation = $"property {key.Format}/{key.Id}";
+        if (Session.TryProperty(operation, out var cached))
+            return cached;
+        if (Session.Blocked(operation) is not null)
+            return null;
         IPropertyStore? store = null;
         var value = new PropVariant();
         try
         {
-            AudioOperationException.Check(Native.OpenPropertyStore(0, out store));
-            AudioOperationException.Check(store.GetValue(ref key, out value));
+            Check(Native.OpenPropertyStore(0, out store), operation);
+            Check(store.GetValue(ref key, out value), operation);
             var text = value.String;
-            return string.IsNullOrWhiteSpace(text) ? null : text;
+            text = string.IsNullOrWhiteSpace(text) ? null : text;
+            Session.Property(operation, text);
+            return text;
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
-            Trace.TraceWarning(
-                $"Audio device property {key.Format}/{key.Id} unavailable: {ex.Message}"
-            );
+            Session.Failed(operation, ex);
             return null;
         }
         finally
         {
-            PropVariant.PropVariantClear(ref value);
-            if (store is not null && Marshal.IsComObject(store))
-            {
-                Marshal.ReleaseComObject(store);
-            }
+            var result = PropVariant.PropVariantClear(ref value);
+            if (result < 0)
+                AudioDiagnostics.Log.Failure(
+                    "clear property value",
+                    new COMException("Property cleanup failed", result),
+                    Session.Id,
+                    Session.Snapshot
+                );
+            Release(store);
+        }
+    }
+
+    internal static void Release(object? instance)
+    {
+        try
+        {
+            if (instance is not null && Marshal.IsComObject(instance))
+                Marshal.ReleaseComObject(instance);
+        }
+        catch (Exception ex)
+        {
+            AudioDiagnostics.Log.Failure("release COM object", ex);
         }
     }
 
@@ -246,15 +365,29 @@ internal sealed class MMDevice(IMMDevice native) : IDisposable
             {
                 if (Marshal.IsComObject(instance))
                 {
-                    Marshal.ReleaseComObject(instance);
+                    MMDevice.Release(instance);
                 }
             }
         }
     }
 }
 
-internal sealed class AudioEndpointVolume(IAudioEndpointVolume native) : IDisposable
+internal sealed class AudioEndpointVolume(
+    IAudioEndpointVolume native,
+    DeviceSession? session = null
+) : IDisposable
 {
+    private readonly DeviceSession session = session ?? new();
+
+    private void Check(int result, [CallerMemberName] string operation = "")
+    {
+        if (result >= 0)
+            return;
+        var error = new AudioOperationException(operation, Marshal.GetExceptionForHR(result, -1)!);
+        AudioDiagnostics.Log.Failure(operation, error, session.Id, session.Snapshot);
+        throw error;
+    }
+
     private IAudioEndpointVolume? native = native;
     private IAudioEndpointVolume Native =>
         native ?? throw new ObjectDisposedException(nameof(AudioEndpointVolume));
@@ -264,7 +397,7 @@ internal sealed class AudioEndpointVolume(IAudioEndpointVolume native) : IDispos
     {
         get
         {
-            AudioOperationException.Check(Native.GetMasterVolumeLevelScalar(out var value));
+            Check(Native.GetMasterVolumeLevelScalar(out var value), "read volume scalar");
             if (!float.IsFinite(value))
             {
                 throw new AudioOperationException(
@@ -277,7 +410,11 @@ internal sealed class AudioEndpointVolume(IAudioEndpointVolume native) : IDispos
         set
         {
             var context = Guid.Empty;
-            AudioOperationException.Check(Native.SetMasterVolumeLevelScalar(value, ref context));
+            session.Note(
+                "requestedVolume",
+                value.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+            );
+            Check(Native.SetMasterVolumeLevelScalar(value, ref context), "write volume scalar");
         }
     }
 
@@ -285,13 +422,14 @@ internal sealed class AudioEndpointVolume(IAudioEndpointVolume native) : IDispos
     {
         get
         {
-            AudioOperationException.Check(Native.GetMute(out var value));
+            Check(Native.GetMute(out var value), "read mute");
             return value;
         }
         set
         {
             var context = Guid.Empty;
-            AudioOperationException.Check(Native.SetMute(value, ref context));
+            session.Note("requestedMute", value.ToString());
+            Check(Native.SetMute(value, ref context), "write mute");
         }
     }
 
@@ -303,7 +441,7 @@ internal sealed class AudioEndpointVolume(IAudioEndpointVolume native) : IDispos
         }
 
         var candidate = new VolumeCallback(handler);
-        AudioOperationException.Check(Native.RegisterControlChangeNotify(candidate));
+        Check(Native.RegisterControlChangeNotify(candidate), "subscribe volume notifications");
         callback = candidate;
     }
 
@@ -325,26 +463,50 @@ internal sealed class AudioEndpointVolume(IAudioEndpointVolume native) : IDispos
                 var hr = instance.UnregisterControlChangeNotify(previous);
                 if (hr < 0)
                 {
-                    Trace.TraceError($"Volume callback cleanup failed: 0x{hr:X8}");
+                    AudioDiagnostics.Log.Failure(
+                        "unregister volume callback",
+                        new COMException("Volume callback cleanup failed", hr),
+                        session.Id,
+                        session.Snapshot
+                    );
                 }
             }
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
-            Trace.TraceWarning($"Volume callback cleanup failed: {ex.Message}");
+            AudioDiagnostics.Log.Failure(
+                "unregister volume callback",
+                ex,
+                session.Id,
+                session.Snapshot
+            );
         }
         finally
         {
             if (Marshal.IsComObject(instance))
             {
-                Marshal.ReleaseComObject(instance);
+                MMDevice.Release(instance);
             }
         }
     }
 }
 
-internal sealed class AudioMeterInformation(IAudioMeterInformation native) : IDisposable
+internal sealed class AudioMeterInformation(
+    IAudioMeterInformation native,
+    DeviceSession? session = null
+) : IDisposable
 {
+    private readonly DeviceSession session = session ?? new();
+
+    private void Check(int result, string operation)
+    {
+        if (result >= 0)
+            return;
+        var error = new AudioOperationException(operation, Marshal.GetExceptionForHR(result, -1)!);
+        AudioDiagnostics.Log.Failure(operation, error, session.Id, session.Snapshot);
+        throw error;
+    }
+
     private IAudioMeterInformation? native = native;
     internal IReadOnlyList<float> PeakValues
     {
@@ -352,7 +514,7 @@ internal sealed class AudioMeterInformation(IAudioMeterInformation native) : IDi
         {
             var instance =
                 native ?? throw new ObjectDisposedException(nameof(AudioMeterInformation));
-            AudioOperationException.Check(instance.GetMeteringChannelCount(out var count));
+            Check(instance.GetMeteringChannelCount(out var count), "read meter channel count");
             if (count == 0)
             {
                 return Array.Empty<float>();
@@ -368,7 +530,7 @@ internal sealed class AudioMeterInformation(IAudioMeterInformation native) : IDi
             }
 
             var peaks = new float[count];
-            AudioOperationException.Check(instance.GetChannelsPeakValues(count, peaks));
+            Check(instance.GetChannelsPeakValues(count, peaks), $"read {count} meter peaks");
             for (var i = 0; i < peaks.Length; i++)
             {
                 peaks[i] = float.IsFinite(peaks[i]) ? Math.Clamp(peaks[i], 0, 1) : 0;
@@ -382,7 +544,7 @@ internal sealed class AudioMeterInformation(IAudioMeterInformation native) : IDi
         var instance = Interlocked.Exchange(ref native, null);
         if (instance is not null && Marshal.IsComObject(instance))
         {
-            Marshal.ReleaseComObject(instance);
+            MMDevice.Release(instance);
         }
     }
 }
@@ -425,7 +587,7 @@ public sealed class VolumeCallback : IAudioEndpointVolumeCallback
         }
         catch (Exception ex)
         {
-            Trace.TraceError(ex.ToString());
+            AudioDiagnostics.Log.Failure("audio notification callback", ex);
             return 0;
         }
     }
@@ -449,17 +611,18 @@ public sealed class EndpointNotifications : IMMNotificationClient
         }
         catch (Exception ex)
         {
-            Trace.TraceError(ex.ToString());
+            AudioDiagnostics.Log.Failure("audio notification callback", ex);
         }
 
         return 0;
     }
 
-    public int OnDeviceStateChanged(string id, DeviceState state) => Notify(new(id));
+    public int OnDeviceStateChanged(string id, DeviceState state) =>
+        Notify(new(id) { RefreshCapabilities = true });
 
-    public int OnDeviceAdded(string id) => Notify(new(id));
+    public int OnDeviceAdded(string id) => Notify(new(id) { RefreshCapabilities = true });
 
-    public int OnDeviceRemoved(string id) => Notify(new(id));
+    public int OnDeviceRemoved(string id) => Notify(new(id) { RefreshCapabilities = true });
 
     public int OnDefaultDeviceChanged(DataFlow flow, Role role, string? id) =>
         Notify(
@@ -472,5 +635,6 @@ public sealed class EndpointNotifications : IMMNotificationClient
             )
         );
 
-    public int OnPropertyValueChanged(string id, PropertyKey key) => Notify(new(id));
+    public int OnPropertyValueChanged(string id, PropertyKey key) =>
+        Notify(new(id) { RefreshCapabilities = true });
 }

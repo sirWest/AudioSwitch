@@ -122,8 +122,14 @@ public sealed partial class App
         switch (hotkey.Function)
         {
             case HotkeyAction.SelectAudioDevices:
-                var completed = new DeviceHotkeyExecutor(Audio).Execute(hotkey, Settings);
+                var executor = new DeviceHotkeyExecutor(Audio);
+                var completed = executor.Execute(hotkey, Settings);
                 audioRefresh?.Request();
+                if (executor.Failures.Count > 0)
+                    throw new AggregateException(
+                        "Some device hotkey operations failed. Windows' actual device state is shown.",
+                        executor.Failures
+                    );
                 if (hotkey.ShowOsd && completed.Count > 0)
                 {
                     ShowFeedback(string.Join("; ", completed), null);

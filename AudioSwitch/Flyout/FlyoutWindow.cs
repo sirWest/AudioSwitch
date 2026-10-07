@@ -259,6 +259,12 @@ internal sealed partial class FlyoutWindow : Window, IDisposable
         openingAnimation.Start();
     }
 
+    internal void RefreshAfterFailure()
+    {
+        deviceList.SelectedItem = null;
+        Refresh();
+    }
+
     internal void Refresh()
     {
         audioReadFailed = false;

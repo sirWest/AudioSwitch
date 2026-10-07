@@ -3,7 +3,7 @@
 Switch your Windows playback and recording devices, adjust volume, and keep your
 favorite audio controls close at hand from the system tray or a keyboard shortcut.
 
-**AudioSwitch v3.0 is ready for community testing!** Please give it a try with
+**AudioSwitch v3.1 is the current release!** Please give it a try with
 your everyday audio setup and let me know how it goes.
 
 <img src="docs/images/AudioSwitch30.png" alt="AudioSwitch v3.0 showing playback and recording devices and volume controls" width="437" height="332">
@@ -28,13 +28,15 @@ code and changes, check how things behave, and keep an eye on unnecessary bulk
 or odd design choices. The aim is a useful, maintainable AudioSwitch that I can
 keep looking after. Thank you for giving it another look.
 
-## Coming in v3.1
+## What's New in v3.1
 
-The next release is in development. These changes are implemented in the current
-source but are not included in the v3.0 download. This list will grow as work on
-v3.1 continues.
+Get the latest version, **v3.1**, from the
+[releases page](https://github.com/sirWest/AudioSwitch/releases/tag/3.1).
 
 - Direct hotkeys for a specific playback device, recording device, or input/output pair.
+- Graceful audio-error handling, session-cached unsupported device capabilities,
+  confirmed default-device changes, and detailed rotating diagnostic logs.
+- An Open error log button in the Settings footer for easy access to diagnostics.
 - Windows playback volume and mute OSD when custom OSD is disabled, instead of
   volume notifications. Recording feedback still requires custom OSD.
 
@@ -76,9 +78,9 @@ The familiar AudioSwitch essentials are still here:
 
 ## Try It Out
 
-Get the v3.0 testing build from the
+Get the current v3.1 release from the
 [releases page](https://github.com/sirWest/AudioSwitch/releases).
-AudioSwitch v3.0 targets Windows 10 and 11. Windows 7, 8, and 8.1 are not
+AudioSwitch v3.1 targets Windows 10 and 11. Windows 7, 8, and 8.1 are not
 supported by its .NET 10 runtime; older Windows versions are outside this release's
 scope. Microsoft's official .NET 10 support on Windows 10 is limited to specific
 LTSC and Enterprise releases; see the
@@ -96,7 +98,7 @@ right-click cycles devices instead; Shift+right-click still opens the menu.
 Scroll over the flyout to adjust volume, or right-click the volume slider to mute.
 
 Upgrading from an older version? Start the tray app once to import your old
-`Settings.xml`. Your original file is kept, and any existing v3.0 settings are
+`Settings.xml`. Your original file is kept, and any existing v3.x settings are
 left in place. Settings now live in `%LOCALAPPDATA%/AudioSwitch/settings.json`.
 
 ## Help Test It

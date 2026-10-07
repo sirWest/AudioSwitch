@@ -14,7 +14,11 @@ public sealed class EndpointMonitor : IDisposable
     internal EndpointMonitor(MMDevice device)
     {
         this.device = device;
-        peaks = new(() => device.AudioMeterInformation.PeakValues, device.ResetMeter);
+        peaks = new(
+            () => device.AudioMeterInformation.PeakValues,
+            device.ResetMeter,
+            session: device.Session
+        );
         try
         {
             Id = device.ID;

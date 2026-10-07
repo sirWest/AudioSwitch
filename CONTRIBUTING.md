@@ -79,10 +79,11 @@ inspection. Build output, screenshots and local profiles belong in `artifacts`.
 
 ## Pull Requests
 
-Add user-visible development changes to [Coming in v3.1](README.md#coming-in-v31)
-as they are implemented. Keep unreleased behavior distinct from v3.0 features.
-When v3.1 ships, rename that section to "What's New in v3.1", remove the development
-notice, and update version labels and links in the README and technical reference.
+The current release is [v3.1](https://github.com/sirWest/AudioSwitch/releases/tag/3.1);
+its release notes are in [What's New in v3.1](README.md#whats-new-in-v31).
+Document future user-visible development changes separately as unreleased.
+For each release, update Directory.Build.props, the application manifest,
+version labels and release links in the README and technical reference.
 
 Describe the problem, resulting behavior and tests performed. For UI changes,
 include screenshots of the affected states. For audio or shell integration,

@@ -15,5 +15,9 @@ public sealed class AudioUnavailableException(string message) : InvalidOperation
                 or // AUDCLNT_E_DEVICE_INVALIDATED
                 unchecked((int)0x88890010)
                 or // AUDCLNT_E_SERVICE_NOT_RUNNING
-                unchecked((int)0x88890026); // AUDCLNT_E_RESOURCES_INVALIDATED
+                unchecked((int)0x88890026)
+                or // AUDCLNT_E_RESOURCES_INVALIDATED
+                unchecked((int)0x80010108)
+                or // RPC_E_DISCONNECTED
+                unchecked((int)0x800706BA); // RPC_S_SERVER_UNAVAILABLE
 }

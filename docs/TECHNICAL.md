@@ -6,10 +6,9 @@ AudioSwitch is a Windows tray application and command-line tool for switching
 audio devices, controlling volume, and configuring global shortcuts. It uses
 .NET 10 and WPF, with no third-party runtime packages.
 
-This reference describes the current source, including unreleased v3.1 changes.
-The v3.0 download does not include the new device-specific hotkeys or native
-Windows volume OSD behavior described below. See
-[Coming in v3.1](../README.md#coming-in-v31) for the evolving release notes.
+This reference describes the current [v3.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1),
+including device-specific hotkeys, native Windows volume OSD and audio diagnostics.
+See [What's New in v3.1](../README.md#whats-new-in-v31) for release notes.
 
 ## Requirements
 
@@ -78,7 +77,7 @@ legacy switch aliases, redirected stdout/stderr and exit codes: `0` for success,
 
 ## Settings and Upgrades
 
-### Device Hotkeys (Coming in v3.1)
+### Device Hotkeys (v3.1)
 
 The **Select audio devices** action stores independent playback and recording
 endpoint IDs and mute policies. Either direction can be left unchanged while
@@ -130,7 +129,7 @@ dotnet publish AudioSwitch/AudioSwitch.csproj -c Release -p:PublishProfile=Insta
 ```
 
 Publish output is `artifacts/publish/win-x64`. The installer is written to
-`artifacts/installer/AudioSwitchSetup-3.0-win-x64.exe`. These generated files
+`artifacts/installer/AudioSwitchSetup-3.1-win-x64.exe`. These generated files
 are ignored by Git. Both the profile and publish script rebuild that publish
 directory. The Installer profile uses this fixed output path; do not override it
 with `-o`. A missing Inno Setup compiler or a failed packaging step fails publishing.
@@ -141,8 +140,8 @@ installation. It does not automatically download or install the runtime.
 The donation link on the finish page is optional and unchecked by default.
 
 Product, assembly and file versions are centralized in `Directory.Build.props`.
-The application manifest also declares `3.0.0.0`. These build versions still
-identify v3.0 during development; update both for the v3.1 release. The installer
+The application manifest also declares `3.1.0.0`. Product/informational versions
+are `3.1`; assembly/file versions are `3.1.0.0`. The installer
 reads its version from the published application assembly, so its filename will
 follow that release version.
 
@@ -155,7 +154,7 @@ The default suite does not change system audio. Hardware switching, mixed-DPI
 monitor placement, hot-plug, sleep/resume and full-screen games require a Windows
 hardware pass.
 
-### Native Volume OSD (Coming in v3.1)
+### Native Volume OSD (v3.1)
 
 With custom OSD disabled, playback volume and mute feedback request
 the Windows media-key volume OSD; device changes use Windows notifications and
@@ -167,9 +166,9 @@ mute changes still apply silently, without notification spam or simulated keys
 that would change audio again. OSD windows are not guaranteed to appear over
 exclusive full-screen games.
 
-Custom OSD controls and previews are disabled while custom OSD is off. This
-native volume OSD path is an unreleased v3.1 change; v3.0 uses Windows notifications
-for volume and mute feedback when custom OSD is disabled.
+Custom OSD controls and previews are disabled while custom OSD is off. The native
+volume OSD is included in v3.1; v3.0 used Windows notifications for volume and
+mute feedback when custom OSD was disabled.
 
 ## OSD Skin Themes
 
@@ -220,6 +219,46 @@ regenerate them. The `device-gallery-*.png` sheets use native pixel sizes for
 review; the desktop backgrounds also reveal contrast issues in translucent skins.
 
 The default skin's PNGs can be regenerated with `tools/Build-DefaultOsd.ps1`.
+
+## Audio Failure Diagnostics (v3.1)
+
+Native failures preserve their HRESULT and operation, including unknown driver
+codes and HRESULTs that .NET maps to file or argument exceptions. Default changes
+are attempted once per requested role and checked against Windows afterwards.
+Partial role/pair success is retained, not rolled back; failed commands refresh
+the flyout and produce a throttled failure notification. Optional shell OSD
+failures do not replay an already-completed audio write.
+
+`errors.log`, beside the settings file, contains JSON lines with timestamps,
+operation, HRESULT, stack/cause, app version/build ID, Windows version and
+architecture, runtime, process/session/thread and available device observations.
+Open it in Notepad using **Open error log** in the bottom-left corner of Settings,
+available from every tab.
+Device IDs, names, property keys, activation results and requested values can
+appear; review these before sharing logs publicly. Logging uses cached managed
+observations only, never additional COM queries. Missing observations are not
+invented; property failures and diagnostic-collection failures are recorded.
+Logging and cleanup are best effort and cannot replace the original exception.
+
+The log rotates at approximately 1 MiB to `errors.log.1`, retaining one backup.
+Duplicate operation/device/HRESULT records are suppressed for one minute, with
+the suppressed count in the next matching record. Successful retried reads emit
+recovery records. Field lengths and deduplication entries are bounded.
+
+Device sessions cache metadata and explicit unsupported results (`E_NOINTERFACE`,
+`E_NOTIMPL`, `ERROR_NOT_SUPPORTED`) across wrapper/monitor recreation. State,
+arrival/removal and property notifications invalidate these caches; restarting
+also clears them. Default-role changes alone do not. Failed names display
+`<Unknown name>` instead of hiding the endpoint. Other property/activation
+failures have a 30-second cooldown (2 seconds for unavailable endpoints); optional
+meter reads have a 5-second cooldown. Existing flyout recovery reacquires stale
+monitors, including disconnected COM/RPC proxies. No automatic write retries or
+Windows service restarts are performed.
+
+Capabilities are learned lazily from normal calls, not by exhaustive startup
+probing. A silent meter is valid. Hardware-support flags do not prove an interface
+is unavailable: Windows may provide a software implementation, as documented for
+[IAudioMeterInformation](https://learn.microsoft.com/en-us/windows/win32/api/endpointvolume/nf-endpointvolume-iaudiometerinformation-queryhardwaresupport).
 
 ## License
 

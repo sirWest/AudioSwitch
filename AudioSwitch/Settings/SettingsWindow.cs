@@ -82,6 +82,9 @@ internal sealed partial class SettingsWindow : Window
         var cancel = Button("Cancel", Close);
         cancel.IsCancel = true;
         buttons.Children.Add(cancel);
+        var openLog = Button("Open error log", OpenErrorLog);
+        DockPanel.SetDock(openLog, Dock.Left);
+        bottom.Children.Add(openLog);
         bottom.Children.Add(statusText);
         root.Children.Add(tabs);
         Tab("General", CreateGeneralTab());

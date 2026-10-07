@@ -18,6 +18,7 @@ public sealed class AudioHardwareFailureTests
     [InlineData(unchecked((int)0x8007001F))] // #146/#130: driver I/O failure
     [InlineData(unchecked((int)0x80070006))] // invalid handle
     [InlineData(Fail)] // #157/#168: default endpoint operations
+    [InlineData(unchecked((int)0x81234567))] // unknown vendor failure
     public void NativeFailuresKeepTheirCodeAndCause(int result)
     {
         var error = Assert.Throws<AudioOperationException>(() =>
@@ -125,8 +126,8 @@ public sealed class AudioHardwareFailureTests
         var devices = audio.List(Direction.Playback);
         Assert.Equal(2, devices.Count);
         var fallback = Assert.Single(devices, d => d.Id == "broken-properties");
-        Assert.Equal("Unknown", fallback.Name);
-        Assert.Equal("Unknown", fallback.Description);
+        Assert.Equal("<Unknown name>", fallback.Name);
+        Assert.Equal("<Unknown name>", fallback.Description);
         Assert.Equal("", fallback.IconPath);
         Assert.Contains(devices, d => d.Id == "healthy" && d.Name == "Test endpoint");
     }
@@ -161,6 +162,106 @@ public sealed class AudioHardwareFailureTests
             audio.SetDefault("removed", AudioRole.Multimedia)
         );
         Assert.True(AudioUnavailableException.IsUnavailable(error));
+    }
+
+    [Fact]
+    public void PropertiesAreCachedAcrossWrappersAndInvalidatedByDeviceChangesOnly()
+    {
+        var native = new TestEnumerator();
+        var endpoint = new TestDevice("device") { PropertyResult = unchecked((int)0x80004002) };
+        native.Devices.Add(endpoint);
+        using var audio = new AudioService(new MMDeviceEnumerator(native));
+        Assert.Equal("<Unknown name>", Assert.Single(audio.List(Direction.Playback)).Name);
+        var reads = endpoint.PropertyReads;
+        endpoint.PropertyResult = 0;
+        native.Callback!.OnDefaultDeviceChanged(DataFlow.Render, Role.Multimedia, "device");
+        Assert.Equal("<Unknown name>", Assert.Single(audio.List(Direction.Playback)).Name);
+        Assert.Equal(reads, endpoint.PropertyReads);
+        native.Callback.OnPropertyValueChanged("device", default);
+        Assert.Equal("Test endpoint", Assert.Single(audio.List(Direction.Playback)).Name);
+        Assert.True(endpoint.PropertyReads > reads);
+    }
+
+    [Fact]
+    public void ActivationFailureRecoversOnSameIdAfterDeviceNotification()
+    {
+        var native = new TestEnumerator();
+        var endpoint = new TestDevice("device") { ActivateResult = unchecked((int)0x80070002) };
+        native.Devices.Add(endpoint);
+        using var audio = new AudioService(new MMDeviceEnumerator(native));
+        Assert.Throws<AudioOperationException>(() => audio.Monitor("device"));
+        endpoint.ActivateResult = 0;
+        // No immediate retry storm while the endpoint is still in its cooldown.
+        Assert.Throws<AudioOperationException>(() => audio.Monitor("device"));
+        Assert.Equal(1, endpoint.Activations);
+        native.Callback!.OnDeviceStateChanged("device", DeviceState.Active);
+        using var monitor = audio.Monitor("device");
+        Assert.Equal(.5f, monitor.State.Volume);
+        Assert.Equal(2, endpoint.Activations);
+    }
+
+    [Theory]
+    [InlineData(Fail)]
+    [InlineData(0)]
+    public void FailedOrUnconfirmedSwitchDoesNotChangeReportedDefaultOrReplayWrite(int result)
+    {
+        var native = new TestEnumerator { DefaultResult = 0 };
+        native.Devices.Add(new TestDevice("old"));
+        native.Devices.Add(new TestDevice("new"));
+        native.Defaults[(DataFlow.Render, Role.Multimedia)] = "old";
+        var writes = 0;
+        using var audio = new AudioService(
+            new MMDeviceEnumerator(native),
+            (_, _) =>
+            {
+                writes++;
+                return result;
+            }
+        );
+        Assert.Throws<AudioOperationException>(() => audio.SetDefault("new", AudioRole.Multimedia));
+        Assert.Equal(1, writes);
+        Assert.Equal("old", Assert.Single(audio.List(Direction.Playback), d => d.Multimedia).Id);
+    }
+
+    [Fact]
+    public void PartialRoleSwitchRetainsActualRoles()
+    {
+        var native = new TestEnumerator { DefaultResult = 0 };
+        native.Devices.Add(new TestDevice("old"));
+        native.Devices.Add(new TestDevice("new"));
+        native.Defaults[(DataFlow.Render, Role.Multimedia)] = "old";
+        native.Defaults[(DataFlow.Render, Role.Communications)] = "old";
+        using var audio = new AudioService(
+            new MMDeviceEnumerator(native),
+            (id, role) =>
+            {
+                if (role == AudioRole.Communications)
+                    return Fail;
+                native.Defaults[(DataFlow.Render, (Role)role)] = id;
+                return 0;
+            }
+        );
+        Assert.Throws<AudioOperationException>(() =>
+            audio.SetDefault("new", AudioRole.Multimedia, AudioRole.Communications)
+        );
+        Assert.Equal("new", audio.DefaultId(Direction.Playback));
+        Assert.Equal("old", audio.DefaultId(Direction.Playback, AudioRole.Communications));
+    }
+
+    [Fact]
+    public void ReadBackFailureDoesNotReplaySuccessfulVolumeWrite()
+    {
+        var native = new TestEnumerator();
+        var endpoint = new TestDevice("device") { ActivateResult = 0 };
+        native.Devices.Add(endpoint);
+        endpoint.Volume.ReadResult = unchecked((int)0x80070006);
+        using var audio = new AudioService(new MMDeviceEnumerator(native));
+        var error = Assert.Throws<AudioOperationException>(() => audio.SetVolume("device", .8f));
+        Assert.Equal("read volume scalar", error.Operation);
+        Assert.Equal(.8f, endpoint.Volume.Value);
+        Assert.Equal(1, endpoint.Volume.Writes);
+        endpoint.Volume.ReadResult = 0;
+        Assert.Equal(.8f, audio.State("device").Volume);
     }
 
     private sealed class TestClock : TimeProvider
@@ -209,15 +310,21 @@ public sealed class AudioHardwareFailureTests
         internal int IconResult;
         internal int StateResult;
         internal int IdResult;
+        internal int PropertyReads;
+        internal int ActivateResult = Fail;
+        internal int Activations;
+        internal TestVolume Volume = new();
 
         public int Activate(ref Guid iid, uint context, nint parameters, out object instance)
         {
-            instance = null!;
-            return Fail;
+            Activations++;
+            instance = Volume;
+            return ActivateResult;
         }
 
         public int OpenPropertyStore(uint access, out IPropertyStore store)
         {
+            PropertyReads++;
             store = this;
             return PropertyResult;
         }
@@ -269,6 +376,8 @@ public sealed class AudioHardwareFailureTests
         internal readonly List<TestDevice> Devices = [];
         internal int DefaultResult = Removed;
         internal int FailedIndex = -1;
+        internal IMMNotificationClient? Callback;
+        internal Dictionary<(DataFlow, Role), string> Defaults = new();
 
         public int EnumAudioEndpoints(
             DataFlow flow,
@@ -282,17 +391,33 @@ public sealed class AudioHardwareFailureTests
 
         public int GetDefaultAudioEndpoint(DataFlow flow, Role role, out IMMDevice device)
         {
-            device = null!;
-            return DefaultResult;
+            device = Defaults.TryGetValue((flow, role), out var id)
+                ? Devices.FirstOrDefault(d =>
+                {
+                    d.GetId(out var value);
+                    return value == id;
+                })!
+                : null!;
+            return DefaultResult != 0 ? DefaultResult
+                : device is null ? Removed
+                : 0;
         }
 
         public int GetDevice(string id, out IMMDevice device)
         {
-            device = null!;
-            return Removed;
+            device = Devices.FirstOrDefault(d =>
+            {
+                d.GetId(out var value);
+                return value == id;
+            })!;
+            return device is null ? Removed : 0;
         }
 
-        public int RegisterEndpointNotificationCallback(IMMNotificationClient client) => 0;
+        public int RegisterEndpointNotificationCallback(IMMNotificationClient client)
+        {
+            Callback = client;
+            return 0;
+        }
 
         public int UnregisterEndpointNotificationCallback(IMMNotificationClient client) => 0;
 
@@ -306,6 +431,98 @@ public sealed class AudioHardwareFailureTests
         {
             device = Devices[(int)index];
             return index == FailedIndex ? Fail : 0;
+        }
+    }
+
+    private sealed class TestVolume : IAudioEndpointVolume
+    {
+        internal float Value = .5f;
+        internal int ReadResult;
+        internal int Writes;
+        private bool muted;
+
+        public int RegisterControlChangeNotify(IAudioEndpointVolumeCallback callback) => 0;
+
+        public int UnregisterControlChangeNotify(IAudioEndpointVolumeCallback callback) => 0;
+
+        public int GetChannelCount(out uint count)
+        {
+            count = 2;
+            return 0;
+        }
+
+        public int SetMasterVolumeLevel(float value, ref Guid context) => 0;
+
+        public int SetMasterVolumeLevelScalar(float value, ref Guid context)
+        {
+            Value = value;
+            Writes++;
+            return 0;
+        }
+
+        public int GetMasterVolumeLevel(out float value)
+        {
+            value = Value;
+            return 0;
+        }
+
+        public int GetMasterVolumeLevelScalar(out float value)
+        {
+            value = Value;
+            return ReadResult;
+        }
+
+        public int SetChannelVolumeLevel(uint channel, float value, ref Guid context) => 0;
+
+        public int SetChannelVolumeLevelScalar(uint channel, float value, ref Guid context) => 0;
+
+        public int GetChannelVolumeLevel(uint channel, out float value)
+        {
+            value = Value;
+            return 0;
+        }
+
+        public int GetChannelVolumeLevelScalar(uint channel, out float value)
+        {
+            value = Value;
+            return 0;
+        }
+
+        public int SetMute(bool value, ref Guid context)
+        {
+            muted = value;
+            return 0;
+        }
+
+        public int GetMute(out bool value)
+        {
+            value = muted;
+            return 0;
+        }
+
+        public int GetVolumeStepInfo(out uint step, out uint count)
+        {
+            step = 0;
+            count = 100;
+            return 0;
+        }
+
+        public int VolumeStepUp(ref Guid context) => 0;
+
+        public int VolumeStepDown(ref Guid context) => 0;
+
+        public int QueryHardwareSupport(out uint mask)
+        {
+            mask = 0;
+            return 0;
+        }
+
+        public int GetVolumeRange(out float min, out float max, out float increment)
+        {
+            min = 0;
+            max = 1;
+            increment = .01f;
+            return 0;
         }
     }
 }

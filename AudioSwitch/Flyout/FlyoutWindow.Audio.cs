@@ -40,7 +40,7 @@ internal sealed partial class FlyoutWindow
         audioReadFailed = true;
         if (!reportedAudioFailure)
         {
-            System.Diagnostics.Trace.TraceWarning($"Audio device refresh failed: {ex.Message}");
+            AudioDiagnostics.Log.Failure("refresh flyout audio", ex, defaultDevice?.Id);
             reportedAudioFailure = true;
         }
         recoveryTimer.Start();

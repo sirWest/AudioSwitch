@@ -1,19 +1,28 @@
-using System.Diagnostics;
-
 namespace AudioSwitch.Core.Audio;
 
 internal sealed class PeakReader(
     Func<IReadOnlyList<float>> read,
     Action reset,
-    TimeProvider? timeProvider = null
+    TimeProvider? timeProvider = null,
+    DeviceSession? session = null
 )
 {
     private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
+    private readonly DeviceSession session = session ?? new(timeProvider: timeProvider);
+    private int generation = session?.Generation ?? 0;
     private DateTimeOffset retryAt;
     private bool failed;
 
     internal (float Left, float Right) Read()
     {
+        if (generation != session.Generation)
+        {
+            generation = session.Generation;
+            retryAt = default;
+            reset();
+        }
+        if (session.Blocked("read peak levels") is not null)
+            return (0, 0);
         if (clock.GetUtcNow() < retryAt)
         {
             return (0, 0);
@@ -22,6 +31,8 @@ internal sealed class PeakReader(
         try
         {
             var channels = read();
+            if (failed)
+                session.Succeeded("read peak levels");
             failed = false;
             retryAt = default;
             // Mono endpoints drive both meters; additional channels are not displayed.
@@ -39,11 +50,7 @@ internal sealed class PeakReader(
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
-            if (!failed)
-            {
-                Trace.TraceWarning($"Audio metering unavailable: {ex.Message}");
-            }
-
+            session.Failed("read peak levels", ex, TimeSpan.FromSeconds(5));
             failed = true;
             retryAt = clock.GetUtcNow() + TimeSpan.FromSeconds(5);
             reset();

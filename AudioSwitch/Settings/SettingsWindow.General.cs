@@ -1,5 +1,8 @@
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using AudioSwitch.Core.Audio;
 using AudioSwitch.Core.Settings;
 using AudioSwitch.Shell;
 
@@ -44,7 +47,7 @@ internal sealed partial class SettingsWindow
             Check("Also change the communications default", draft, nameof(draft.AlsoCommunications))
         );
         panel.Children.Add(Check("Show hardware names", draft, nameof(draft.ShowHardwareName)));
-        panel.Children.Add(Check("Colour VU meters", draft, nameof(draft.ColorVu)));
+        panel.Children.Add(Check("Color VU meters", draft, nameof(draft.ColorVu)));
         panel.Children.Add(
             Check("Close the device list after selecting", draft, nameof(draft.CloseAfterSelecting))
         );
@@ -82,5 +85,37 @@ internal sealed partial class SettingsWindow
         panel.Children.Add(new ScrollModifierPicker(draft));
         panel.Children.Add(Check("Show OSD when scrolling", draft, nameof(draft.ScrollOsd)));
         return panel;
+    }
+
+    private void OpenErrorLog()
+    {
+        try
+        {
+            if (!File.Exists(AudioDiagnostics.LogPath))
+            {
+                MessageBox.Show(
+                    this,
+                    "No error log has been created yet.",
+                    "AudioSwitch",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+                return;
+            }
+
+            var start = new ProcessStartInfo(
+                Path.Combine(Environment.SystemDirectory, "notepad.exe")
+            )
+            {
+                UseShellExecute = false,
+            };
+            start.ArgumentList.Add(AudioDiagnostics.LogPath);
+            using var process = Process.Start(start);
+        }
+        catch (Exception ex)
+        {
+            AudioDiagnostics.Log.Failure("open error log", ex);
+            statusText.Text = "Could not open the error log: " + ex.Message;
+        }
     }
 }

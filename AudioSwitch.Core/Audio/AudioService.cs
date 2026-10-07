@@ -18,7 +18,12 @@ public sealed class AudioService : IDisposable
     internal AudioService(MMDeviceEnumerator enumerator)
     {
         this.enumerator = enumerator;
-        notifications = new(change => Changed?.Invoke(change));
+        notifications = new(change =>
+        {
+            if (change.RefreshCapabilities)
+                this.enumerator.Invalidate(change.Id);
+            Changed?.Invoke(change);
+        });
         EnsureNotifications();
     }
 
@@ -36,7 +41,7 @@ public sealed class AudioService : IDisposable
         }
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
-            System.Diagnostics.Trace.TraceWarning($"Audio notifications unavailable: {ex.Message}");
+            AudioDiagnostics.Log.Failure("register audio notifications", ex);
             enumerator.Dispose();
             enumerator = new();
         }
@@ -56,9 +61,7 @@ public sealed class AudioService : IDisposable
         {
             if (!AudioUnavailableException.IsUnavailable(ex))
             {
-                System.Diagnostics.Trace.TraceWarning(
-                    $"Default {direction}/{role} unavailable: {ex.Message}"
-                );
+                AudioDiagnostics.Log.Failure($"read default {direction}/{role}", ex);
             }
             return null;
         }
@@ -94,24 +97,33 @@ public sealed class AudioService : IDisposable
                         {
                             continue;
                         }
-                        result.Add(
-                            new(
-                                id,
-                                device.FriendlyName,
-                                device.DeviceFriendlyName,
-                                device.IconPath,
-                                direction,
-                                id == multimedia,
-                                id == communications,
-                                id == console
-                            )
+                        var entry = new AudioDevice(
+                            id,
+                            device.FriendlyName,
+                            device.DeviceFriendlyName,
+                            device.IconPath,
+                            direction,
+                            id == multimedia,
+                            id == communications,
+                            id == console
                         );
+                        device.Session.Note("name", entry.Name);
+                        device.Session.Note("description", entry.Description);
+                        device.Session.Note("icon", entry.IconPath);
+                        device.Session.Note(
+                            "defaults",
+                            $"multimedia={entry.Multimedia}; communications={entry.Communications}; console={entry.Console}"
+                        );
+                        result.Add(entry);
                     }
                     catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
                     {
                         // A collection snapshot can outlive one of its endpoints.
-                        System.Diagnostics.Trace.TraceWarning(
-                            $"Skipping unavailable audio endpoint: {ex.Message}"
+                        AudioDiagnostics.Log.Failure(
+                            "enumerate endpoint",
+                            ex,
+                            device.Session.Id,
+                            device.Session.Snapshot
                         );
                     }
                 }
@@ -120,6 +132,7 @@ public sealed class AudioService : IDisposable
         catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
         {
             // A disconnected audio service can leave the enumerator's COM proxy stale.
+            AudioDiagnostics.Log.Failure($"enumerate {direction}", ex);
             enumerator.Dispose();
             enumerator = new();
             notificationsRegistered = false;
@@ -169,21 +182,61 @@ public sealed class AudioService : IDisposable
             throw new AudioUnavailableException("The selected audio device is no longer active.");
         }
 
-        var instance = new PolicyConfigObject();
+        object? instance = null;
         try
         {
-            var policy = (IPolicyConfig)instance;
+            IPolicyConfig? policy = null;
+            if (setDefault is null)
+            {
+                try
+                {
+                    policy = (IPolicyConfig)(instance = new PolicyConfigObject());
+                }
+                catch (Exception ex)
+                {
+                    throw new AudioOperationException("create default-device policy interface", ex);
+                }
+            }
             foreach (var role in roles.Distinct())
             {
-                var result = policy.SetDefaultEndpoint(id, (Role)role);
+                device.Session.Note("requestedRole", role.ToString());
+                var result = setDefault is not null
+                    ? setDefault(id, role)
+                    : policy!.SetDefaultEndpoint(id, (Role)role);
                 AudioOperationException.Check(result, $"set the {role} default device '{id}'");
+                // Do not claim success if Windows did not actually adopt the requested default.
+                if (
+                    DefaultId(Direction.Playback, role) != id
+                    && DefaultId(Direction.Recording, role) != id
+                )
+                    throw new AudioOperationException(
+                        $"verify {role} default '{id}'",
+                        new InvalidOperationException(
+                            "Windows did not confirm the requested default device."
+                        )
+                    );
             }
+        }
+        catch (Exception ex)
+        {
+            AudioDiagnostics.Log.Failure(
+                "select default endpoint",
+                ex,
+                id,
+                device.Session.Snapshot
+            );
+            throw;
         }
         finally
         {
-            Marshal.ReleaseComObject(instance);
+            MMDevice.Release(instance);
         }
     }
+
+    private readonly Func<string, AudioRole, int>? setDefault;
+
+    internal AudioService(MMDeviceEnumerator enumerator, Func<string, AudioRole, int> setDefault)
+        : this(enumerator) => this.setDefault = setDefault;
 
     public void Select(AudioDevice device, AppSettings settings)
     {

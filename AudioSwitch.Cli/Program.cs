@@ -63,6 +63,7 @@ internal static partial class Program
         }
         catch (Exception ex)
         {
+            AudioDiagnostics.Log.Failure("CLI command", ex);
             Console.Error.WriteLine(ex.Message);
             return 3;
         }

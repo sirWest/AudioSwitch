@@ -1,7 +1,6 @@
-# Device Hotkeys (Coming in v3.1)
+# Device Hotkeys (v3.1)
 
-These options are available in the development source and are planned for v3.1;
-they are not available in the v3.0 download.
+These options are included in the current [v3.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1).
 
 In Settings > Hotkeys, add a shortcut with the action **Select audio devices**.
 Choose either or both devices, leaving the other direction unchanged when needed.
@@ -20,8 +19,10 @@ mute shortcuts. Excluded devices can still be selected. Hidden devices participa
 unless excluded. The hotkey editor's **Also change the communications default**
 checkbox initially matches General settings; saving stores that choice for the hotkey.
 
-Unavailable targets are skipped silently and retained by device ID for the next
+Missing targets are skipped silently and retained by device ID for the next
 press after reconnecting or resuming. Available members of a pair still work.
+An attempted operation that fails is logged and reported with a Windows notification;
+other pair members can still succeed. The flyout refreshes actual Windows state.
 If an explicit target is missing, its category's mute-other-devices action is
 also skipped. Changes apply when the shortcut is pressed; this is not a rule
 that continuously mutes newly connected devices.

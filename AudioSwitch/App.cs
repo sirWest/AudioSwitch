@@ -126,7 +126,7 @@ public sealed partial class App : Application
                 RunSafely(() =>
                 {
                     Audio.ApplyStartup(Settings);
-                    tray.Notify("Startup audio preferences applied.");
+                    audioRefresh?.Request();
                 });
             }
 
@@ -158,45 +158,40 @@ public sealed partial class App : Application
         {
             action();
         }
-        catch (Exception ex) when (AudioUnavailableException.IsUnavailable(ex))
+        catch (Exception ex)
         {
-            // Hotkeys and clicks can race endpoint-removal notifications.
+            // Refresh once, without recursively routing a failed refresh through this command.
             try
             {
-                flyout.Refresh();
+                flyout?.RefreshAfterFailure();
             }
             catch (Exception refreshError)
             {
-                Report(refreshError);
+                AudioDiagnostics.Log.Failure("refresh after failed command", refreshError);
             }
-        }
-        catch (Exception ex) when (AudioOperationException.IsDeviceFailure(ex))
-        {
-            // A role switch may have partially succeeded. Read Windows' actual state.
-            audioRefresh?.Request();
-            Report(ex);
-        }
-        catch (Exception ex)
-        {
             Report(ex);
         }
     }
 
+    private string? lastFailure;
+    private DateTime lastFailureAt;
+
     private void Report(Exception ex)
     {
+        AudioDiagnostics.Log.Failure("application command", ex);
+        var key = $"{ex.GetType().Name}:{ex.HResult:X8}";
+        if (key == lastFailure && DateTime.UtcNow - lastFailureAt < TimeSpan.FromSeconds(10))
+            return;
+        lastFailure = key;
+        lastFailureAt = DateTime.UtcNow;
         try
         {
-            var folder = Path.GetDirectoryName(SettingsStore.DefaultPath)!;
-            Directory.CreateDirectory(folder);
-            File.AppendAllText(
-                Path.Combine(folder, "errors.log"),
-                $"{DateTimeOffset.Now:O} {ex}\n"
-            );
+            tray?.Notify("Operation failed: " + ex.Message);
         }
-        catch (IOException) { }
-        catch (UnauthorizedAccessException) { }
-
-        tray?.Notify(ex.Message);
+        catch (Exception notificationError)
+        {
+            AudioDiagnostics.Log.Failure("show failure notification", notificationError);
+        }
     }
 
     protected override void OnExit(ExitEventArgs e)

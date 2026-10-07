@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using AudioSwitch.Core.Audio;
 
 namespace AudioSwitch.Shell;
 
@@ -30,21 +31,34 @@ internal static partial class Native
             return true;
         }
         catch (Exception ex)
-            when (ex is COMException or InvalidCastException or UnauthorizedAccessException)
         {
             // Shell versions/sessions without this interface must not spam notifications.
-            System.Diagnostics.Trace.TraceWarning($"Windows volume OSD unavailable: {ex.Message}");
+            AudioDiagnostics.Log.Failure("show Windows volume OSD", ex);
             return false;
         }
         finally
         {
             if (dispatcher is not null)
             {
-                Marshal.ReleaseComObject(dispatcher);
+                try
+                {
+                    Marshal.ReleaseComObject(dispatcher);
+                }
+                catch (Exception ex)
+                {
+                    AudioDiagnostics.Log.Failure("release OSD dispatcher", ex);
+                }
             }
             if (shell is not null)
             {
-                Marshal.ReleaseComObject(shell);
+                try
+                {
+                    Marshal.ReleaseComObject(shell);
+                }
+                catch (Exception ex)
+                {
+                    AudioDiagnostics.Log.Failure("release OSD shell", ex);
+                }
             }
         }
     }
