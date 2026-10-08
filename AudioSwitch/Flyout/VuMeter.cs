@@ -47,11 +47,7 @@ public sealed class VuMeter : FrameworkElement
         base.OnRender(dc);
         var count = 14;
         var width = Math.Max(0, (ActualWidth - (count - 1) * 2) / count);
-        dc.DrawRectangle(
-            Colorful ? Brushes.Black : Brushes.Transparent,
-            null,
-            new Rect(RenderSize)
-        );
+        dc.DrawRectangle(Brushes.Transparent, null, new Rect(RenderSize));
         var dark =
             Surface is SolidColorBrush surface
             && (surface.Color.R * .2126 + surface.Color.G * .7152 + surface.Color.B * .0722) < 128;
