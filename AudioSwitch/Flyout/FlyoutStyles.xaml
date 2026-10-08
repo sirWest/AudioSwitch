@@ -52,13 +52,6 @@
                 Value="{DynamicResource SubtleFillColorSecondaryBrush}"
               />
             </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-              <Setter
-                TargetName="Surface"
-                Property="Background"
-                Value="{DynamicResource SubtleFillColorSecondaryBrush}"
-              />
-            </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Opacity" Value="0.5" />
             </Trigger>
