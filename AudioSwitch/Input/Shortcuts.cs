@@ -24,7 +24,10 @@ internal sealed class Shortcuts : IDisposable
     private Dictionary<int, HotkeySettings> active = [];
     private int nextId = 100;
     private nint mouseHook;
+    private nint keyboardHook;
     private readonly Native.HookProc callback;
+    private readonly Native.HookProc keyboardCallback;
+    private readonly ScrollModifierSuppression modifierSuppression = new();
     private AppSettings settings = new();
     internal event Action<HotkeySettings>? Pressed;
     internal event Action<int>? Scrolled;
@@ -34,6 +37,7 @@ internal sealed class Shortcuts : IDisposable
         this.tray = tray;
         this.dispatcher = dispatcher;
         callback = Mouse;
+        keyboardCallback = Keyboard;
         tray.Hotkey += OnHotkey;
     }
 
@@ -89,10 +93,24 @@ internal sealed class Shortcuts : IDisposable
 
             if (value.VolumeScroll && mouseHook == 0)
             {
+                keyboardHook = Native.SetWindowsHookEx(
+                    13,
+                    keyboardCallback,
+                    Native.GetModuleHandle(null),
+                    0
+                );
+                if (keyboardHook == 0)
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+
                 mouseHook = Native.SetWindowsHookEx(14, callback, Native.GetModuleHandle(null), 0);
                 if (mouseHook == 0)
                 {
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                    var error = Marshal.GetLastWin32Error();
+                    Native.UnhookWindowsHookEx(keyboardHook);
+                    keyboardHook = 0;
+                    throw new Win32Exception(error);
                 }
             }
 
@@ -100,6 +118,9 @@ internal sealed class Shortcuts : IDisposable
             {
                 Native.UnhookWindowsHookEx(mouseHook);
                 mouseHook = 0;
+                Native.UnhookWindowsHookEx(keyboardHook);
+                keyboardHook = 0;
+                modifierSuppression.Clear();
             }
 
             active = replacement;
@@ -143,6 +164,12 @@ internal sealed class Shortcuts : IDisposable
             {
                 // MSLLHOOKSTRUCT.mouseData follows the 8-byte POINT; its high word is signed.
                 var delta = (short)(Marshal.ReadInt32(data, 8) >> 16);
+                if (modifierSuppression.MarkUsed(pressed, key => Native.GetAsyncKeyState(key) < 0))
+                {
+                    // Mask the standalone modifier action before its physical release.
+                    // Keep key-up events flowing so Windows never retains a stuck modifier.
+                    Native.MaskModifierTap();
+                }
                 // Return from the global hook promptly; COM and UI work run on the dispatcher.
                 dispatcher.BeginInvoke(() => Scrolled?.Invoke(delta));
                 return 1;
@@ -150,6 +177,24 @@ internal sealed class Shortcuts : IDisposable
         }
 
         return Native.CallNextHookEx(mouseHook, code, message, data);
+    }
+
+    private nint Keyboard(int code, nint message, nint data)
+    {
+        if (
+            code >= 0
+            && (message == 0x100 || message == 0x104 || message == 0x101 || message == 0x105)
+        )
+        {
+            var virtualKey = Marshal.ReadInt32(data);
+            var released = message == 0x101 || message == 0x105;
+            if (modifierSuppression.ShouldSuppress(virtualKey, released))
+            {
+                return 1;
+            }
+        }
+
+        return Native.CallNextHookEx(keyboardHook, code, message, data);
     }
 
     public void Dispose()
@@ -163,6 +208,10 @@ internal sealed class Shortcuts : IDisposable
         if (mouseHook != 0)
         {
             Native.UnhookWindowsHookEx(mouseHook);
+        }
+        if (keyboardHook != 0)
+        {
+            Native.UnhookWindowsHookEx(keyboardHook);
         }
     }
 }
