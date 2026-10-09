@@ -1,6 +1,7 @@
 # Device Hotkeys (v3.1)
 
-These options are included in the current [v3.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1).
+These options were introduced in v3.1 and are included in the current
+[v3.1.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1.1).
 
 In Settings > Hotkeys, add a shortcut with the action **Select audio devices**.
 Choose either or both devices, leaving the other direction unchanged when needed.

@@ -79,8 +79,8 @@ inspection. Build output, screenshots and local profiles belong in `artifacts`.
 
 ## Pull Requests
 
-The current release is [v3.1](https://github.com/sirWest/AudioSwitch/releases/tag/3.1);
-its release notes are in [What's New in v3.1](README.md#whats-new-in-v31).
+The current release is [v3.1.1](https://github.com/sirWest/AudioSwitch/releases/tag/3.1.1);
+its release notes are in [What's New in v3.1.1](README.md#whats-new-in-v311).
 Document future user-visible development changes separately as unreleased.
 For each release, update Directory.Build.props, the application manifest,
 version labels and release links in the README and technical reference.

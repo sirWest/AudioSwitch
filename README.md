@@ -3,7 +3,7 @@
 Switch your Windows playback and recording devices, adjust volume, and keep your
 favorite audio controls close at hand from the system tray or a keyboard shortcut.
 
-**AudioSwitch v3.1 is the current release!** Please give it a try with
+**AudioSwitch v3.1.1 is the current release!** Please give it a try with
 your everyday audio setup and let me know how it goes.
 
 <img src="docs/images/AudioSwitch30.png" alt="AudioSwitch v3.0 showing playback and recording devices and volume controls" width="437" height="332">
@@ -28,10 +28,20 @@ code and changes, check how things behave, and keep an eye on unnecessary bulk
 or odd design choices. The aim is a useful, maintainable AudioSwitch that I can
 keep looking after. Thank you for giving it another look.
 
-## What's New in v3.1
+## What's New in v3.1.1
 
-Get the latest version, **v3.1**, from the
-[releases page](https://github.com/sirWest/AudioSwitch/releases/tag/3.1).
+Get the latest version, **v3.1.1**, from the
+[releases page](https://github.com/sirWest/AudioSwitch/releases/tag/3.1.1).
+
+This small update to v3.1 includes:
+
+- Fixed the Start menu or app menus opening when you release the Windows or Alt
+  key after using it with the mouse wheel to adjust volume.
+- Removed black gaps between the audio level meter's segments in color mode,
+  improving its appearance on light backgrounds.
+- Removed the lingering selection highlight from the device list.
+
+## What's New in v3.1
 
 - Direct hotkeys for a specific playback device, recording device, or input/output pair.
 - Graceful audio-error handling, session-cached unsupported device capabilities,
@@ -78,9 +88,9 @@ The familiar AudioSwitch essentials are still here:
 
 ## Try It Out
 
-Get the current v3.1 release from the
+Get the current v3.1.1 release from the
 [releases page](https://github.com/sirWest/AudioSwitch/releases).
-AudioSwitch v3.1 targets Windows 10 and 11. Windows 7, 8, and 8.1 are not
+AudioSwitch v3.1.1 targets Windows 10 and 11. Windows 7, 8, and 8.1 are not
 supported by its .NET 10 runtime; older Windows versions are outside this release's
 scope. Microsoft's official .NET 10 support on Windows 10 is limited to specific
 LTSC and Enterprise releases; see the

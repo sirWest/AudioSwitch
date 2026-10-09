@@ -6,9 +6,9 @@ AudioSwitch is a Windows tray application and command-line tool for switching
 audio devices, controlling volume, and configuring global shortcuts. It uses
 .NET 10 and WPF, with no third-party runtime packages.
 
-This reference describes the current [v3.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1),
+This reference describes the current [v3.1.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1.1),
 including device-specific hotkeys, native Windows volume OSD and audio diagnostics.
-See [What's New in v3.1](../README.md#whats-new-in-v31) for release notes.
+See [What's New in v3.1.1](../README.md#whats-new-in-v311) for release notes.
 
 ## Requirements
 
@@ -129,7 +129,7 @@ dotnet publish AudioSwitch/AudioSwitch.csproj -c Release -p:PublishProfile=Insta
 ```
 
 Publish output is `artifacts/publish/win-x64`. The installer is written to
-`artifacts/installer/AudioSwitchSetup-3.1-win-x64.exe`. These generated files
+`artifacts/installer/AudioSwitchSetup-3.1.1-win-x64.exe`. These generated files
 are ignored by Git. Both the profile and publish script rebuild that publish
 directory. The Installer profile uses this fixed output path; do not override it
 with `-o`. A missing Inno Setup compiler or a failed packaging step fails publishing.
@@ -140,8 +140,8 @@ installation. It does not automatically download or install the runtime.
 The donation link on the finish page is optional and unchecked by default.
 
 Product, assembly and file versions are centralized in `Directory.Build.props`.
-The application manifest also declares `3.1.0.0`. Product/informational versions
-are `3.1`; assembly/file versions are `3.1.0.0`. The installer
+Product/informational versions are `3.1.1`; assembly/file versions are `3.1.1.0`.
+The application identity is also declared in `AudioSwitch/app.manifest`. The installer
 reads its version from the published application assembly, so its filename will
 follow that release version.
 
