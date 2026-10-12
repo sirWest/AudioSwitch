@@ -129,6 +129,21 @@ internal sealed partial class TrayIcon : IDisposable
         Native.Shell_NotifyIcon(1, ref data);
     }
 
+    internal static string Tooltip(string name, float volume, bool muted)
+    {
+        var suffix =
+            $"\n{Math.Clamp((int)Math.Round(volume * 100), 0, 100)}%{(muted ? " - Muted" : "")}";
+        var limit = 127 - suffix.Length;
+        if (name.Length > limit)
+        {
+            var end = limit - 3;
+            if (end > 0 && char.IsHighSurrogate(name[end - 1]))
+                end--;
+            name = name[..end] + "...";
+        }
+        return name + suffix;
+    }
+
     internal void Notify(string text)
     {
         data.Info = text.Length > 255 ? text[..255] : text;

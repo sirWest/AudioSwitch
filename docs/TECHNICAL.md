@@ -6,9 +6,9 @@ AudioSwitch is a Windows tray application and command-line tool for switching
 audio devices, controlling volume, and configuring global shortcuts. It uses
 .NET 10 and WPF, with no third-party runtime packages.
 
-This reference describes the current [v3.1.1 release](https://github.com/sirWest/AudioSwitch/releases/tag/3.1.1),
-including device-specific hotkeys, native Windows volume OSD and audio diagnostics.
-See [What's New in v3.1.1](../README.md#whats-new-in-v311) for release notes.
+This reference describes the latest available release. See the
+[releases page](https://github.com/sirWest/AudioSwitch/releases/latest) for downloads
+and release notes.
 
 ## Requirements
 
@@ -81,7 +81,7 @@ legacy switch aliases, redirected stdout/stderr and exit codes: `0` for success,
 
 ## Settings and Upgrades
 
-### Device Hotkeys (v3.1)
+### Device Hotkeys
 
 The **Select audio devices** action stores independent playback and recording
 endpoint IDs and mute policies. Either direction can be left unchanged while
@@ -94,6 +94,32 @@ mute-other-devices operation. No replacement device is selected automatically.
 The communications checkbox initially uses the General setting and saves an
 explicit choice for that hotkey. See the
 [Device Hotkeys guide](DEVICE-HOTKEYS.md) for the user workflow.
+
+### Device Icons
+
+Playback and Recording settings each offer **Use device icon in tray**. This
+uses the device icon reported by Windows, including icons customized in the
+Windows Sound panel. **Browse...** imports an AudioSwitch-only icon without changing
+the tray checkbox. **Reset icon** restores the Windows icon; uncheck the tray
+option to return to the colored volume icon. A custom device-list icon can also
+be kept while this option is off. Device-icon mode disables
+the color sliders and volume-icon samples without discarding their saved values.
+The tray tooltip always includes the displayed device name and volume percentage,
+plus mute state. Muted device icons receive a light speaker-and-red-X overlay.
+
+Imports support ICO, PNG, JPEG/JFIF, BMP, GIF, TIFF, and Windows HD Photo.
+Animated and multipage images use their first frame; ICO files use their largest
+frame. Images are fitted into transparent 256-pixel PNGs without changing aspect
+ratio. Files above 32 MB or 40 million pixels are rejected.
+
+Imports remain in memory until Apply or Save & Close. The first saved import
+creates `DeviceIcons` beside the profile (normally
+`%LOCALAPPDATA%/AudioSwitch/DeviceIcons`). SHA-256 filenames deduplicate identical
+normalized images. Settings store only the filename. Cancel discards pending
+imports; successful saves remove unreferenced managed PNGs while retaining images
+referenced by backups, other readable profiles in that directory, and disconnected
+devices. Unreadable JSON snapshots defer cleanup. Missing or damaged icon files
+fall back to the Windows device icon. Windows device properties are not modified.
 
 ### Persistence
 
@@ -133,7 +159,7 @@ dotnet publish AudioSwitch/AudioSwitch.csproj -c Release -p:PublishProfile=Insta
 ```
 
 Publish output is `artifacts/publish/win-x64`. The installer is written to
-`artifacts/installer/AudioSwitchSetup-3.1.1-win-x64.exe`. These generated files
+`artifacts/installer/AudioSwitchSetup-<version>-win-x64.exe`. These generated files
 are ignored by Git. Both the profile and publish script rebuild that publish
 directory. The Installer profile uses this fixed output path; do not override it
 with `-o`. A missing Inno Setup compiler or a failed packaging step fails publishing.
@@ -149,11 +175,11 @@ This uses an undocumented Windows preference; failures are logged, and ordinary
 launches do not override subsequent user choices. Windows 10 is unchanged.
 The donation link on the finish page is optional and unchecked by default.
 
-Product, assembly and file versions are centralized in `Directory.Build.props`.
-Product/informational versions are `3.1.1`; assembly/file versions are `3.1.1.0`.
-The application identity is also declared in `AudioSwitch/app.manifest`. The installer
-reads its version from the published application assembly, so its filename will
-follow that release version.
+The only release version to edit is `<Version>` in `Directory.Build.props`.
+The SDK derives the assembly, file, and informational versions from it. The build
+stamps a generated copy of `AudioSwitch/app.manifest` with the assembly version;
+the source manifest is a template and needs no release edits. The installer reads
+its version from the published executable, so its filename follows automatically.
 
 ## Tests and Contributions
 
@@ -164,7 +190,7 @@ The default suite does not change system audio. Hardware switching, mixed-DPI
 monitor placement, hot-plug, sleep/resume and full-screen games require a Windows
 hardware pass.
 
-### Native Volume OSD (v3.1)
+### Native Volume OSD
 
 With custom OSD disabled, playback volume and mute feedback request
 the Windows media-key volume OSD; device changes use Windows notifications and
@@ -176,9 +202,7 @@ mute changes still apply silently, without notification spam or simulated keys
 that would change audio again. OSD windows are not guaranteed to appear over
 exclusive full-screen games.
 
-Custom OSD controls and previews are disabled while custom OSD is off. The native
-volume OSD is included in v3.1; v3.0 used Windows notifications for volume and
-mute feedback when custom OSD was disabled.
+Custom OSD controls and previews are disabled while custom OSD is off.
 
 ## OSD Skin Themes
 
@@ -230,7 +254,7 @@ review; the desktop backgrounds also reveal contrast issues in translucent skins
 
 The default skin's PNGs can be regenerated with `tools/Build-DefaultOsd.ps1`.
 
-## Audio Failure Diagnostics (v3.1)
+## Audio Failure Diagnostics
 
 Native failures preserve their HRESULT and operation, including unknown driver
 codes and HRESULTs that .NET maps to file or argument exceptions. Default changes
@@ -239,7 +263,8 @@ Partial role/pair success is retained, not rolled back; failed commands refresh
 the flyout and produce a throttled failure notification. Optional shell OSD
 failures do not replay an already-completed audio write.
 
-`errors.log`, beside the settings file, contains JSON lines with timestamps,
+`errors.log`, in the default settings directory, contains JSON lines with local timestamps
+(including the UTC offset),
 operation, HRESULT, stack/cause, app version/build ID, Windows version and
 architecture, runtime, process/session/thread and available device observations.
 Open it in Notepad using **Open error log** in the bottom-left corner of Settings,
@@ -254,6 +279,12 @@ The log rotates at approximately 1 MiB to `errors.log.1`, retaining one backup.
 Duplicate operation/device/HRESULT records are suppressed for one minute, with
 the suppressed count in the next matching record. Successful retried reads emit
 recovery records. Field lengths and deduplication entries are bounded.
+
+Windows reporting no default endpoint (`0x80070490` during default lookup) is
+normal and does not produce an error record. Other native failures remain logged.
+Tests set `AUDIOSWITCH_LOG_DIRECTORY` to a unique directory under their output
+folder's `test-logs`; the test runner and its child GUI/CLI processes each write
+`errors-<process ID>.log` there instead of adding simulated failures to the user log.
 
 Device sessions cache metadata and explicit unsupported results (`E_NOINTERFACE`,
 `E_NOTIMPL`, `ERROR_NOT_SUPPORTED`) across wrapper/monitor recreation. State,

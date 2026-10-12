@@ -117,7 +117,7 @@ internal sealed partial class FlyoutWindow
         imagePanel.Children.Add(
             new Image
             {
-                Source = Native.DeviceIcon(device.IconPath),
+                Source = app.DeviceIcons.Get(device, app.Settings.ForDevice(device.Id)),
                 Width = 32,
                 Height = 32,
             }

@@ -61,6 +61,10 @@ public sealed class SettingsTests : IDisposable
     [InlineData("\"Hidden\":true")]
     [InlineData("\"ExcludeFromHotkeyMute\":true")]
     [InlineData("\"UseCustomName\":true")]
+    [InlineData("\"UseDeviceIconInTray\":true")]
+    [InlineData(
+        "\"CustomIcon\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png\""
+    )]
     [InlineData("\"CustomName\":\"Remembered name\"")]
     [InlineData("\"Hue\":1")]
     [InlineData("\"Saturation\":-1")]

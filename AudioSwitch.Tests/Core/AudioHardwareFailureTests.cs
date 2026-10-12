@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.InteropServices;
 using AudioSwitch.Core.Audio;
 using AudioSwitch.Core.CoreAudio;
@@ -5,6 +6,7 @@ using Xunit;
 
 namespace AudioSwitch.Tests;
 
+[Collection("Audio diagnostic log")]
 public sealed class AudioHardwareFailureTests
 {
     private const int Fail = unchecked((int)0x80004005);
@@ -143,6 +145,25 @@ public sealed class AudioHardwareFailureTests
         Assert.False(device.Multimedia);
         Assert.False(device.Communications);
         Assert.False(device.Console);
+    }
+
+    [Fact]
+    public void MissingDefaultsAreQuietButUnexpectedLookupFailuresAreLogged()
+    {
+        var path = AudioDiagnostics.LogPath;
+        var before = File.Exists(path) ? File.ReadAllText(path) : "";
+        var native = new TestEnumerator();
+        using var audio = new AudioService(new MMDeviceEnumerator(native));
+        foreach (var direction in Enum.GetValues<Direction>())
+        foreach (var role in Enum.GetValues<AudioRole>())
+            Assert.Null(audio.DefaultId(direction, role));
+        Assert.Equal(before, File.Exists(path) ? File.ReadAllText(path) : "");
+
+        native.DefaultResult = unchecked((int)0x81234560);
+        Assert.Null(audio.DefaultId(Direction.Recording));
+        var added = File.ReadAllText(path)[before.Length..];
+        Assert.Contains("get default Capture/Multimedia", added);
+        Assert.Contains("0x81234560", added);
     }
 
     [Fact]

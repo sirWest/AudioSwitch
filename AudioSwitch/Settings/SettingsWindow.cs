@@ -27,6 +27,7 @@ internal sealed partial class SettingsWindow : Window
     };
     private readonly ObservableCollection<HotkeySettings> hotkeys;
     private readonly List<Action> commitEditors = [];
+    private readonly Dictionary<string, byte[]> pendingIcons = new();
     private bool initialized;
     private TabItem osdTab = null!;
     private bool startAtLogin;
@@ -38,8 +39,8 @@ internal sealed partial class SettingsWindow : Window
         this.draft = draft;
         hotkeys = new(draft.Hotkeys);
         Title = "AudioSwitch Settings";
-        Width = 700;
-        Height = 620;
+        Width = 640;
+        Height = Math.Min(600, SystemParameters.WorkArea.Height - 20);
         ResizeMode = ResizeMode.NoResize;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         UseLayoutRounding = true;
@@ -53,8 +54,8 @@ internal sealed partial class SettingsWindow : Window
         Content = root;
         var bottom = new DockPanel
         {
-            Height = 54,
-            Margin = new Thickness(0, 8, 0, 0),
+            Height = 48,
+            Margin = new Thickness(0, 4, 0, 0),
             VerticalAlignment = VerticalAlignment.Center,
         };
         DockPanel.SetDock(bottom, Dock.Bottom);
@@ -142,7 +143,8 @@ internal sealed partial class SettingsWindow : Window
                 );
             }
 
-            app.SaveSettings(draft.Clone());
+            app.SaveSettings(draft.Clone(), pendingIcons);
+            pendingIcons.Clear();
             if (app.IsDefaultProfile)
             {
                 StartupRegistration.SetEnabled(startAtLogin);

@@ -88,10 +88,13 @@ internal sealed class MMDeviceEnumerator : IDisposable
 
     internal MMDevice GetDefaultAudioEndpoint(DataFlow flow, Role role)
     {
-        AudioOperationException.Check(
-            Native.GetDefaultAudioEndpoint(flow, role, out var device),
-            $"get default {flow}/{role}"
-        );
+        var result = Native.GetDefaultAudioEndpoint(flow, role, out var device);
+        var operation = $"get default {flow}/{role}";
+        // No default endpoint is normal, for example when no microphone is connected.
+        // Preserve the unavailable result for callers without writing a failure record.
+        if (result == unchecked((int)0x80070490))
+            throw new AudioOperationException(operation, Marshal.GetExceptionForHR(result, -1)!);
+        AudioOperationException.Check(result, operation);
         return Wrap(device, flow: flow);
     }
 

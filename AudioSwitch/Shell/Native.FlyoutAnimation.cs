@@ -8,6 +8,13 @@ namespace AudioSwitch.Shell;
 
 internal static partial class Native
 {
+    internal static void DisableWindowTransitions(nint hwnd)
+    {
+        // The flyout supplies its own slide; DWM must not animate a stale surface on show/hide.
+        var disabled = 1;
+        _ = DwmSetWindowAttribute(hwnd, 3, ref disabled, sizeof(int)); // DWMWA_TRANSITIONS_FORCEDISABLED
+    }
+
     [LibraryImport("gdi32.dll")]
     private static partial nint CreateRectRgn(int left, int top, int right, int bottom);
 
@@ -229,6 +236,9 @@ internal static partial class Native
                 return;
             }
 
+            // WPF raises IsVisibleChanged before hiding the HWND. Hide it in the same
+            // native operation that restores its position, before removing the clip.
+            var flags = window.IsVisible ? 0x11u : 0x91u; // SWP_NOSIZE | SWP_NOACTIVATE | SWP_HIDEWINDOW
             SetWindowPos(
                 hwnd,
                 window.Topmost ? new nint(-1) : new nint(-2),
@@ -236,7 +246,7 @@ internal static partial class Native
                 target.Top,
                 0,
                 0,
-                0x11
+                flags
             );
             SetWindowRgn(hwnd, 0, true);
         }

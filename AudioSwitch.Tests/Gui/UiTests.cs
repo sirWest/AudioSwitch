@@ -588,7 +588,7 @@ public sealed partial class UiTests
                     .Cast<AutomationElement>()
                     .Where(element => element.Current.Name.StartsWith("Tray icon "))
                     .ToArray();
-                Assert.Equal(6, previews.Length);
+                Assert.Single(previews);
                 foreach (var iconPreview in previews)
                 {
                     Assert.False(iconPreview.Current.IsOffscreen);
@@ -603,11 +603,23 @@ public sealed partial class UiTests
                     );
                 }
 
-                var saveDevice = Find(settings, ControlType.Button, "Save device");
-                Assert.False(saveDevice.Current.IsOffscreen);
+                Assert.Null(
+                    settings.FindFirst(
+                        TreeScope.Descendants,
+                        new AndCondition(
+                            new PropertyCondition(
+                                AutomationElement.ControlTypeProperty,
+                                ControlType.Button
+                            ),
+                            new PropertyCondition(AutomationElement.NameProperty, "Save device")
+                        )
+                    )
+                );
+                var resetDevice = Find(settings, ControlType.Button, "Reset device");
+                Assert.False(resetDevice.Current.IsOffscreen);
                 Assert.True(
-                    saveDevice.Current.BoundingRectangle.Bottom
-                        < Find(settings, ControlType.Button, "Apply").Current.BoundingRectangle.Top
+                    resetDevice.Current.BoundingRectangle.Bottom
+                        < previews[0].Current.BoundingRectangle.Top
                 );
                 (
                     (TogglePattern)

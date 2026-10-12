@@ -29,6 +29,8 @@ public sealed partial class App
         shortcuts.Apply(next);
         Settings = next;
         store = nextStore;
+        DeviceIcons.ClearCache();
+        iconKey = null;
         ApplyTheme(Settings.Theme);
         flyout.Refresh();
     }
@@ -84,13 +86,20 @@ public sealed partial class App
         });
     }
 
-    internal void SaveSettings(AppSettings settings)
+    internal void SaveSettings(
+        AppSettings settings,
+        IReadOnlyDictionary<string, byte[]>? pendingIcons = null
+    )
     {
         settings.Validate();
         shortcuts.Apply(settings);
         try
         {
-            store.Save(settings);
+            DeviceIcons.Store.Save(
+                store,
+                settings,
+                pendingIcons ?? new Dictionary<string, byte[]>()
+            );
         }
         catch
         {
@@ -100,6 +109,7 @@ public sealed partial class App
         }
 
         Settings = settings;
+        DeviceIcons.ClearCache();
         ApplyTheme(Settings.Theme);
         iconKey = null;
         flyout.Refresh();

@@ -79,19 +79,18 @@ inspection. Build output, screenshots and local profiles belong in `artifacts`.
 
 ## Pull Requests
 
-The current release is [v3.1.1](https://github.com/sirWest/AudioSwitch/releases/tag/3.1.1);
-its release notes are in [What's New in v3.1.1](README.md#whats-new-in-v311).
-Document future user-visible development changes separately as unreleased.
-For each release, update Directory.Build.props, the application manifest,
-version labels and release links in the README and technical reference.
+Documentation describes the latest available release without naming an app version.
+Keep release history and user-visible change lists on the
+[releases page](https://github.com/sirWest/AudioSwitch/releases).
 
 Describe the problem, resulting behavior and tests performed. For UI changes,
 include screenshots of the affected states. For audio or shell integration,
 include the Windows version and relevant device, session or monitor details.
 Keep generated output and personal IDE settings out of commits.
 
-For a release, update `Directory.Build.props` and the application manifest,
-then publish the main project with the `Installer` profile (or run
+For a release, update only `<Version>` in `Directory.Build.props`. Assembly, file,
+informational, manifest, and installer versions follow it automatically.
+Then publish the main project with the `Installer` profile (or run
 `tools/Publish.ps1 -BuildInstaller`). Smoke-test setup, upgrading,
 startup toggling and uninstall on a separate Windows test profile or machine.
 Do not change the JSON schema version unless the settings format changes.

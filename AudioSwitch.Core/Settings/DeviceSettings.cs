@@ -10,6 +10,8 @@ public sealed class DeviceSettings
     public bool ExcludeFromHotkeyMute { get; set; }
     public bool UseCustomName { get; set; }
     public string CustomName { get; set; } = "";
+    public bool UseDeviceIconInTray { get; set; }
+    public string CustomIcon { get; set; } = "";
     public int Hue { get; set; }
     public int Saturation { get; set; }
     public int Brightness { get; set; }
@@ -21,6 +23,8 @@ public sealed class DeviceSettings
         || ExcludeFromHotkeyMute
         || UseCustomName
         || !string.IsNullOrEmpty(CustomName)
+        || UseDeviceIconInTray
+        || !string.IsNullOrEmpty(CustomIcon)
         || Hue != 0
         || Saturation != 0
         || Brightness != 0

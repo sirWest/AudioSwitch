@@ -2,11 +2,11 @@
 ; Inno Setup 6.3 or later. All source paths are relative to this script.
 #define ApplicationName "AudioSwitch"
 #define PublishDirectory AddBackslash(SourcePath) + "..\artifacts\publish\win-x64"
-#if !FileExists(PublishDirectory + "\AudioSwitch.dll")
+#if !FileExists(PublishDirectory + "\AudioSwitch.exe")
   #error Run tools\Publish.ps1 before compiling the installer.
 #endif
-#define ApplicationVersion GetStringFileInfo(PublishDirectory + "\AudioSwitch.dll", "ProductVersion")
-#define ApplicationFileVersion GetVersionNumbersString(PublishDirectory + "\AudioSwitch.dll")
+#define ApplicationVersion GetStringFileInfo(PublishDirectory + "\AudioSwitch.exe", "ProductVersion")
+#define ApplicationFileVersion GetVersionNumbersString(PublishDirectory + "\AudioSwitch.exe")
 
 [Setup]
 AppId={#ApplicationName}

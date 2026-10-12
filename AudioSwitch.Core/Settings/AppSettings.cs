@@ -103,6 +103,7 @@ public sealed class AppSettings
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                 d is null
                 || string.IsNullOrWhiteSpace(d.Id)
+                || !DeviceIconStore.IsValidName(d.CustomIcon)
                 || d.Hue is < 0 or > 360
                 || d.Saturation is < -100 or > 100
                 || d.Brightness is < -100 or > 100

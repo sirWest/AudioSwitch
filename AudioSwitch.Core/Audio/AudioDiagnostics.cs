@@ -9,7 +9,9 @@ namespace AudioSwitch.Core.Audio;
 public static class AudioDiagnostics
 {
     public static string LogPath { get; } =
-        Path.Combine(Path.GetDirectoryName(SettingsStore.DefaultPath)!, "errors.log");
+        Environment.GetEnvironmentVariable("AUDIOSWITCH_LOG_DIRECTORY") is { Length: > 0 } directory
+            ? Path.Combine(directory, $"errors-{Environment.ProcessId}.log")
+            : Path.Combine(Path.GetDirectoryName(SettingsStore.DefaultPath)!, "errors.log");
 
     public static AudioDiagnosticLog Log { get; } = new(LogPath);
 }
@@ -76,7 +78,9 @@ public sealed class AudioDiagnosticLog
                 recent[key] = (now, 0);
                 var data = new Dictionary<string, string>
                 {
-                    ["timestamp"] = now.ToString("O"),
+                    ["timestamp"] = TimeZoneInfo
+                        .ConvertTime(now, clock.LocalTimeZone)
+                        .ToString("O"),
                     ["operation"] = operation,
                     ["event"] = error is null ? "recovered" : "failure",
                     ["hresult"] = error is null ? "" : $"0x{error.HResult:X8}",

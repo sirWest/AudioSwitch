@@ -17,4 +17,25 @@
     <Resource Include="Assets/*.png" />
     <Resource Include="../Setup/AudioSwitchIcon.ico" Link="Assets/AudioSwitchIcon.ico" />
   </ItemGroup>
+  <Target
+    Name="GenerateVersionedApplicationManifest"
+    BeforeTargets="_SetEmbeddedWin32ManifestProperties"
+    DependsOnTargets="GetAssemblyVersion"
+    Inputs="app.manifest;$(MSBuildProjectFullPath);$(MSBuildThisFileDirectory)../Directory.Build.props"
+    Outputs="$(IntermediateOutputPath)app.$(AssemblyVersion).manifest"
+  >
+    <PropertyGroup>
+      <ApplicationManifest>$(IntermediateOutputPath)app.$(AssemblyVersion).manifest</ApplicationManifest>
+    </PropertyGroup>
+    <Copy SourceFiles="app.manifest" DestinationFiles="$(ApplicationManifest)" />
+    <XmlPoke
+      XmlInputPath="$(ApplicationManifest)"
+      Query="/asm:assembly/asm:assemblyIdentity/@version"
+      Namespaces="&lt;Namespace Prefix='asm' Uri='urn:schemas-microsoft-com:asm.v1' /&gt;"
+      Value="$(AssemblyVersion)"
+    />
+    <ItemGroup>
+      <FileWrites Include="$(ApplicationManifest)" />
+    </ItemGroup>
+  </Target>
 </Project>

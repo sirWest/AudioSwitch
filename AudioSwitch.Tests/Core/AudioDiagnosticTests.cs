@@ -9,6 +9,57 @@ namespace AudioSwitch.Tests;
 public sealed class AudioDiagnosticTests
 {
     [Fact]
+    public void TestProcessesUseAnIsolatedLogDirectory()
+    {
+        var directory = Environment.GetEnvironmentVariable("AUDIOSWITCH_LOG_DIRECTORY");
+        Assert.False(string.IsNullOrEmpty(directory));
+        Assert.Equal(
+            Path.Combine(directory!, $"errors-{Environment.ProcessId}.log"),
+            AudioDiagnostics.LogPath
+        );
+    }
+
+    [Theory]
+    [InlineData(3)]
+    [InlineData(-5)]
+    public void TimestampsUseLocalOffsetWhileThrottlingUsesElapsedTime(int offsetHours)
+    {
+        var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".log");
+        var clock = new Clock
+        {
+            Now = new DateTimeOffset(2026, 10, 12, 18, 21, 14, TimeSpan.Zero),
+            Zone = TimeZoneInfo.CreateCustomTimeZone(
+                "test",
+                TimeSpan.FromHours(offsetHours),
+                "test",
+                "test"
+            ),
+        };
+        try
+        {
+            var log = new AudioDiagnosticLog(path, clock, 1024 * 1024);
+            var error = new Exception("failed");
+            log.Failure("operation", error);
+            using var record = JsonDocument.Parse(Assert.Single(File.ReadAllLines(path)));
+            var timestamp = record.RootElement.GetProperty("timestamp").GetDateTimeOffset();
+            Assert.Equal(clock.Now, timestamp);
+            Assert.Equal(TimeSpan.FromHours(offsetHours), timestamp.Offset);
+
+            clock.Zone = TimeZoneInfo.Utc;
+            clock.Now += TimeSpan.FromSeconds(30);
+            log.Failure("operation", error);
+            Assert.Single(File.ReadAllLines(path));
+            clock.Now += TimeSpan.FromSeconds(30);
+            log.Failure("operation", error);
+            Assert.Equal(2, File.ReadAllLines(path).Length);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void FailedEnrichmentAndReentrantLoggingPreserveTheOriginalError()
     {
         var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".log");
@@ -201,6 +252,9 @@ public sealed class AudioDiagnosticTests
     private sealed class Clock : TimeProvider
     {
         internal DateTimeOffset Now = DateTimeOffset.UtcNow;
+        internal TimeZoneInfo Zone = TimeZoneInfo.Local;
+
+        public override TimeZoneInfo LocalTimeZone => Zone;
 
         public override DateTimeOffset GetUtcNow() => Now;
     }

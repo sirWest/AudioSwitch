@@ -4,6 +4,10 @@
     <AssemblyName>audioswitch-cli</AssemblyName>
     <ApplicationIcon>../Setup/AudioSwitchIcon.ico</ApplicationIcon>
     <Description>AudioSwitch command-line interface</Description>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../AudioSwitch.Core/AudioSwitch.Core.csproj" />

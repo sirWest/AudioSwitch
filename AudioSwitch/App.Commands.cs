@@ -242,8 +242,18 @@ public sealed partial class App
         }
     }
 
+    internal AudioState? TrayState { get; private set; }
+    internal event Action? TrayStateChanged;
+
     internal void UpdateTray(AudioDevice? device, AudioState? state)
     {
+        var nextState = device is null ? null : state;
+        if (TrayState != nextState)
+        {
+            TrayState = nextState;
+            TrayStateChanged?.Invoke();
+        }
+
         if (device is null || state is null)
         {
             var unavailableKey = $"unavailable:{tray.IconSize}";
@@ -258,12 +268,27 @@ public sealed partial class App
 
         var pref = Settings.ForDevice(device.Id);
         var image = Images.VolumeAsset(state.Volume, state.Muted);
-        var key = $"{image}:{pref?.Hue}:{pref?.Saturation}:{pref?.Brightness}:{tray.IconSize}";
+        var useDeviceIcon = Imaging.DeviceIcons.UsesDeviceIcon(pref);
+        var key = useDeviceIcon
+            ? $"device:{device.Id}:{device.IconPath}:{pref?.CustomIcon}:{state.Muted}:{tray.IconSize}"
+            : $"{image}:{pref?.Hue}:{pref?.Saturation}:{pref?.Brightness}:{tray.IconSize}";
         var icon =
             key != iconKey
-                ? Images.Icon(Images.Tint(Images.TrayAsset(image), pref), tray.IconSize)
+                ? Images.Icon(
+                    useDeviceIcon
+                        ? Images.DeviceTray(
+                            DeviceIcons.Get(device, pref),
+                            state.Muted,
+                            tray.IconSize
+                        )
+                        : Images.Tint(Images.TrayAsset(image), pref),
+                    tray.IconSize
+                )
                 : 0;
-        tray.Update(device.DisplayName(Settings), icon);
+        tray.Update(
+            TrayIcon.Tooltip(device.DisplayName(Settings), state.Volume, state.Muted),
+            icon
+        );
         iconKey = key;
     }
 

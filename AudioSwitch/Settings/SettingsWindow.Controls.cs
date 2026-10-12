@@ -8,6 +8,15 @@ internal sealed partial class SettingsWindow
 {
     private TabItem Tab(string name, UIElement content)
     {
+        if (content is StackPanel)
+        {
+            content = new ScrollViewer
+            {
+                Content = content,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            };
+        }
         var item = new TabItem
         {
             Header = name,

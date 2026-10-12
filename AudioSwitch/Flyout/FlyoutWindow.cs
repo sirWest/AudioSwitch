@@ -64,6 +64,7 @@ internal sealed partial class FlyoutWindow : Window, IDisposable
         SourceInitialized += (_, _) =>
         {
             var hwnd = new WindowInteropHelper(this).Handle;
+            Native.DisableWindowTransitions(hwnd);
             HwndSource.FromHwnd(hwnd)?.AddHook(BackdropMessage);
             var powerSavingStatus = new Guid("E00958C0-C213-4ACE-AC77-FECCED2EEEA5");
             powerNotification = Native.RegisterPowerSettingNotification(
@@ -189,13 +190,14 @@ internal sealed partial class FlyoutWindow : Window, IDisposable
             (!IsVisible || dismissing)
             && !app.Settings.AlwaysVisible
             && SystemParameters.ClientAreaAnimation;
-        openingAnimation?.Dispose();
-        openingAnimation = null;
-        dismissing = false;
         Native.WithoutPresentation(
             this,
             () =>
             {
+                // Cancelling a dismissal restores the open position, so cloak that too.
+                openingAnimation?.Dispose();
+                openingAnimation = null;
+                dismissing = false;
                 directionOverride = selected;
 
                 Refresh();

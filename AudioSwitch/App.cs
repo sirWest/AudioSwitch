@@ -26,6 +26,8 @@ public sealed partial class App : Application
     private string? iconKey;
     private string settingsPath = SettingsStore.DefaultPath;
     internal bool IsDefaultProfile => settingsPath == SettingsStore.DefaultPath;
+    private Imaging.DeviceIcons? deviceIcons;
+    internal Imaging.DeviceIcons DeviceIcons => deviceIcons ??= new(settingsPath);
 
     private bool exitWithSettings;
     private DateTime closedFromTray;

@@ -17,7 +17,7 @@ internal sealed partial class SettingsWindow
         selectors.ColumnDefinitions.Add(new());
         selectors.ColumnDefinitions.Add(new());
         panel.Children.Add(selectors);
-        var appearance = new StackPanel();
+        var appearance = new StackPanel { Margin = new Thickness(0, 0, 16, 0) };
         var group = new StackPanel();
         Grid.SetColumn(group, 1);
         selectors.Children.Add(appearance);
@@ -29,6 +29,7 @@ internal sealed partial class SettingsWindow
             nameof(draft.Theme),
             Enum.GetValues<AppTheme>()
         );
+        theme.HorizontalAlignment = HorizontalAlignment.Stretch;
         theme.SelectionChanged += (_, _) =>
         {
             if (theme.SelectedItem is AppTheme selected)
@@ -36,13 +37,14 @@ internal sealed partial class SettingsWindow
                 app.ApplyTheme(selected);
             }
         };
-        Choices(
+        var deviceGroup = Choices(
             group,
             "Default device group",
             draft,
             nameof(draft.DefaultDeviceGroup),
             Enum.GetValues<DeviceGroup>()
         );
+        deviceGroup.HorizontalAlignment = HorizontalAlignment.Stretch;
         panel.Children.Add(
             Check("Also change the communications default", draft, nameof(draft.AlsoCommunications))
         );
