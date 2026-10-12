@@ -7,7 +7,7 @@ using AudioSwitch.Core.Settings;
 
 namespace AudioSwitch.Imaging;
 
-internal static class Images
+internal static partial class Images
 {
     private static readonly Dictionary<string, BitmapSource> trayAssets = new();
 
@@ -161,11 +161,11 @@ internal static class Images
         return result;
     }
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern nint CreateIconFromResourceEx(
+    [LibraryImport("user32.dll", SetLastError = true)]
+    private static partial nint CreateIconFromResourceEx(
         byte[] data,
         uint size,
-        bool icon,
+        [MarshalAs(UnmanagedType.Bool)] bool icon,
         uint version,
         int width,
         int height,

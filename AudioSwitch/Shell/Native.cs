@@ -68,30 +68,38 @@ internal static partial class Native
         public nint BalloonIcon;
     }
 
+    // Inline ByValTStr fields require the runtime marshaller.
     [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool Shell_NotifyIcon(uint message, ref NotifyData data);
 
-    [DllImport("shell32.dll")]
-    internal static extern int Shell_NotifyIconGetRect(ref IconId id, out Rect rect);
+    [LibraryImport("shell32.dll")]
+    internal static partial int Shell_NotifyIconGetRect(ref IconId id, out Rect rect);
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    internal static extern uint RegisterWindowMessage(string name);
+    [LibraryImport(
+        "user32.dll",
+        EntryPoint = "RegisterWindowMessageW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    internal static partial uint RegisterWindowMessage(string name);
 
-    [DllImport("user32.dll")]
-    internal static extern bool GetCursorPos(out Point point);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool GetCursorPos(out Point point);
 
-    [DllImport("user32.dll")]
-    internal static extern nint MonitorFromPoint(Point point, uint flags);
+    [LibraryImport("user32.dll")]
+    internal static partial nint MonitorFromPoint(Point point, uint flags);
 
-    [DllImport("user32.dll")]
-    internal static extern nint MonitorFromWindow(nint window, uint flags);
+    [LibraryImport("user32.dll")]
+    internal static partial nint MonitorFromWindow(nint window, uint flags);
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    internal static extern bool GetMonitorInfo(nint monitor, ref MonitorInfo info);
+    [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool GetMonitorInfo(nint monitor, ref MonitorInfo info);
 
-    [DllImport("user32.dll")]
-    internal static extern bool SetWindowPos(
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool SetWindowPos(
         nint hwnd,
         nint after,
         int x,
@@ -101,23 +109,30 @@ internal static partial class Native
         uint flags
     );
 
-    [DllImport("user32.dll")]
-    internal static extern bool GetWindowRect(nint hwnd, out Rect rect);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool GetWindowRect(nint hwnd, out Rect rect);
 
-    [DllImport("user32.dll")]
-    internal static extern bool SetForegroundWindow(nint hwnd);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool SetForegroundWindow(nint hwnd);
 
-    [DllImport("user32.dll")]
-    internal static extern nint GetWindowLongPtr(nint hwnd, int index);
+    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrA")]
+    internal static partial nint GetWindowLongPtr(nint hwnd, int index);
 
-    [DllImport("user32.dll")]
-    internal static extern nint SetWindowLongPtr(nint hwnd, int index, nint value);
+    [LibraryImport("user32.dll", EntryPoint = "SetWindowLongPtrA")]
+    internal static partial nint SetWindowLongPtr(nint hwnd, int index, nint value);
 
-    [DllImport("user32.dll")]
-    internal static extern bool DestroyIcon(nint icon);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool DestroyIcon(nint icon);
 
-    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-    internal static extern uint ExtractIconEx(
+    [LibraryImport(
+        "shell32.dll",
+        EntryPoint = "ExtractIconExW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    internal static partial uint ExtractIconEx(
         string file,
         int index,
         out nint large,
@@ -125,33 +140,40 @@ internal static partial class Native
         uint count
     );
 
-    [DllImport("user32.dll", SetLastError = true)]
-    internal static extern bool RegisterHotKey(nint hwnd, int id, uint modifiers, uint key);
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool RegisterHotKey(nint hwnd, int id, uint modifiers, uint key);
 
-    [DllImport("user32.dll")]
-    internal static extern bool UnregisterHotKey(nint hwnd, int id);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool UnregisterHotKey(nint hwnd, int id);
 
-    [DllImport("user32.dll")]
-    internal static extern short GetAsyncKeyState(int key);
+    [LibraryImport("user32.dll")]
+    internal static partial short GetAsyncKeyState(int key);
 
     internal delegate nint HookProc(int code, nint message, nint data);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    internal static extern nint SetWindowsHookEx(
+    [LibraryImport("user32.dll", EntryPoint = "SetWindowsHookExA", SetLastError = true)]
+    internal static partial nint SetWindowsHookEx(
         int hook,
         HookProc callback,
         nint module,
         uint thread
     );
 
-    [DllImport("user32.dll")]
-    internal static extern bool UnhookWindowsHookEx(nint hook);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool UnhookWindowsHookEx(nint hook);
 
-    [DllImport("user32.dll")]
-    internal static extern nint CallNextHookEx(nint hook, int code, nint message, nint data);
+    [LibraryImport("user32.dll")]
+    internal static partial nint CallNextHookEx(nint hook, int code, nint message, nint data);
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-    internal static extern nint GetModuleHandle(string? module);
+    [LibraryImport(
+        "kernel32.dll",
+        EntryPoint = "GetModuleHandleW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    internal static partial nint GetModuleHandle(string? module);
 
     private static readonly Lazy<ImageSource> defaultDeviceIcon = new(() =>
         TryDeviceIcon(Path.Combine(Environment.SystemDirectory, "mmres.dll") + ",-3010")

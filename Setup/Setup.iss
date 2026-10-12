@@ -42,6 +42,7 @@ Source: "{#PublishDirectory}\*"; DestDir: "{app}"; Flags: ignoreversion recurses
 
 [Tasks]
 Name: "startupicon"; Description: "Start AudioSwitch when I log in to Windows"; GroupDescription: "Additional options:"
+Name: "showtrayicon"; Description: "Show the AudioSwitch icon in the Windows system tray"; GroupDescription: "Additional options:"; MinVersion: 10.0.22621
 
 [Icons]
 Name: "{group}\AudioSwitch"; Filename: "{app}\AudioSwitch.exe"
@@ -57,10 +58,42 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: 
 Type: files; Name: "{userstartup}\AudioSwitch.lnk"
 
 [Run]
-Filename: "{app}\AudioSwitch.exe"; Description: "Run AudioSwitch"; Flags: runasoriginaluser postinstall nowait skipifsilent
+Filename: "{app}\AudioSwitch.exe"; Parameters: "{code:AudioSwitchParameters}"; Description: "Run AudioSwitch"; Flags: runasoriginaluser postinstall nowait skipifsilent; AfterInstall: MarkAudioSwitchLaunched
 Filename: "https://www.paypal.com/donate/?hosted_button_id=2KV5RQBSB8Z9A"; Description: "Go and donate a small amount :)"; Flags: shellexec runasoriginaluser postinstall skipifsilent
 
 [Code]
+var
+  AudioSwitchLaunched: Boolean;
+
+function AudioSwitchParameters(Param: String): String;
+begin
+  Result := '';
+  if WizardIsTaskSelected('showtrayicon') then
+    Result := '--show-tray-icon';
+end;
+
+procedure MarkAudioSwitchLaunched;
+begin
+  AudioSwitchLaunched := True;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  ResultCode: Integer;
+begin
+  { Run after the optional launch entries, including during silent setup. }
+  if (CurStep = ssDone) and not AudioSwitchLaunched and
+    WizardIsTaskSelected('showtrayicon') then
+  begin
+    if not ExecAsOriginalUser(ExpandConstant('{app}\AudioSwitch.exe'),
+      '--show-tray-icon --exit', ExpandConstant('{app}'), SW_HIDE,
+      ewWaitUntilTerminated, ResultCode) then
+      Log('Could not start AudioSwitch to configure tray visibility.')
+    else if ResultCode <> 0 then
+      Log(Format('AudioSwitch tray configuration failed (exit code %d).', [ResultCode]));
+  end;
+end;
+
 function HasDesktopRuntimeInRegistry(RootKey: Integer): Boolean;
 var
   Versions: TArrayOfString;

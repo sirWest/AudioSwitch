@@ -63,7 +63,7 @@ internal struct NativeBlob
 }
 
 [StructLayout(LayoutKind.Explicit)]
-internal struct PropVariant
+internal partial struct PropVariant
 {
     [FieldOffset(0)]
     public ushort Type;
@@ -76,8 +76,8 @@ internal struct PropVariant
     private NativeBlob blob;
     internal string? String => Type == 31 ? Marshal.PtrToStringUni(Pointer) : null;
 
-    [DllImport("ole32.dll")]
-    internal static extern int PropVariantClear(ref PropVariant value);
+    [LibraryImport("ole32.dll")]
+    internal static partial int PropVariantClear(ref PropVariant value);
 }
 
 [ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")]

@@ -69,6 +69,10 @@ Tray arguments:
 - `--startup` or `/startup`: apply configured startup audio preferences.
 - `--config <path>`: use an isolated profile without importing settings or modifying sign-in registration.
 - `--exit-with-settings`: exit after the Settings window closes.
+- `--show-tray-icon`: apply Windows 11 22H2+ tray visibility once, then run normally.
+- `--exit`: exit without loading audio or settings. Combined with `--show-tray-icon`,
+  briefly register the tray icon, apply visibility, and exit (0 on success, 1 on failure).
+  An already-running instance is left running.
 
 Use `audioswitch-cli --help` for the complete command list. Device IDs are
 preferred for scripts; ambiguous device names are rejected. The CLI supports
@@ -137,6 +141,12 @@ with `-o`. A missing Inno Setup compiler or a failed packaging step fails publis
 `Setup/Setup.iss` is the installer script. Setup installs per
 user, shows the welcome screen, and checks the .NET 10 Desktop Runtime before
 installation. It does not automatically download or install the runtime.
+On Windows 11 22H2+, the selected tray-visibility task passes `--show-tray-icon`
+to the application. If launch is declined or setup is silent, setup runs
+`--show-tray-icon --exit` and waits for completion instead. The application waits
+up to 10 seconds for Explorer's entry and updates only its own executable path.
+This uses an undocumented Windows preference; failures are logged, and ordinary
+launches do not override subsequent user choices. Windows 10 is unchanged.
 The donation link on the finish page is optional and unchecked by default.
 
 Product, assembly and file versions are centralized in `Directory.Build.props`.

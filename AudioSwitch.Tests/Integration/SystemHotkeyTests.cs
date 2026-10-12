@@ -3,13 +3,15 @@ using Xunit;
 
 namespace AudioSwitch.Tests;
 
-public sealed class SystemHotkeyTests
+public sealed partial class SystemHotkeyTests
 {
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool RegisterHotKey(nint window, int id, uint modifiers, uint key);
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool RegisterHotKey(nint window, int id, uint modifiers, uint key);
 
-    [DllImport("user32.dll")]
-    private static extern bool UnregisterHotKey(nint window, int id);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool UnregisterHotKey(nint window, int id);
 
     [SystemFact]
     public void WindowsRejectsDuplicateGlobalShortcutAndReleasesRegistration()

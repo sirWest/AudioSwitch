@@ -10,7 +10,7 @@ using Xunit;
 
 namespace AudioSwitch.Tests;
 
-public sealed class TrayImageTests
+public sealed partial class TrayImageTests
 {
     private static readonly string[] Assets =
     [
@@ -22,8 +22,9 @@ public sealed class TrayImageTests
         "mute.png",
     ];
 
-    [DllImport("user32.dll")]
-    private static extern bool DestroyIcon(nint icon);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DestroyIcon(nint icon);
 
     [Theory]
     [InlineData(0, "0.png")]

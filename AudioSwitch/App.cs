@@ -58,6 +58,8 @@ public sealed partial class App : Application
         using var singleton = new Mutex(true, mutexName, out var first);
         if (!first)
         {
+            if (args.Contains("--show-tray-icon"))
+                return TrayVisibility.PromoteAsync().GetAwaiter().GetResult() ? 0 : 1;
             return 0;
         }
 
@@ -76,10 +78,23 @@ public sealed partial class App : Application
         return app.Run();
     }
 
-    private void Start(string[] args)
+    private async void Start(string[] args)
     {
         try
         {
+            if (args.Contains("--exit"))
+            {
+                if (args.Contains("--show-tray-icon"))
+                {
+                    // Register the icon without initializing audio, hotkeys, or settings.
+                    tray = new();
+                    Shutdown(await TrayVisibility.PromoteAsync() ? 0 : 1);
+                }
+                else
+                    Shutdown();
+                return;
+            }
+
             exitWithSettings = args.Contains("--exit-with-settings");
             Settings = store.Load();
             if (
@@ -97,6 +112,8 @@ public sealed partial class App : Application
             Audio = new();
             Osd = new();
             tray = new();
+            if (args.Contains("--show-tray-icon"))
+                _ = TrayVisibility.PromoteAsync();
             shortcuts = new(tray, Dispatcher);
             flyout = new(this);
             SubscribeTrayEvents();

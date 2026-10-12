@@ -57,9 +57,9 @@ internal static partial class Native
         public nuint Size;
     }
 
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool SetWindowCompositionAttribute(
+    private static partial bool SetWindowCompositionAttribute(
         nint hwnd,
         ref WindowCompositionAttributeData data
     );
@@ -95,27 +95,27 @@ internal static partial class Native
         }
     }
 
-    [DllImport("dwmapi.dll")]
-    private static extern int DwmExtendFrameIntoClientArea(nint hwnd, ref Margins margins);
+    [LibraryImport("dwmapi.dll")]
+    private static partial int DwmExtendFrameIntoClientArea(nint hwnd, ref Margins margins);
 
-    [DllImport("dwmapi.dll")]
-    private static extern int DwmSetWindowAttribute(
+    [LibraryImport("dwmapi.dll")]
+    private static partial int DwmSetWindowAttribute(
         nint window,
         uint attribute,
         ref int value,
         uint size
     );
 
-    [DllImport("dwmapi.dll")]
-    private static extern int DwmGetWindowAttribute(
+    [LibraryImport("dwmapi.dll")]
+    private static partial int DwmGetWindowAttribute(
         nint window,
         uint attribute,
         out int value,
         uint size
     );
 
-    [DllImport("dwmapi.dll")]
-    private static extern int DwmIsCompositionEnabled(
+    [LibraryImport("dwmapi.dll")]
+    private static partial int DwmIsCompositionEnabled(
         [MarshalAs(UnmanagedType.Bool)] out bool enabled
     );
 
@@ -130,20 +130,20 @@ internal static partial class Native
             BatteryFullLifeTime;
     }
 
-    [DllImport("kernel32.dll")]
+    [LibraryImport("kernel32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GetSystemPowerStatus(out PowerStatus status);
+    private static partial bool GetSystemPowerStatus(out PowerStatus status);
 
-    [DllImport("user32.dll")]
-    internal static extern nint RegisterPowerSettingNotification(
+    [LibraryImport("user32.dll")]
+    internal static partial nint RegisterPowerSettingNotification(
         nint recipient,
         ref Guid setting,
         uint flags
     );
 
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool UnregisterPowerSettingNotification(nint registration);
+    internal static partial bool UnregisterPowerSettingNotification(nint registration);
 
     internal static bool CanUseBackdrop(
         int build,

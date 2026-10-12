@@ -7,7 +7,7 @@ using AudioSwitch.Imaging;
 
 namespace AudioSwitch.Shell;
 
-internal sealed class TrayIcon : IDisposable
+internal sealed partial class TrayIcon : IDisposable
 {
     private readonly HwndSource source;
     private Native.NotifyData data;
@@ -19,14 +19,18 @@ internal sealed class TrayIcon : IDisposable
     internal event Action? DisplayChanged;
     internal nint Handle => source.Handle;
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern nint FindWindow(string className, string? title);
+    [LibraryImport(
+        "user32.dll",
+        EntryPoint = "FindWindowW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    private static partial nint FindWindow(string className, string? title);
 
-    [DllImport("user32.dll")]
-    private static extern uint GetDpiForWindow(nint window);
+    [LibraryImport("user32.dll")]
+    private static partial uint GetDpiForWindow(nint window);
 
-    [DllImport("user32.dll")]
-    private static extern int GetSystemMetricsForDpi(int index, uint dpi);
+    [LibraryImport("user32.dll")]
+    private static partial int GetSystemMetricsForDpi(int index, uint dpi);
 
     internal int IconSize
     {

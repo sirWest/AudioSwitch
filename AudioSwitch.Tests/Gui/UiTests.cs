@@ -10,25 +10,31 @@ namespace AudioSwitch.Tests;
 
 public sealed partial class UiTests
 {
-    [DllImport("user32.dll")]
-    private static extern nint GetForegroundWindow();
+    [LibraryImport("user32.dll")]
+    private static partial nint GetForegroundWindow();
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern nint FindWindowEx(
+    [LibraryImport(
+        "user32.dll",
+        EntryPoint = "FindWindowExW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    private static partial nint FindWindowEx(
         nint parent,
         nint after,
         string? className,
         string title
     );
 
-    [DllImport("user32.dll")]
-    private static extern uint GetWindowThreadProcessId(nint window, out uint process);
+    [LibraryImport("user32.dll")]
+    private static partial uint GetWindowThreadProcessId(nint window, out uint process);
 
-    [DllImport("user32.dll")]
-    private static extern bool PostMessage(nint window, uint message, nint wParam, nint lParam);
+    [LibraryImport("user32.dll", EntryPoint = "PostMessageA")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool PostMessage(nint window, uint message, nint wParam, nint lParam);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool SetWindowPos(
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetWindowPos(
         nint window,
         nint after,
         int x,
@@ -56,11 +62,12 @@ public sealed partial class UiTests
         public uint Flags;
     }
 
-    [DllImport("user32.dll")]
-    private static extern nint MonitorFromWindow(nint window, uint flags);
+    [LibraryImport("user32.dll")]
+    private static partial nint MonitorFromWindow(nint window, uint flags);
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern bool GetMonitorInfo(nint monitor, ref MonitorInfo info);
+    [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetMonitorInfo(nint monitor, ref MonitorInfo info);
 
     private static AutomationElement? Window(int process, string title) =>
         AutomationElement.RootElement.FindFirst(
@@ -86,8 +93,13 @@ public sealed partial class UiTests
             );
         }
 
-        return parent.FindFirst(TreeScope.Descendants, condition)
-            ?? throw new InvalidOperationException($"Missing {type.ProgrammaticName}: {name}");
+        AutomationElement? element = null;
+        // Theme changes and tab selection update the automation tree asynchronously.
+        Wait(
+            () => (element = parent.FindFirst(TreeScope.Descendants, condition)) is not null,
+            $"Missing {type.ProgrammaticName}: {name}"
+        );
+        return element!;
     }
 
     private static void Select(AutomationElement element) =>
@@ -174,11 +186,38 @@ public sealed partial class UiTests
             AssertFocus();
             void AssertBothGroups()
             {
-                var playbackHeading = Find(flyout!, ControlType.Text, "Playback");
-                var recordingHeading = Find(flyout!, ControlType.Text, "Recording");
+                var playbackBounds = System.Windows.Rect.Empty;
+                var recordingBounds = System.Windows.Rect.Empty;
+                // Focus arrives before the opening animation finishes moving/clipping the window.
+                Wait(
+                    () =>
+                    {
+                        var playback = Find(
+                            flyout!,
+                            ControlType.Text,
+                            "Playback"
+                        ).Current.BoundingRectangle;
+                        var recording = Find(
+                            flyout!,
+                            ControlType.Text,
+                            "Recording"
+                        ).Current.BoundingRectangle;
+                        var stable =
+                            playback.Width > 0
+                            && playback.Height > 0
+                            && recording.Width > 0
+                            && recording.Height > 0
+                            && playback == playbackBounds
+                            && recording == recordingBounds;
+                        playbackBounds = playback;
+                        recordingBounds = recording;
+                        return stable;
+                    },
+                    "Flyout group headings did not finish layout and animation."
+                );
                 Assert.True(
-                    playbackHeading.Current.BoundingRectangle.Top
-                        < recordingHeading.Current.BoundingRectangle.Top
+                    playbackBounds.Top < recordingBounds.Top,
+                    $"Playback bounds: {playbackBounds}; recording bounds: {recordingBounds}"
                 );
             }
             AssertBothGroups();

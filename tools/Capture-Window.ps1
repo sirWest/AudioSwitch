@@ -1,6 +1,7 @@
 param([string]$Title = 'AudioSwitch Settings', [string]$Tab, [string]$Output = "$PSScriptRoot/../artifacts/settings.png", [int]$ProcessId)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Drawing
+# Add-Type does not run the LibraryImport source generator.
 Add-Type @'
 using System;
 using System.Runtime.InteropServices;

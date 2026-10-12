@@ -8,17 +8,26 @@ namespace AudioSwitch.Shell;
 
 internal static partial class Native
 {
-    [DllImport("gdi32.dll")]
-    private static extern nint CreateRectRgn(int left, int top, int right, int bottom);
+    [LibraryImport("gdi32.dll")]
+    private static partial nint CreateRectRgn(int left, int top, int right, int bottom);
 
-    [DllImport("gdi32.dll")]
-    private static extern bool DeleteObject(nint value);
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DeleteObject(nint value);
 
-    [DllImport("user32.dll")]
-    private static extern int SetWindowRgn(nint hwnd, nint region, bool redraw);
+    [LibraryImport("user32.dll")]
+    private static partial int SetWindowRgn(
+        nint hwnd,
+        nint region,
+        [MarshalAs(UnmanagedType.Bool)] bool redraw
+    );
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern nint FindWindowEx(
+    [LibraryImport(
+        "user32.dll",
+        EntryPoint = "FindWindowExW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
+    private static partial nint FindWindowEx(
         nint parent,
         nint after,
         string className,

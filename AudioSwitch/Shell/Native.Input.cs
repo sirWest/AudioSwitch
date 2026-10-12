@@ -74,6 +74,6 @@ internal static partial class Native
         public nuint ExtraInfo;
     }
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern uint SendInput(uint count, [In] Input[] inputs, int size);
+    [LibraryImport("user32.dll", SetLastError = true)]
+    private static partial uint SendInput(uint count, [In] Input[] inputs, int size);
 }

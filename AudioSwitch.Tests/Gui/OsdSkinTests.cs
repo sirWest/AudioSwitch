@@ -32,7 +32,7 @@ public sealed class OsdSkinTests
             "Ubuntu 10",
             "VAIO",
             "Volume win8",
-            "VU Meter"
+            "VU Meter",
         };
 
     [Theory]
@@ -184,11 +184,17 @@ public sealed class OsdSkinTests
                                 0,
                                 canvas.Height - text.ActualHeight
                             );
-                            Assert.InRange(text.ActualHeight, text.FontSize, text.MaxHeight);
+                            // Layout rounding can exceed MaxHeight by less than one physical pixel.
+                            var roundingTolerance = 1 / VisualTreeHelper.GetDpi(text).DpiScaleY;
+                            Assert.InRange(
+                                text.ActualHeight,
+                                text.FontSize,
+                                text.MaxHeight + roundingTolerance
+                            );
                             var size = new Size(window.Width, window.Height);
                             if (deviceSize.HasValue)
                             {
-                                Assert.Equal(deviceSize.Value, size);
+                                AssertRoundedSize(deviceSize.Value, size, window);
                             }
 
                             deviceSize = size;
@@ -210,9 +216,9 @@ public sealed class OsdSkinTests
                         }
 
                         window.Display(new OsdSettings { Skin = name }, .5f, preview: true);
-                        Assert.Equal(skinSize, new Size(window.Width, window.Height));
+                        AssertRoundedSize(skinSize, new Size(window.Width, window.Height), window);
                         window.Display(new OsdSettings { Skin = name }, muted: true, preview: true);
-                        Assert.Equal(skinSize, new Size(window.Width, window.Height));
+                        AssertRoundedSize(skinSize, new Size(window.Width, window.Height), window);
                     }
                 }
 
@@ -234,8 +240,11 @@ public sealed class OsdSkinTests
                             state == "device" ? "Headphones (USB Audio Device)" : null,
                             true
                         );
-                        Assert.Equal(200, window.Width);
-                        Assert.Equal(40, window.Height);
+                        AssertRoundedSize(
+                            new Size(200, 40),
+                            new Size(window.Width, window.Height),
+                            window
+                        );
                         if (state == "device")
                         {
                             var text = Assert.IsType<TextBlock>(canvas.Children[1]);
@@ -283,6 +292,14 @@ public sealed class OsdSkinTests
         {
             System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
         }
+    }
+
+    private static void AssertRoundedSize(Size expected, Size actual, Visual visual)
+    {
+        // Showing a window can round its requested size to the display's physical pixels.
+        var dpi = VisualTreeHelper.GetDpi(visual);
+        Assert.InRange(Math.Abs(actual.Width - expected.Width), 0, 1 / dpi.DpiScaleX);
+        Assert.InRange(Math.Abs(actual.Height - expected.Height), 0, 1 / dpi.DpiScaleY);
     }
 
     private static BitmapSource SavePreview(Canvas canvas, string name)

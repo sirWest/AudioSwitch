@@ -63,6 +63,7 @@ internal static partial class Native
         }
     }
 
+    // Keep built-in COM marshalling for the ComImport interfaces used below.
     [DllImport("ole32.dll")]
     private static extern int CoCreateInstance(
         ref Guid classId,
