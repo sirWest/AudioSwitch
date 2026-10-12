@@ -122,7 +122,9 @@ internal sealed partial class SettingsWindow
             e.Handled = true;
             try
             {
-                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+                using var process = Process.Start(
+                    new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }
+                );
             }
             catch (Exception ex)
             {

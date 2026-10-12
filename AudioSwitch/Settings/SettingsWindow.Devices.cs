@@ -246,6 +246,10 @@ internal sealed partial class SettingsWindow
             "75-100.png",
             "mute.png",
         };
+        // Tint thumbnails, not six full-size 256px assets on every slider movement.
+        var previewSources = previewAssets
+            .Select(asset => Images.Resize(Images.TrayAsset(asset), 64))
+            .ToArray();
         foreach (var asset in previewAssets)
         {
             var preview = new Image
@@ -272,10 +276,7 @@ internal sealed partial class SettingsWindow
         {
             for (var i = 0; i < previewAssets.Length; i++)
             {
-                ((Image)previews.Children[i]).Source = Images.Tint(
-                    Images.TrayAsset(previewAssets[i]),
-                    editing
-                );
+                ((Image)previews.Children[i]).Source = Images.Tint(previewSources[i], editing);
             }
         }
         foreach (

@@ -44,7 +44,7 @@ internal sealed partial class SettingsWindow
                         && uri.Scheme is "http" or "https"
                     )
                     {
-                        Process.Start(
+                        using var process = Process.Start(
                             new ProcessStartInfo(uri.ToString()) { UseShellExecute = true }
                         );
                     }

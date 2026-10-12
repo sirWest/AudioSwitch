@@ -180,8 +180,33 @@ internal static partial class Native
         ?? Imaging.Images.Asset("0-25.png")
     );
 
-    internal static ImageSource DeviceIcon(string path) =>
-        TryDeviceIcon(path) ?? defaultDeviceIcon.Value;
+    private static readonly Dictionary<string, ImageSource> deviceIcons = new();
+
+    internal static ImageSource DeviceIcon(string path)
+    {
+        lock (deviceIcons)
+        {
+            if (deviceIcons.TryGetValue(path, out var cached))
+            {
+                return cached;
+            }
+
+            var image = TryDeviceIcon(path);
+            if (image is null)
+            {
+                return defaultDeviceIcon.Value;
+            }
+
+            // Frozen 32px images can be shared across refreshes and settings windows.
+            // Bound retention when devices or their icon paths keep changing.
+            if (deviceIcons.Count >= 32)
+            {
+                deviceIcons.Clear();
+            }
+            deviceIcons.Add(path, image);
+            return image;
+        }
+    }
 
     private static ImageSource? TryDeviceIcon(string? path)
     {

@@ -508,6 +508,9 @@ internal sealed class AudioMeterInformation(
     }
 
     private IAudioMeterInformation? native = native;
+    private float[] peaks = [];
+
+    // Borrowed until the next read; EndpointMonitor exposes only the two scalar values.
     internal IReadOnlyList<float> PeakValues
     {
         get
@@ -517,6 +520,7 @@ internal sealed class AudioMeterInformation(
             Check(instance.GetMeteringChannelCount(out var count), "read meter channel count");
             if (count == 0)
             {
+                peaks = [];
                 return Array.Empty<float>();
             }
 
@@ -529,8 +533,15 @@ internal sealed class AudioMeterInformation(
                 );
             }
 
-            var peaks = new float[count];
-            Check(instance.GetChannelsPeakValues(count, peaks), $"read {count} meter peaks");
+            if (peaks.Length != count)
+            {
+                peaks = new float[count];
+            }
+            var result = instance.GetChannelsPeakValues(count, peaks);
+            if (result < 0)
+            {
+                Check(result, $"read {count} meter peaks");
+            }
             for (var i = 0; i < peaks.Length; i++)
             {
                 peaks[i] = float.IsFinite(peaks[i]) ? Math.Clamp(peaks[i], 0, 1) : 0;
@@ -542,6 +553,7 @@ internal sealed class AudioMeterInformation(
     public void Dispose()
     {
         var instance = Interlocked.Exchange(ref native, null);
+        peaks = [];
         if (instance is not null && Marshal.IsComObject(instance))
         {
             MMDevice.Release(instance);

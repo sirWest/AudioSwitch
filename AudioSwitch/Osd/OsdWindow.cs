@@ -89,6 +89,13 @@ internal sealed partial class OsdWindow : Window
             e.Handled = true;
         };
         timer.Tick += (_, _) => Fade();
+        Closed += (_, _) =>
+        {
+            timer.Stop();
+            BeginAnimation(OpacityProperty, null);
+            canvas.Children.Clear();
+            background = mute = meter = effect = deviceBackground = null;
+        };
     }
 
     private void Load(OsdSettings value)
@@ -168,10 +175,17 @@ internal sealed partial class OsdWindow : Window
             BeginAnimation(OpacityProperty, null);
             Opacity = value.Opacity;
             Render(volume, muted, device);
-            Show();
+            if (!IsVisible)
+            {
+                Show();
+            }
             var hwnd = new WindowInteropHelper(this).Handle;
             var style = Native.GetWindowLongPtr(hwnd, -20);
-            Native.SetWindowLongPtr(hwnd, -20, preview ? style & ~0x20 : style | 0x20);
+            var nextStyle = preview ? style & ~0x20 : style | 0x20;
+            if (style != nextStyle)
+            {
+                Native.SetWindowLongPtr(hwnd, -20, nextStyle);
+            }
             Native.PositionOsd(this, (int)value.Left, (int)value.Top);
             if (!preview)
             {

@@ -9,19 +9,43 @@ namespace AudioSwitch.Osd;
 
 internal sealed partial class OsdWindow
 {
+    private int imageIndex;
+
     private void Image(BitmapSource source, double x = 0, double y = 0)
     {
-        var image = new Image
+        if (!source.IsFrozen)
         {
-            Source = source,
-            Width = source.PixelWidth,
-            Height = source.PixelHeight,
-            Stretch = Stretch.Fill,
-            IsHitTestVisible = false,
-        };
+            source.Freeze();
+        }
+        Image image;
+        if (imageIndex < canvas.Children.Count && canvas.Children[imageIndex] is Image existing)
+        {
+            image = existing;
+        }
+        else
+        {
+            image = new Image { Stretch = Stretch.Fill, IsHitTestVisible = false };
+            if (imageIndex < canvas.Children.Count)
+            {
+                canvas.Children.RemoveAt(imageIndex);
+            }
+            canvas.Children.Insert(imageIndex, image);
+        }
+        imageIndex++;
+        image.Source = source;
+        image.Width = source.PixelWidth;
+        image.Height = source.PixelHeight;
+        image.Clip = null;
         Canvas.SetLeft(image, x);
         Canvas.SetTop(image, y);
-        canvas.Children.Add(image);
+    }
+
+    private void TrimImages()
+    {
+        if (canvas.Children.Count > imageIndex)
+        {
+            canvas.Children.RemoveRange(imageIndex, canvas.Children.Count - imageIndex);
+        }
     }
 
     private void Render(float volume, bool muted, string? device)
@@ -29,7 +53,8 @@ internal sealed partial class OsdWindow
         lastVolume = volume;
         lastMuted = muted;
         lastDevice = device;
-        canvas.Children.Clear();
+        // Keep the background and volume controls attached during rapid updates.
+        imageIndex = 0;
         var surface =
             device is not null && deviceBackground is not null ? deviceBackground
             : muted ? mute!
@@ -39,16 +64,19 @@ internal sealed partial class OsdWindow
         Image(surface);
         if (device is not null)
         {
+            TrimImages();
             RenderDeviceLabel(device);
             return;
         }
 
         if (muted)
         {
+            TrimImages();
             return;
         }
 
         RenderVolume(volume);
+        TrimImages();
     }
 
     private void RenderVolume(float volume)
@@ -74,7 +102,7 @@ internal sealed partial class OsdWindow
                 var radius = (double?)bar.Attribute("CornerRadius") ?? 0;
                 if (radius > 0)
                 {
-                    canvas.Children[^1].Clip = new RectangleGeometry(
+                    canvas.Children[imageIndex - 1].Clip = new RectangleGeometry(
                         new Rect(0, 0, width, meter.PixelHeight),
                         radius,
                         radius

@@ -284,22 +284,26 @@ public sealed partial class App
         Item(
             "Windows sound settings",
             () =>
-                System.Diagnostics.Process.Start(
+            {
+                using var process = System.Diagnostics.Process.Start(
                     new System.Diagnostics.ProcessStartInfo("ms-settings:sound")
                     {
                         UseShellExecute = true,
                     }
-                )
+                );
+            }
         );
         Item(
             "Classic sound control panel",
             () =>
-                System.Diagnostics.Process.Start(
+            {
+                using var process = System.Diagnostics.Process.Start(
                     new System.Diagnostics.ProcessStartInfo("control.exe", "mmsys.cpl")
                     {
                         UseShellExecute = true,
                     }
-                )
+                );
+            }
         );
         menu.Items.Add(new Separator());
         Item("Exit", Shutdown);

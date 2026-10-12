@@ -51,25 +51,31 @@ internal static partial class Native
         var hwnd = new WindowInteropHelper(window).EnsureHandle();
         // OSDs may cover the taskbar; only recover positions outside the physical display.
         var screen = MonitorAt(new Point { X = x, Y = y }).Monitor;
-        Position(
-            window,
-            Math.Clamp(x, screen.Left, screen.Right - 1),
-            Math.Clamp(y, screen.Top, screen.Bottom - 1)
-        );
+        var targetMonitor = MonitorFromPoint(new Point { X = x, Y = y }, 2);
+        if (MonitorFromWindow(hwnd, 2) != targetMonitor)
+        {
+            // Only stage a move when the destination DPI may change.
+            Position(
+                window,
+                Math.Clamp(x, screen.Left, screen.Right - 1),
+                Math.Clamp(y, screen.Top, screen.Bottom - 1)
+            );
+        }
         window.UpdateLayout();
         GetWindowRect(hwnd, out var bounds);
-        Position(
-            window,
-            Math.Clamp(
-                x,
-                screen.Left,
-                Math.Max(screen.Left, screen.Right - (bounds.Right - bounds.Left))
-            ),
-            Math.Clamp(
-                y,
-                screen.Top,
-                Math.Max(screen.Top, screen.Bottom - (bounds.Bottom - bounds.Top))
-            )
+        var left = Math.Clamp(
+            x,
+            screen.Left,
+            Math.Max(screen.Left, screen.Right - (bounds.Right - bounds.Left))
         );
+        var top = Math.Clamp(
+            y,
+            screen.Top,
+            Math.Max(screen.Top, screen.Bottom - (bounds.Bottom - bounds.Top))
+        );
+        if (bounds.Left != left || bounds.Top != top)
+        {
+            Position(window, left, top);
+        }
     }
 }
