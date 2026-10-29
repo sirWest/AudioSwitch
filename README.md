@@ -55,6 +55,8 @@ keep looking after. Thank you for giving it another look.
 - Keep settings backed up with automatic recovery and migration from the legacy app.
 - Use `audioswitch-cli.exe` with text or JSON output for scripts and automation.
 - Open detailed audio-error diagnostics from the Settings footer.
+- Check for new releases automatically and open the release page from the tray.
+  Update checks are enabled by default and can be turned off in Settings.
 
 See [Device Hotkeys](docs/DEVICE-HOTKEYS.md) for setup examples and the
 [technical reference](docs/TECHNICAL.md) for settings, OSD behavior, and diagnostics.
