@@ -119,6 +119,7 @@ public sealed partial class App : Application
             shortcuts = new(tray, Dispatcher);
             flyout = new(this);
             SubscribeTrayEvents();
+            ConfigureUpdateChecks();
             try
             {
                 shortcuts.Apply(Settings);
@@ -215,6 +216,8 @@ public sealed partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        updateTimer?.Stop();
+        updateCancellation?.Cancel();
         watcher?.Dispose();
         audioRefresh?.Dispose();
         flyout?.Dispose();

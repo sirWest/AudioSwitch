@@ -28,6 +28,7 @@ public sealed partial class App
         // Keep the current snapshot if Windows rejects one of the replacement hotkeys.
         shortcuts.Apply(next);
         Settings = next;
+        ConfigureUpdateChecks();
         store = nextStore;
         DeviceIcons.ClearCache();
         iconKey = null;
@@ -109,6 +110,7 @@ public sealed partial class App
         }
 
         Settings = settings;
+        ConfigureUpdateChecks();
         DeviceIcons.ClearCache();
         ApplyTheme(Settings.Theme);
         iconKey = null;

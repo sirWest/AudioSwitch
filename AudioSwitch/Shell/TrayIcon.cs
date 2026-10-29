@@ -13,6 +13,7 @@ internal sealed partial class TrayIcon : IDisposable
     private Native.NotifyData data;
     private readonly uint taskbarCreated = Native.RegisterWindowMessage("TaskbarCreated");
     private nint ownedIcon;
+    private Action? notificationClick;
     internal event Action? LeftClick;
     internal event Action? RightClick;
     internal event Action<int>? Hotkey;
@@ -101,6 +102,13 @@ internal sealed partial class TrayIcon : IDisposable
                 LeftClick?.Invoke();
             }
 
+            if (notification == 0x405)
+            {
+                var click = notificationClick;
+                notificationClick = null;
+                click?.Invoke();
+            }
+
             if (notification == 0x7b)
             {
                 RightClick?.Invoke();
@@ -144,8 +152,9 @@ internal sealed partial class TrayIcon : IDisposable
         return name + suffix;
     }
 
-    internal void Notify(string text)
+    internal void Notify(string text, Action? onClick = null)
     {
+        notificationClick = onClick;
         data.Info = text.Length > 255 ? text[..255] : text;
         data.InfoTitle = "AudioSwitch";
         data.InfoFlags = 1;

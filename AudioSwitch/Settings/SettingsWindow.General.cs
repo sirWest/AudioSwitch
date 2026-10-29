@@ -63,9 +63,6 @@ internal sealed partial class SettingsWindow
                 nameof(draft.QuickSwitch)
             )
         );
-        panel.Children.Add(
-            Check("Show OSD when quick-switching", draft, nameof(draft.QuickSwitchOsd))
-        );
         startAtLogin = StartupRegistration.IsEnabled;
 
         var startup = new CheckBox
@@ -80,12 +77,10 @@ internal sealed partial class SettingsWindow
         startup.Checked += (_, _) => startAtLogin = true;
         startup.Unchecked += (_, _) => startAtLogin = false;
         panel.Children.Add(startup);
+        panel.Children.Add(Check("Check for updates", draft, nameof(draft.CheckForUpdates)));
         Label(panel, "Mouse-wheel volume control");
-        panel.Children.Add(
-            Check("Enable global volume scrolling", draft, nameof(draft.VolumeScroll))
-        );
+        panel.Children.Add(Check("Enable global volume scrolling", draft, nameof(draft.VolumeScroll)));
         panel.Children.Add(new ScrollModifierPicker(draft));
-        panel.Children.Add(Check("Show OSD when scrolling", draft, nameof(draft.ScrollOsd)));
         return panel;
     }
 

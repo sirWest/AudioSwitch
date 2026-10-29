@@ -17,6 +17,8 @@ internal sealed partial class SettingsWindow
     private UIElement CreateOsdTab()
     {
         var root = new StackPanel();
+        root.Children.Add(Check("Show OSD when quick-switching", draft, nameof(draft.QuickSwitchOsd)));
+        root.Children.Add(Check("Show OSD when scrolling volume", draft, nameof(draft.ScrollOsd)));
         var customOsd = Check(
             "Use custom OSD (otherwise Windows volume OSD)",
             draft,

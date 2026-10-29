@@ -331,6 +331,8 @@ public sealed partial class App
             }
         );
         menu.Items.Add(new Separator());
+        if (updateUrl is not null && Settings.CheckForUpdates)
+            Item("Update", OpenUpdate);
         Item("Exit", Shutdown);
         tray.ShowMenu(menu);
     }

@@ -35,6 +35,7 @@ public sealed class AppSettings
     public double? FlyoutLeft { get; set; }
     public double? FlyoutTop { get; set; }
     public bool CustomOsd { get; set; } = true;
+    public bool CheckForUpdates { get; set; } = true;
     public bool VolumeScroll { get; set; }
     public ScrollKeys ScrollKeys { get; set; } = ScrollKeys.LWin;
     public bool ScrollOsd { get; set; } = true;
