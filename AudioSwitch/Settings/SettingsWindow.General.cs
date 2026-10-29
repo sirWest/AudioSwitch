@@ -95,13 +95,6 @@ internal sealed partial class SettingsWindow
         {
             if (!File.Exists(AudioDiagnostics.LogPath))
             {
-                MessageBox.Show(
-                    this,
-                    "No error log has been created yet.",
-                    "AudioSwitch",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
                 return;
             }
 

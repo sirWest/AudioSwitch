@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using AudioSwitch.Core.Audio;
 using AudioSwitch.Core.Settings;
 using AudioSwitch.Shell;
@@ -84,6 +86,11 @@ internal sealed partial class SettingsWindow : Window
         cancel.IsCancel = true;
         buttons.Children.Add(cancel);
         var openLog = Button("Open error log", OpenErrorLog);
+        void UpdateLogButton() => openLog.IsEnabled = File.Exists(AudioDiagnostics.LogPath);
+        UpdateLogButton();
+        var logTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        logTimer.Tick += (_, _) => UpdateLogButton();
+        logTimer.Start();
         DockPanel.SetDock(openLog, Dock.Left);
         bottom.Children.Add(openLog);
         bottom.Children.Add(statusText);
@@ -113,6 +120,7 @@ internal sealed partial class SettingsWindow : Window
         app.Osd.Moved += OsdMoved;
         Closed += (_, _) =>
         {
+            logTimer.Stop();
             app.Osd.Moved -= OsdMoved;
             app.Osd.EndPreview();
         };
