@@ -396,6 +396,8 @@ internal sealed class AudioEndpointVolume(
         native ?? throw new ObjectDisposedException(nameof(AudioEndpointVolume));
 
     private VolumeCallback? callback;
+    internal AudioState State => new(MasterVolumeLevelScalar, Mute);
+
     internal float MasterVolumeLevelScalar
     {
         get

@@ -297,10 +297,7 @@ public sealed class AudioService : IDisposable
     public AudioState State(string id)
     {
         using var device = enumerator.GetDevice(id);
-        return new(
-            device.AudioEndpointVolume.MasterVolumeLevelScalar,
-            device.AudioEndpointVolume.Mute
-        );
+        return device.AudioEndpointVolume.State;
     }
 
     public AudioState SetVolume(string id, float volume)
@@ -312,20 +309,14 @@ public sealed class AudioService : IDisposable
 
         using var device = enumerator.GetDevice(id);
         device.AudioEndpointVolume.MasterVolumeLevelScalar = Math.Clamp(volume, 0, 1);
-        return new(
-            device.AudioEndpointVolume.MasterVolumeLevelScalar,
-            device.AudioEndpointVolume.Mute
-        );
+        return device.AudioEndpointVolume.State;
     }
 
     public AudioState SetMute(string id, bool? mute = null)
     {
         using var device = enumerator.GetDevice(id);
         device.AudioEndpointVolume.Mute = mute ?? !device.AudioEndpointVolume.Mute;
-        return new(
-            device.AudioEndpointVolume.MasterVolumeLevelScalar,
-            device.AudioEndpointVolume.Mute
-        );
+        return device.AudioEndpointVolume.State;
     }
 
     public EndpointMonitor Monitor(string id) => new(enumerator.GetDevice(id));

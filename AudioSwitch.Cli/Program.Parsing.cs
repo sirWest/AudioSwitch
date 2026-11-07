@@ -56,9 +56,11 @@ internal static partial class Program
 
     private static int ParseKey(string value)
     {
-        if (int.TryParse(value, out var number) && number is > 0 and < 255)
+        if (int.TryParse(value, out var number))
         {
-            return number;
+            return number is > 0 and < 255
+                ? number
+                : throw new ArgumentException("Virtual-key number must be 1..254.");
         }
 
         if (value.Length == 1 && char.IsAsciiLetter(value[0]))
@@ -66,12 +68,16 @@ internal static partial class Program
             return char.ToUpperInvariant(value[0]);
         }
 
-        if (value.Length == 2 && value[0] == 'D' && char.IsAsciiDigit(value[1]))
+        if (value.Length == 2 && (value[0] is 'D' or 'd') && char.IsAsciiDigit(value[1]))
         {
             return value[1];
         }
 
-        if (value.StartsWith('F') && int.TryParse(value[1..], out var f) && f is >= 1 and <= 24)
+        if (
+            value.StartsWith("F", StringComparison.OrdinalIgnoreCase)
+            && int.TryParse(value[1..], out var f)
+            && f is >= 1 and <= 24
+        )
         {
             return 0x70 + f - 1;
         }

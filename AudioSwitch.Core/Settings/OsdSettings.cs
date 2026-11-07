@@ -7,4 +7,6 @@ public sealed class OsdSettings
     public double Top { get; set; } = 26;
     public int Timeout { get; set; } = 1300;
     public double Opacity { get; set; } = 1;
+
+    public OsdSettings Clone() => (OsdSettings)MemberwiseClone();
 }

@@ -1,0 +1,10 @@
+﻿<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <AUDIOSWITCH_TEST_UI>1</AUDIOSWITCH_TEST_UI>
+      <AUDIOSWITCH_TEST_SYSTEM>1</AUDIOSWITCH_TEST_SYSTEM>
+      <AUDIOSWITCH_TEST_MUTATIONS>1</AUDIOSWITCH_TEST_MUTATIONS>
+      <AUDIOSWITCH_TEST_SWITCHING>1</AUDIOSWITCH_TEST_SWITCHING>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

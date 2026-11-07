@@ -1,0 +1,174 @@
+<UserControl
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  x:Class="AudioSwitch.Settings.DeviceEditor"
+  x:ClassModifier="internal"
+  DataContext="{x:Null}"
+>
+  <StackPanel>
+    <TextBlock
+      x:Name="emptyMessage"
+      Text="No active devices"
+      FontWeight="SemiBold"
+      Margin="0,8,0,4"
+      Visibility="Collapsed"
+    />
+    <StackPanel x:Name="fields">
+      <DockPanel Margin="0,0,0,6">
+        <Button
+          x:Name="resetDevice"
+          Content="Reset device"
+          DockPanel.Dock="Right"
+          MinWidth="78"
+          Margin="8,0,0,0"
+          Padding="10,5"
+          VerticalAlignment="Top"
+        />
+        <TextBlock
+          x:Name="deviceName"
+          TextWrapping="Wrap"
+          FontWeight="SemiBold"
+          VerticalAlignment="Center"
+        />
+      </DockPanel>
+      <CheckBox
+        Content="Hide from device list and cycling"
+        IsChecked="{Binding Hidden}"
+        MinHeight="24"
+        Padding="8,0,0,0"
+        Margin="0,2"
+      />
+      <CheckBox
+        Content="Exclude from hotkey mute/unmute"
+        IsChecked="{Binding ExcludeFromHotkeyMute}"
+        MinHeight="24"
+        Padding="8,0,0,0"
+        Margin="0,2"
+      />
+      <DockPanel Margin="0,3,0,5">
+        <CheckBox
+          x:Name="customName"
+          Content="Use custom name"
+          IsChecked="{Binding UseCustomName}"
+          MinHeight="24"
+          Padding="8,0,0,0"
+          Margin="0,0,8,0"
+          VerticalAlignment="Center"
+        />
+        <TextBox
+          Text="{Binding CustomName, UpdateSourceTrigger=PropertyChanged}"
+          IsEnabled="{Binding IsChecked, ElementName=customName}"
+          Margin="0,3,0,5"
+        />
+      </DockPanel>
+      <CheckBox
+        x:Name="startupDefault"
+        IsChecked="{Binding StartupMultimedia}"
+        MinHeight="24"
+        Padding="8,0,0,0"
+        Margin="0,2"
+      />
+      <CheckBox
+        x:Name="startupCommunications"
+        Content="Default communications device at sign-in"
+        IsChecked="{Binding StartupCommunications}"
+        MinHeight="24"
+        Padding="8,0,0,0"
+        Margin="0,2"
+      />
+      <CheckBox
+        x:Name="tray"
+        Content="Use device icon in tray"
+        IsChecked="{Binding UseDeviceIconInTray}"
+        MinHeight="24"
+        Padding="8,0,0,0"
+        Margin="0,2"
+      />
+      <WrapPanel VerticalAlignment="Center">
+        <Image
+          x:Name="preview"
+          Width="32"
+          Height="32"
+          Margin="0,0,8,0"
+          AutomationProperties.Name="Tray icon preview"
+          RenderOptions.BitmapScalingMode="HighQuality"
+        />
+        <Button
+          x:Name="browseIcon"
+          Content="Browse..."
+          MinWidth="78"
+          Margin="3"
+          Padding="10,5"
+          HorizontalAlignment="Left"
+        />
+        <Button
+          x:Name="resetIcon"
+          Content="Reset icon"
+          MinWidth="78"
+          Margin="3"
+          Padding="10,5"
+          HorizontalAlignment="Left"
+        />
+      </WrapPanel>
+      <StackPanel x:Name="colors">
+        <Grid Height="34" Margin="0,2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="88" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="Hue" VerticalAlignment="Center" />
+          <Slider
+            x:Name="hue"
+            Grid.Column="1"
+            Value="{Binding Hue}"
+            Minimum="0"
+            Maximum="360"
+            TickFrequency="1"
+            IsSnapToTickEnabled="True"
+            AutoToolTipPlacement="TopLeft"
+            AutoToolTipPrecision="0"
+            VerticalAlignment="Center"
+          />
+        </Grid>
+        <Grid Height="34" Margin="0,2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="88" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="Saturation" VerticalAlignment="Center" />
+          <Slider
+            x:Name="saturation"
+            Grid.Column="1"
+            Value="{Binding Saturation}"
+            Minimum="-100"
+            Maximum="100"
+            TickFrequency="1"
+            IsSnapToTickEnabled="True"
+            AutoToolTipPlacement="TopLeft"
+            AutoToolTipPrecision="0"
+            VerticalAlignment="Center"
+          />
+        </Grid>
+        <Grid Height="34" Margin="0,2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="88" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="Brightness" VerticalAlignment="Center" />
+          <Slider
+            x:Name="brightness"
+            Grid.Column="1"
+            Value="{Binding Brightness}"
+            Minimum="-100"
+            Maximum="100"
+            TickFrequency="1"
+            IsSnapToTickEnabled="True"
+            AutoToolTipPlacement="TopLeft"
+            AutoToolTipPrecision="0"
+            VerticalAlignment="Center"
+          />
+        </Grid>
+      </StackPanel>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

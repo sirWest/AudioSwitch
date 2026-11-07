@@ -1,5 +1,4 @@
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -23,116 +22,76 @@ internal sealed partial class FlyoutWindow : Window, IDisposable
     {
         this.app = app;
         recoveryTimer.Tick += (_, _) => app.RunSafely(Refresh);
-        Title = "AudioSwitch";
-        Width = 280;
-        SizeToContent = SizeToContent.Height;
-        ResizeMode = ResizeMode.NoResize;
-        WindowStyle = WindowStyle.None;
-        ShowInTaskbar = false;
-        Topmost = true;
-        UseLayoutRounding = true;
+        InitializeComponent();
 
-        // Acrylic requires a normal HWND, so AllowsTransparency must remain false.
-        Resources.MergedDictionaries.Add(
-            new ResourceDictionary
-            {
-                Source = new Uri(
-                    "/AudioSwitch;component/Flyout/FlyoutStyles.xaml",
-                    UriKind.Relative
-                ),
-            }
-        );
-
-        deviceList.ItemContainerStyle = (Style)FindResource("CompactDeviceItem");
-        deviceList.Padding = new Thickness(0);
-        ScrollViewer.SetHorizontalScrollBarVisibility(deviceList, ScrollBarVisibility.Disabled);
-        volumeSlider.Style = (Style)FindResource("AudioVolumeSlider");
-        SetResourceReference(BackgroundProperty, "SolidBackgroundFillColorBaseBrush");
-
-        InitializeBackdrop();
-        BuildLayout();
-        SubscribeInputEvents();
-        SubscribeWindowEvents();
         meterTimer.Tick += (_, _) => UpdateMeters();
         direction = app.Settings.DefaultDirection;
     }
 
-    private void InitializeBackdrop()
+    private void WindowSourceInitialized(object sender, EventArgs e)
     {
-        SetResourceReference(ForegroundProperty, "TextFillColorPrimaryBrush");
-
-        SourceInitialized += (_, _) =>
-        {
-            var hwnd = new WindowInteropHelper(this).Handle;
-            Native.DisableWindowTransitions(hwnd);
-            HwndSource.FromHwnd(hwnd)?.AddHook(BackdropMessage);
-            var powerSavingStatus = new Guid("E00958C0-C213-4ACE-AC77-FECCED2EEEA5");
-            powerNotification = Native.RegisterPowerSettingNotification(
-                hwnd,
-                ref powerSavingStatus,
-                0
-            );
-            ApplyWindowsBackdrop();
-        };
-
-        ContentRendered += (_, _) =>
-        {
-            if (!IsVisible)
-            {
-                return;
-            }
-
-            // Repeat the visual part of Refresh after WPF has presented the surface.
-            // The initial positioning happens before that surface has rendered.
-            if (!app.Settings.AlwaysVisible && openingAnimation is null)
-            {
-                app.PositionFlyout(this);
-            }
-
-            ApplyWindowsBackdrop();
-        };
+        var hwnd = new WindowInteropHelper(this).Handle;
+        Native.DisableWindowTransitions(hwnd);
+        HwndSource.FromHwnd(hwnd)?.AddHook(BackdropMessage);
+        var powerSavingStatus = new Guid("E00958C0-C213-4ACE-AC77-FECCED2EEEA5");
+        powerNotification = Native.RegisterPowerSettingNotification(hwnd, ref powerSavingStatus, 0);
+        ApplyWindowsBackdrop();
     }
 
-    private void SubscribeWindowEvents()
+    private void WindowContentRendered(object sender, EventArgs e)
     {
-        KeyDown += (_, e) =>
+        if (!IsVisible)
         {
-            if (e.Key == Key.Escape && !app.Settings.AlwaysVisible)
-            {
-                Dismiss();
-            }
-        };
+            return;
+        }
 
-        Deactivated += (_, _) =>
+        // Repeat the visual part of Refresh after WPF has presented the surface.
+        // The initial positioning happens before that surface has rendered.
+        if (!app.Settings.AlwaysVisible && openingAnimation is null)
         {
-            if (!app.Settings.AlwaysVisible)
-            {
-                app.FlyoutDeactivated();
-                Dismiss();
-            }
-        };
+            app.PositionFlyout(this);
+        }
 
-        IsVisibleChanged += (_, _) =>
+        ApplyWindowsBackdrop();
+    }
+
+    private void WindowKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape && !app.Settings.AlwaysVisible)
         {
-            if (IsVisible)
-            {
-                meterTimer.Start();
-            }
-            else
-            {
-                dismissing = false;
-                openingAnimation?.Dispose();
-                openingAnimation = null;
-                meterTimer.Stop();
+            Dismiss();
+        }
+    }
 
-                if (directionOverride is not null)
-                {
-                    directionOverride = null;
+    private void WindowDeactivated(object sender, EventArgs e)
+    {
+        if (!app.Settings.AlwaysVisible)
+        {
+            app.FlyoutDeactivated();
+            Dismiss();
+        }
+    }
 
-                    app.RunSafely(Refresh);
-                }
+    private void WindowIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (IsVisible)
+        {
+            meterTimer.Start();
+        }
+        else
+        {
+            dismissing = false;
+            openingAnimation?.Dispose();
+            openingAnimation = null;
+            meterTimer.Stop();
+
+            if (directionOverride is not null)
+            {
+                directionOverride = null;
+
+                app.RunSafely(Refresh);
             }
-        };
+        }
     }
 
     protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -284,18 +243,11 @@ internal sealed partial class FlyoutWindow : Window, IDisposable
         defaultDevice = devices.FirstOrDefault(d => d.Multimedia);
 
         header.Visibility = both ? Visibility.Collapsed : Visibility.Visible;
-        (settingsButton.Parent as Panel)?.Children.Remove(settingsButton);
-        if (!both)
-        {
-            DockPanel.SetDock(settingsButton, Dock.Right);
-            header.Children.Insert(0, settingsButton);
-        }
-
         title.Text = direction == Direction.Playback ? "Playback" : "Recording";
 
         leftMeter.Colorful = rightMeter.Colorful = app.Settings.ColorVu;
 
-        var selectedId = (deviceList.SelectedItem as ListBoxItem)?.Tag is AudioDevice selected
+        var selectedId = deviceList.SelectedItem is FlyoutRow { Device: { } selected }
             ? selected.Id
             : null;
 
@@ -353,4 +305,47 @@ internal sealed partial class FlyoutWindow : Window, IDisposable
         monitor = null;
         previous?.Dispose();
     }
+
+    // Presentation properties are consumed by FlyoutWindow.xaml bindings and triggers.
+    private sealed record FlyoutRow(
+        string Name,
+        AudioDevice? Device = null,
+        ImageSource? Icon = null,
+        bool IsDefault = false,
+        bool IsHeading = false,
+        bool IsEmpty = false,
+        bool ShowSettings = false
+    );
+
+    private void SettingsClick(object sender, RoutedEventArgs e) => app.OpenSettings();
+
+    private void AddDevices(
+        IEnumerable<AudioDevice> devices,
+        string? selectedId,
+        string emptyMessage
+    )
+    {
+        var visibleDevices = devices
+            .Where(device => app.Settings.ForDevice(device.Id)?.Hidden != true)
+            .ToArray();
+        foreach (var device in visibleDevices)
+        {
+            var row = new FlyoutRow(
+                device.DisplayName(app.Settings),
+                device,
+                app.DeviceIcons.Get(device, app.Settings.ForDevice(device.Id)),
+                device.Multimedia
+            );
+            deviceList.Items.Add(row);
+            if (device.Id == (selectedId ?? defaultDevice?.Id))
+                deviceList.SelectedItem = row;
+        }
+        if (visibleDevices.Length == 0)
+            deviceList.Items.Add(new FlyoutRow(emptyMessage, IsEmpty: true));
+    }
+
+    private void AddGroupHeading(string name) =>
+        deviceList.Items.Add(
+            new FlyoutRow(name, IsHeading: true, ShowSettings: deviceList.Items.Count == 0)
+        );
 }

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using AudioSwitch.Core.Audio;
 
 namespace AudioSwitch.Core.Settings;
@@ -45,11 +44,14 @@ public sealed class AppSettings
 
     public DeviceSettings? ForDevice(string id) => Devices.Find(d => d.Id == id);
 
-    public AppSettings Clone() =>
-        JsonSerializer.Deserialize<AppSettings>(
-            JsonSerializer.Serialize(this, SettingsStore.Json),
-            SettingsStore.Json
-        )!;
+    public AppSettings Clone()
+    {
+        var copy = (AppSettings)MemberwiseClone();
+        copy.Osd = Osd.Clone();
+        copy.Devices = Devices.Select(device => device.Clone()).ToList();
+        copy.Hotkeys = Hotkeys.Select(hotkey => hotkey.Clone()).ToList();
+        return copy;
+    }
 
     public void Validate()
     {

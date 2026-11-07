@@ -194,12 +194,12 @@ public sealed partial class UiTests
                     {
                         var playback = Find(
                             flyout!,
-                            ControlType.Text,
+                            ControlType.ListItem,
                             "Playback"
                         ).Current.BoundingRectangle;
                         var recording = Find(
                             flyout!,
-                            ControlType.Text,
+                            ControlType.ListItem,
                             "Recording"
                         ).Current.BoundingRectangle;
                         var stable =
@@ -483,7 +483,7 @@ public sealed partial class UiTests
             );
             var transform = (TransformPattern)settings!.GetCurrentPattern(TransformPattern.Pattern);
             Assert.False(transform.Current.CanResize);
-            var lastOption = Find(settings, ControlType.CheckBox, "Show OSD when scrolling");
+            var lastOption = Find(settings, ControlType.CheckBox, "Enable global volume scrolling");
             Assert.False(lastOption.Current.IsOffscreen);
             Assert.True(
                 lastOption.Current.BoundingRectangle.Bottom

@@ -50,10 +50,9 @@ internal sealed partial class FlyoutWindow
     {
         try
         {
-            var peaks = monitor?.Peaks() ?? (0f, 0f);
-
-            leftMeter.Value = peaks.Item1;
-            rightMeter.Value = peaks.Item2;
+            var (left, right) = monitor?.Peaks() ?? (0f, 0f);
+            leftMeter.Value = left;
+            rightMeter.Value = right;
         }
         catch (Exception ex) when (AudioUnavailableException.IsUnavailable(ex))
         {
@@ -196,8 +195,6 @@ internal sealed partial class FlyoutWindow
         var previous = monitor;
         monitor = null;
         previous?.Dispose();
-        volumeSlider.IsEnabled = false;
-        leftMeter.Value = rightMeter.Value = 0;
         UpdateState(null);
         // Notifications can precede endpoint readiness, including with the same ID.
         recoveryTimer.Start();

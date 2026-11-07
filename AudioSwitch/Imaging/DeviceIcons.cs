@@ -54,6 +54,10 @@ internal sealed class DeviceIcons(string settingsPath)
         {
             if (pending is not null && pending.TryGetValue(name, out var bytes))
             {
+                if (cache.TryGetValue(name, out var cached))
+                {
+                    return cached;
+                }
                 using var stream = new MemoryStream(bytes);
                 var image = BitmapDecoder
                     .Create(
@@ -63,6 +67,7 @@ internal sealed class DeviceIcons(string settingsPath)
                     )
                     .Frames[0];
                 image.Freeze();
+                cache[name] = image;
                 return image;
             }
             try

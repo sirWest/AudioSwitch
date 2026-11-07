@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <!-- LibraryImport generates unsafe marshalling code. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>3.2.1</Version>
+    <Version>3.2.2</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>AudioSwitch</Product>
     <Authors>Tanel Teede</Authors>

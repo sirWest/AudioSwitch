@@ -7,10 +7,8 @@ internal sealed class PeakReader(
     DeviceSession? session = null
 )
 {
-    private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
     private readonly DeviceSession session = session ?? new(timeProvider: timeProvider);
     private int generation = session?.Generation ?? 0;
-    private DateTimeOffset retryAt;
     private bool failed;
 
     internal (float Left, float Right) Read()
@@ -18,15 +16,10 @@ internal sealed class PeakReader(
         if (generation != session.Generation)
         {
             generation = session.Generation;
-            retryAt = default;
             reset();
         }
         if (session.Blocked("read peak levels") is not null)
             return (0, 0);
-        if (clock.GetUtcNow() < retryAt)
-        {
-            return (0, 0);
-        }
 
         try
         {
@@ -34,7 +27,6 @@ internal sealed class PeakReader(
             if (failed)
                 session.Succeeded("read peak levels");
             failed = false;
-            retryAt = default;
             // Mono endpoints drive both meters; additional channels are not displayed.
             return channels.Count switch
             {
@@ -52,7 +44,6 @@ internal sealed class PeakReader(
         {
             session.Failed("read peak levels", ex, TimeSpan.FromSeconds(5));
             failed = true;
-            retryAt = clock.GetUtcNow() + TimeSpan.FromSeconds(5);
             reset();
             return (0, 0);
         }

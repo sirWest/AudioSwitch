@@ -15,8 +15,8 @@ still operate on the current Windows audio session.
 ## Code Organization
 
 - `AudioSwitch/App.cs` owns startup, shutdown and error handling. `App.Commands.cs` connects tray and hotkey actions; `App.Settings.cs` owns settings reloads and saves.
-- `AudioSwitch/Flyout` contains the device window, its styles, volume thumb and VU meter. The window's partial files separate layout, input and audio subscriptions from its show/hide lifecycle.
-- `AudioSwitch/Settings` contains the settings window and its tabs, hotkey editor and modifier picker. All tabs edit one draft; Apply commits it through the app.
+- `AudioSwitch/Flyout` contains the device window, volume thumb and VU meter. XAML defines layout and styles; the window's partial files separate input and audio subscriptions from its show/hide lifecycle.
+- `AudioSwitch/Settings` contains the settings window, device controls, hotkey editor and modifier picker. XAML defines their controls and bindings; the settings window's partial files group device editing, hotkeys and OSD previews. All tabs edit one draft; Apply commits it through the app.
 - `AudioSwitch/Osd` contains the OSD window, rendering and skin lookup.
 - `AudioSwitch/Input` contains global shortcuts and their display converter.
 - `AudioSwitch/Shell` contains the tray icon, sign-in registration and native window integration. Native declarations, backdrops, positioning and animation are grouped in separate partial files.
@@ -73,6 +73,16 @@ require `AUDIOSWITCH_TEST_MUTATIONS=1`; default-device switching additionally us
 endpoints. Restoration happens in `finally` blocks, but cannot be guaranteed if
 hardware disappears or the test process is terminated. Enable only the flags you
 intend to use and remove them from your shell afterwards.
+
+To run the complete suite in an interactive Windows session, including audio mutations,
+use the checked-in run settings instead of setting environment variables manually:
+
+```powershell
+dotnet test AudioSwitch.sln -c Release --settings AudioSwitch.Tests/Interactive.runsettings
+```
+
+The default-device switching test reports a skip when fewer than two playback
+endpoints are connected; it cannot exercise switching with only one endpoint.
 
 `tools/Capture-Window.ps1` captures a selected application window for visual
 inspection. Build output, screenshots and local profiles belong in `artifacts`.

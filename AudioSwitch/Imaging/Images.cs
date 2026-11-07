@@ -116,6 +116,10 @@ internal static partial class Images
         var stride = converted.PixelWidth * 4;
         var bytes = new byte[stride * converted.PixelHeight];
         converted.CopyPixels(bytes, stride, 0);
+        var brightnessOffset = settings.Brightness / 100d;
+        var saturationOffset = settings.Saturation / 100d;
+        var hue = ((settings.Hue % 360 + 360) % 360) / 60d;
+        var hueBlend = 1 - Math.Abs(hue % 2 - 1);
         // Replace hue while retaining the source's lightness and saturation, then apply
         // the user's offsets. BGRA's fourth byte is alpha and must remain unchanged.
         for (var i = 0; i < bytes.Length; i += 4)
@@ -127,11 +131,10 @@ internal static partial class Images
             var min = Math.Min(r, Math.Min(g, b));
             var light = (max + min) / 2;
             var saturation = max == min ? 0 : (max - min) / (1 - Math.Abs(2 * light - 1));
-            light = Math.Clamp(light + settings.Brightness / 100d, 0, 1);
-            saturation = Math.Clamp(saturation + settings.Saturation / 100d, 0, 1);
+            light = Math.Clamp(light + brightnessOffset, 0, 1);
+            saturation = Math.Clamp(saturation + saturationOffset, 0, 1);
             var chroma = (1 - Math.Abs(2 * light - 1)) * saturation;
-            var hue = ((settings.Hue % 360 + 360) % 360) / 60d;
-            var x = chroma * (1 - Math.Abs(hue % 2 - 1));
+            var x = chroma * hueBlend;
             var m = light - chroma / 2;
             (r, g, b) = (int)hue switch
             {

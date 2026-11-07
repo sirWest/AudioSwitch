@@ -8,7 +8,12 @@ namespace AudioSwitch.Shell;
 internal static partial class TrayVisibility
 {
     [LibraryImport("shell32.dll")]
-    private static partial int SHGetKnownFolderPath(in Guid folderId, uint flags, nint token, out nint path);
+    private static partial int SHGetKnownFolderPath(
+        in Guid folderId,
+        uint flags,
+        nint token,
+        out nint path
+    );
 
     internal static async Task<bool> PromoteAsync()
     {
@@ -19,11 +24,17 @@ internal static partial class TrayVisibility
 
         try
         {
-            using var user = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64);
+            using var user = RegistryKey.OpenBaseKey(
+                RegistryHive.CurrentUser,
+                RegistryView.Registry64
+            );
             // Explorer creates this entry only after Shell_NotifyIcon registers the icon.
             for (var attempt = 0; attempt <= 40; attempt++)
             {
-                using var root = user.OpenSubKey(@"Control Panel\NotifyIconSettings", writable: true);
+                using var root = user.OpenSubKey(
+                    @"Control Panel\NotifyIconSettings",
+                    writable: true
+                );
                 if (root is not null && Promote(root, Environment.ProcessPath!))
                 {
                     return true;
@@ -34,7 +45,9 @@ internal static partial class TrayVisibility
                     await Task.Delay(250);
                 }
             }
-            throw new TimeoutException("Explorer did not expose a matching tray entry within 10 seconds.");
+            throw new TimeoutException(
+                "Explorer did not expose a matching tray entry within 10 seconds."
+            );
         }
         catch (Exception ex)
         {
@@ -49,9 +62,14 @@ internal static partial class TrayVisibility
         foreach (var name in root.GetSubKeyNames())
         {
             using var entry = root.OpenSubKey(name, writable: true);
-            if (entry?.GetValue("ExecutablePath") is not string path ||
-                !string.Equals(ResolvePath(path), Path.GetFullPath(executablePath),
-                    StringComparison.OrdinalIgnoreCase))
+            if (
+                entry?.GetValue("ExecutablePath") is not string path
+                || !string.Equals(
+                    ResolvePath(path),
+                    Path.GetFullPath(executablePath),
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             {
                 continue;
             }
@@ -70,7 +88,11 @@ internal static partial class TrayVisibility
             path = Environment.ExpandEnvironmentVariables(path);
             if (path.StartsWith('{'))
             {
-                if (path.Length < 39 || path[38] != '\\' || !Guid.TryParse(path[..38], out var folderId))
+                if (
+                    path.Length < 39
+                    || path[38] != '\\'
+                    || !Guid.TryParse(path[..38], out var folderId)
+                )
                 {
                     return null;
                 }
@@ -92,7 +114,8 @@ internal static partial class TrayVisibility
             }
             return Path.IsPathFullyQualified(path) ? Path.GetFullPath(path) : null;
         }
-        catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
+        catch (Exception ex)
+            when (ex is ArgumentException or IOException or UnauthorizedAccessException)
         {
             return null;
         }

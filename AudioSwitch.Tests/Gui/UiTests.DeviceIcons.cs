@@ -69,13 +69,14 @@ public sealed partial class UiTests
                         $"Default {direction.ToLowerInvariant()} device at sign-in"
                     )
                 );
-                Assert.NotNull(
-                    Find(
-                        window!,
-                        ControlType.CheckBox,
-                        $"Default communications {direction.ToLowerInvariant()} at sign-in"
-                    )
-                );
+                if (direction == "Recording")
+                    Assert.NotNull(
+                        Find(
+                            window!,
+                            ControlType.CheckBox,
+                            "Default communications device at sign-in"
+                        )
+                    );
                 var tray = Find(window!, ControlType.CheckBox, "Use device icon in tray");
                 var toggle = (TogglePattern)tray.GetCurrentPattern(TogglePattern.Pattern);
                 AutomationElement[] Sliders() =>

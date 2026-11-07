@@ -15,7 +15,8 @@ public sealed class AudioAvailabilityTests
     [InlineData(unchecked((int)0x88890026))]
     public void RecognizesUnavailableEndpointsThroughWindowsExceptionMapping(int result)
     {
-        var exception = Assert.ThrowsAny<Exception>(() => Marshal.ThrowExceptionForHR(result));
+        // Ignore thread-local COM error info left by earlier integration tests.
+        var exception = Assert.ThrowsAny<Exception>(() => Marshal.ThrowExceptionForHR(result, -1));
         Assert.True(AudioUnavailableException.IsUnavailable(exception));
     }
 

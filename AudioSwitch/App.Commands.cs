@@ -247,6 +247,7 @@ public sealed partial class App
 
     internal void UpdateTray(AudioDevice? device, AudioState? state)
     {
+        var iconSize = tray.IconSize;
         var nextState = device is null ? null : state;
         if (TrayState != nextState)
         {
@@ -256,11 +257,9 @@ public sealed partial class App
 
         if (device is null || state is null)
         {
-            var unavailableKey = $"unavailable:{tray.IconSize}";
+            var unavailableKey = $"unavailable:{iconSize}";
             var unavailableIcon =
-                iconKey != unavailableKey
-                    ? Images.Icon(Images.TrayAsset("mute.png"), tray.IconSize)
-                    : 0;
+                iconKey != unavailableKey ? Images.Icon(Images.TrayAsset("mute.png"), iconSize) : 0;
             tray.Update("AudioSwitch - No default audio device", unavailableIcon);
             iconKey = unavailableKey;
             return;
@@ -270,19 +269,15 @@ public sealed partial class App
         var image = Images.VolumeAsset(state.Volume, state.Muted);
         var useDeviceIcon = Imaging.DeviceIcons.UsesDeviceIcon(pref);
         var key = useDeviceIcon
-            ? $"device:{device.Id}:{device.IconPath}:{pref?.CustomIcon}:{state.Muted}:{tray.IconSize}"
-            : $"{image}:{pref?.Hue}:{pref?.Saturation}:{pref?.Brightness}:{tray.IconSize}";
+            ? $"device:{device.Id}:{device.IconPath}:{pref?.CustomIcon}:{state.Muted}:{iconSize}"
+            : $"{image}:{pref?.Hue}:{pref?.Saturation}:{pref?.Brightness}:{iconSize}";
         var icon =
             key != iconKey
                 ? Images.Icon(
                     useDeviceIcon
-                        ? Images.DeviceTray(
-                            DeviceIcons.Get(device, pref),
-                            state.Muted,
-                            tray.IconSize
-                        )
+                        ? Images.DeviceTray(DeviceIcons.Get(device, pref), state.Muted, iconSize)
                         : Images.Tint(Images.TrayAsset(image), pref),
-                    tray.IconSize
+                    iconSize
                 )
                 : 0;
         tray.Update(

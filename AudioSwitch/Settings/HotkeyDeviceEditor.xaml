@@ -1,0 +1,51 @@
+<UserControl
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  x:Class="AudioSwitch.Settings.HotkeyDeviceEditor"
+  x:ClassModifier="internal"
+  DataContext="{x:Null}"
+>
+  <UserControl.Resources>
+    <Style x:Key="ChoiceItem" TargetType="ComboBoxItem">
+      <Setter Property="AutomationProperties.Name" Value="{Binding Label}" />
+      <Setter Property="ToolTip" Value="{Binding Label}" />
+    </Style>
+  </UserControl.Resources>
+  <StackPanel Margin="0,8,0,0">
+    <TextBlock x:Name="heading" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,8,0,4" />
+    <ComboBox
+      x:Name="deviceChoice"
+      DisplayMemberPath="Label"
+      SelectedValuePath="Value"
+      ItemContainerStyle="{StaticResource ChoiceItem}"
+      HorizontalAlignment="Stretch"
+      Margin="0,0,0,4"
+    />
+    <StackPanel x:Name="mutePanel">
+      <TextBlock Text="On selection" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,8,0,4" />
+      <ComboBox
+        x:Name="muteChoice"
+        DisplayMemberPath="Label"
+        SelectedValuePath="Value"
+        ItemContainerStyle="{StaticResource ChoiceItem}"
+        AutomationProperties.Name="On selection"
+        HorizontalAlignment="Stretch"
+        Margin="0,0,0,4"
+      />
+    </StackPanel>
+    <TextBlock
+      x:Name="excluded"
+      Text="Excluded from hotkey mute/unmute"
+      TextWrapping="Wrap"
+      Margin="0,4"
+    />
+    <CheckBox
+      x:Name="others"
+      IsChecked="{Binding MuteOthers}"
+      MinHeight="24"
+      Padding="8,0,0,0"
+      Margin="0,2"
+      ToolTip="Devices excluded from hotkey mute/unmute are left unchanged."
+    />
+  </StackPanel>
+</UserControl>

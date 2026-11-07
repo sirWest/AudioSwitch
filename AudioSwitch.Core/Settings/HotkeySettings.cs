@@ -11,16 +11,11 @@ public sealed class HotkeySettings
     public HotkeyDeviceSettings Recording { get; set; } = new();
     public bool? AlsoCommunications { get; set; }
 
-    public HotkeySettings Clone() =>
-        new()
-        {
-            Function = Function,
-            Modifiers = Modifiers,
-            VirtualKey = VirtualKey,
-            ShowOsd = ShowOsd,
-            Name = Name,
-            Playback = Playback.Clone(),
-            Recording = Recording.Clone(),
-            AlsoCommunications = AlsoCommunications,
-        };
+    public HotkeySettings Clone()
+    {
+        var copy = (HotkeySettings)MemberwiseClone();
+        copy.Playback = Playback.Clone();
+        copy.Recording = Recording.Clone();
+        return copy;
+    }
 }

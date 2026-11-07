@@ -1,0 +1,506 @@
+<Window
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:AudioSwitch.Settings"
+  x:Class="AudioSwitch.Settings.SettingsWindow"
+  x:ClassModifier="internal"
+  Title="AudioSwitch Settings"
+  Width="640"
+  ResizeMode="NoResize"
+  WindowStartupLocation="CenterScreen"
+  UseLayoutRounding="True"
+  Background="{DynamicResource ApplicationBackgroundBrush}"
+  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+  Closed="WindowClosed"
+>
+  <Window.Resources>
+    <DataTemplate x:Key="SettingsDeviceRow">
+      <DockPanel>
+        <Image Source="{Binding Icon}" Width="32" Height="32" Margin="0,0,6,0" />
+        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center" />
+      </DockPanel>
+    </DataTemplate>
+  </Window.Resources>
+  <DockPanel Margin="12">
+    <DockPanel DockPanel.Dock="Bottom" Height="48" Margin="0,4,0,0" VerticalAlignment="Center">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button
+          Content="Apply"
+          Click="ApplyClick"
+          MinWidth="78"
+          Margin="3"
+          Padding="10,5"
+          HorizontalAlignment="Left"
+        />
+        <Button
+          Content="Save &amp; Close"
+          Click="SaveCloseClick"
+          MinWidth="78"
+          Margin="3"
+          Padding="10,5"
+          HorizontalAlignment="Left"
+        />
+        <Button
+          Content="Cancel"
+          Click="CancelClick"
+          MinWidth="78"
+          Margin="3"
+          Padding="10,5"
+          HorizontalAlignment="Left"
+          IsCancel="True"
+        />
+      </StackPanel>
+      <Button
+        Content="Open error log"
+        x:Name="openLog"
+        Click="OpenLogClick"
+        MinWidth="78"
+        Margin="3"
+        Padding="10,5"
+        HorizontalAlignment="Left"
+        DockPanel.Dock="Left"
+      />
+      <TextBlock
+        x:Name="statusText"
+        Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+        TextWrapping="Wrap"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Margin="8"
+        MaxWidth="600"
+      />
+    </DockPanel>
+    <TabControl x:Name="tabs" SelectionChanged="TabsSelectionChanged">
+      <TabItem Header="General">
+        <Border Margin="12">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+              <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,16,0">
+                  <TextBlock Text="Appearance" FontWeight="SemiBold" Margin="0,8,0,4" />
+                  <ComboBox
+                    x:Name="theme"
+                    SelectedItem="{Binding Theme}"
+                    SelectionChanged="ThemeSelectionChanged"
+                    MinWidth="180"
+                    Margin="0,0,0,5"
+                  />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                  <TextBlock Text="Default device group" FontWeight="SemiBold" Margin="0,8,0,4" />
+                  <ComboBox
+                    x:Name="deviceGroup"
+                    SelectedItem="{Binding DefaultDeviceGroup}"
+                    MinWidth="180"
+                    Margin="0,0,0,5"
+                  />
+                </StackPanel>
+              </Grid>
+              <CheckBox
+                Content="Also change the communications default"
+                IsChecked="{Binding AlsoCommunications}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Show hardware names"
+                IsChecked="{Binding ShowHardwareName}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Color VU meters"
+                IsChecked="{Binding ColorVu}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Close the device list after selecting"
+                IsChecked="{Binding CloseAfterSelecting}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Keep the device window visible"
+                IsChecked="{Binding AlwaysVisible}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Right-click tray icon to switch to the next device"
+                IsChecked="{Binding QuickSwitch}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Start AudioSwitch at sign-in"
+                x:Name="startup"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Check for updates"
+                IsChecked="{Binding CheckForUpdates}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <TextBlock Text="Mouse-wheel volume control" FontWeight="SemiBold" Margin="0,8,0,4" />
+              <CheckBox
+                Content="Enable global volume scrolling"
+                IsChecked="{Binding VolumeScroll}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <local:ScrollModifierPicker x:Name="scrollPicker" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </TabItem>
+      <TabItem Header="Playback">
+        <Border Margin="12">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="200" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ListBox
+              x:Name="playbackDevices"
+              ItemTemplate="{StaticResource SettingsDeviceRow}"
+              Margin="0,0,14,0"
+              HorizontalContentAlignment="Stretch"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+            />
+            <ScrollViewer
+              Grid.Column="1"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+            >
+              <local:DeviceEditor x:Name="playbackEditor" />
+            </ScrollViewer>
+          </Grid>
+        </Border>
+      </TabItem>
+      <TabItem Header="Recording">
+        <Border Margin="12">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="200" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ListBox
+              x:Name="recordingDevices"
+              ItemTemplate="{StaticResource SettingsDeviceRow}"
+              Margin="0,0,14,0"
+              HorizontalContentAlignment="Stretch"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+            />
+            <ScrollViewer
+              Grid.Column="1"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+            >
+              <local:DeviceEditor x:Name="recordingEditor" />
+            </ScrollViewer>
+          </Grid>
+        </Border>
+      </TabItem>
+      <TabItem Header="Hotkeys" x:Name="hotkeysTab">
+        <Border Margin="12">
+          <DockPanel>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+              <Button
+                Content="Add"
+                Click="AddHotkeyClick"
+                MinWidth="78"
+                Margin="3"
+                Padding="10,5"
+                HorizontalAlignment="Left"
+              />
+              <Button
+                Content="Edit"
+                x:Name="editHotkey"
+                Click="EditHotkeyClick"
+                MinWidth="78"
+                Margin="3"
+                Padding="10,5"
+                HorizontalAlignment="Left"
+              />
+              <Button
+                Content="Duplicate"
+                x:Name="duplicateHotkey"
+                Click="DuplicateHotkeyClick"
+                MinWidth="78"
+                Margin="3"
+                Padding="10,5"
+                HorizontalAlignment="Left"
+              />
+              <Button
+                Content="Delete"
+                x:Name="deleteHotkey"
+                Click="DeleteHotkeyClick"
+                MinWidth="78"
+                Margin="3"
+                Padding="10,5"
+                HorizontalAlignment="Left"
+              />
+            </StackPanel>
+            <DataGrid
+              x:Name="hotkeyGrid"
+              AutoGenerateColumns="False"
+              CanUserAddRows="False"
+              CanUserDeleteRows="False"
+              CanUserResizeRows="False"
+              IsReadOnly="True"
+              SelectionMode="Single"
+              MinRowHeight="40"
+              ColumnHeaderHeight="34"
+              HeadersVisibility="Column"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+              SelectionChanged="HotkeySelectionChanged"
+              PreviewKeyDown="HotkeyPreviewKeyDown"
+              MouseDoubleClick="HotkeyDoubleClick"
+            >
+              <DataGrid.Resources>
+                <Style x:Key="CellText" TargetType="TextBlock">
+                  <Setter Property="TextWrapping" Value="Wrap" />
+                  <Setter Property="Margin" Value="6" />
+                </Style>
+              </DataGrid.Resources>
+              <DataGrid.Columns>
+                <DataGridTextColumn
+                  x:Name="hotkeyActionColumn"
+                  Header="Action"
+                  ElementStyle="{StaticResource CellText}"
+                  Width="*"
+                />
+                <DataGridTextColumn
+                  x:Name="hotkeyShortcutColumn"
+                  Header="Shortcut"
+                  ElementStyle="{StaticResource CellText}"
+                  Width="180"
+                />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+        </Border>
+      </TabItem>
+      <TabItem Header="OSD" x:Name="osdTab">
+        <Border Margin="12">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+              <CheckBox
+                Content="Show OSD when quick-switching"
+                IsChecked="{Binding QuickSwitchOsd}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Show OSD when scrolling volume"
+                IsChecked="{Binding ScrollOsd}"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+              />
+              <CheckBox
+                Content="Use custom OSD (otherwise Windows volume OSD)"
+                IsChecked="{Binding CustomOsd}"
+                x:Name="customOsd"
+                MinHeight="24"
+                Padding="8,0,0,0"
+                Margin="0,2"
+                Checked="CustomOsdChecked"
+                Unchecked="CustomOsdUnchecked"
+              />
+              <StackPanel IsEnabled="{Binding IsChecked, ElementName=customOsd}">
+                <TextBlock Text="Skin" FontWeight="SemiBold" Margin="0,8,0,4" />
+                <ComboBox
+                  x:Name="skins"
+                  SelectedItem="{Binding Osd.Skin}"
+                  SelectionChanged="PreviewSelectionChanged"
+                  MinWidth="180"
+                  HorizontalAlignment="Left"
+                  Margin="0,0,0,5"
+                />
+                <TextBlock x:Name="skinInfo" Margin="0,8" TextWrapping="Wrap" />
+                <Button
+                  Content="Skin website"
+                  Click="SkinWebsiteClick"
+                  MinWidth="78"
+                  Margin="3"
+                  Padding="10,5"
+                  HorizontalAlignment="Left"
+                />
+                <Grid Height="34" Margin="0,2">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="88" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="Opacity" VerticalAlignment="Center" />
+                  <Slider
+                    Grid.Column="1"
+                    Minimum="0"
+                    Maximum="1"
+                    TickFrequency="0.01"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft"
+                    AutoToolTipPrecision="2"
+                    VerticalAlignment="Center"
+                    Value="{Binding Osd.Opacity}"
+                    ValueChanged="PreviewValueChanged"
+                  />
+                </Grid>
+                <TextBlock Text="Duration (milliseconds)" FontWeight="SemiBold" Margin="0,8,0,4" />
+                <TextBox
+                  x:Name="timeoutInput"
+                  Width="120"
+                  HorizontalAlignment="Left"
+                  Margin="0,0,0,10"
+                  TextChanged="TimeoutTextChanged"
+                />
+                <WrapPanel>
+                  <Button
+                    Content="Volume preview"
+                    Click="VolumePreviewClick"
+                    MinWidth="78"
+                    Margin="3"
+                    Padding="10,5"
+                    HorizontalAlignment="Left"
+                  />
+                  <Button
+                    Content="Mute preview"
+                    Click="MutePreviewClick"
+                    MinWidth="78"
+                    Margin="3"
+                    Padding="10,5"
+                    HorizontalAlignment="Left"
+                  />
+                  <Button
+                    Content="Device preview"
+                    Click="DevicePreviewClick"
+                    MinWidth="78"
+                    Margin="3"
+                    Padding="10,5"
+                    HorizontalAlignment="Left"
+                  />
+                  <Button
+                    Content="Reset position"
+                    Click="ResetPositionClick"
+                    MinWidth="78"
+                    Margin="3"
+                    Padding="10,5"
+                    HorizontalAlignment="Left"
+                  />
+                </WrapPanel>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </TabItem>
+      <TabItem Header="About">
+        <Border Margin="12">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="12,16,12,12">
+              <DockPanel Margin="0,0,0,20">
+                <Image
+                  x:Name="aboutIcon"
+                  DockPanel.Dock="Left"
+                  Width="64"
+                  Height="64"
+                  Margin="0,0,16,0"
+                  RenderOptions.BitmapScalingMode="HighQuality"
+                />
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock
+                    x:Name="aboutName"
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    TextWrapping="Wrap"
+                  />
+                  <TextBlock
+                    x:Name="aboutVersion"
+                    Margin="0,4,0,0"
+                    FontSize="14"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                  />
+                </StackPanel>
+              </DockPanel>
+              <TextBlock
+                Text="Switch audio devices, adjust volume, and control your Windows sound with global shortcuts from the system tray."
+                FontSize="14"
+                Margin="0,4,0,0"
+                TextWrapping="Wrap"
+              />
+              <StackPanel Margin="0,20">
+                <TextBlock Text="Made by Tanel Teede" FontWeight="SemiBold" />
+                <TextBlock
+                  Text="Estonia | Project started in 2015"
+                  FontSize="14"
+                  Margin="0,4,0,0"
+                  Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                />
+              </StackPanel>
+              <Border
+                Height="1"
+                Margin="0,0,0,16"
+                Background="{DynamicResource DividerStrokeColorDefaultBrush}"
+              />
+              <TextBlock FontSize="14" Margin="0,5" TextWrapping="Wrap">
+                <Hyperlink
+                  NavigateUri="https://github.com/sirWest/AudioSwitch"
+                  RequestNavigate="AboutNavigate"
+                  Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                >
+                  GitHub project
+                </Hyperlink>
+              </TextBlock>
+              <TextBlock FontSize="14" Margin="0,5" TextWrapping="Wrap">
+                <Hyperlink
+                  NavigateUri="https://github.com/sirWest/AudioSwitch/releases"
+                  RequestNavigate="AboutNavigate"
+                  Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                >
+                  Releases and changelog
+                </Hyperlink>
+              </TextBlock>
+              <TextBlock FontSize="14" Margin="0,5" TextWrapping="Wrap">
+                <Hyperlink
+                  NavigateUri="https://github.com/sirWest/AudioSwitch/issues"
+                  RequestNavigate="AboutNavigate"
+                  Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                >
+                  Report an issue or request a feature
+                </Hyperlink>
+              </TextBlock>
+              <TextBlock FontSize="14" Margin="0,16,0,0" TextWrapping="Wrap">
+                <Hyperlink
+                  NavigateUri="https://github.com/sirWest/AudioSwitch/blob/master/LICENSE"
+                  RequestNavigate="AboutNavigate"
+                  Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                >
+                  Open source under the Apache License 2.0
+                </Hyperlink>
+              </TextBlock>
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

@@ -1,0 +1,100 @@
+<Button
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:settings="clr-namespace:AudioSwitch.Core.Settings;assembly=AudioSwitch.Core"
+  x:Class="AudioSwitch.Settings.ScrollModifierPicker"
+  x:ClassModifier="internal"
+  Width="340"
+  HorizontalAlignment="Left"
+  HorizontalContentAlignment="Stretch"
+  Padding="10,5"
+  Margin="0,4,0,6"
+  AutomationProperties.Name="Mouse-wheel modifiers"
+  Click="ToggleMenu"
+  PreviewKeyDown="OpenMenuFromKeyboard"
+>
+  <Button.ContextMenu>
+    <ContextMenu
+      x:Name="menu"
+      Placement="Bottom"
+      MinWidth="340"
+      Opened="MenuOpened"
+      Closed="MenuClosed"
+    >
+      <MenuItem
+        Header="Left mouse button"
+        Tag="{x:Static settings:ScrollKeys.LeftMouseButton}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+      <MenuItem
+        Header="Right mouse button"
+        Tag="{x:Static settings:ScrollKeys.RightMouseButton}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+      <MenuItem
+        Header="Ctrl"
+        Tag="{x:Static settings:ScrollKeys.Control}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+      <MenuItem
+        Header="Alt"
+        Tag="{x:Static settings:ScrollKeys.Alt}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+      <MenuItem
+        Header="Left Windows key"
+        Tag="{x:Static settings:ScrollKeys.LWin}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+      <MenuItem
+        Header="Right Windows key"
+        Tag="{x:Static settings:ScrollKeys.RWin}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+      <MenuItem
+        Header="Shift"
+        Tag="{x:Static settings:ScrollKeys.Shift}"
+        IsCheckable="True"
+        StaysOpenOnClick="True"
+        Checked="ModifierChanged"
+        Unchecked="ModifierChanged"
+      />
+    </ContextMenu>
+  </Button.ContextMenu>
+  <DockPanel>
+    <Path
+      DockPanel.Dock="Right"
+      Data="M 0,0 L 4,4 L 8,0 L 7,0 L 4,3 L 1,0 Z"
+      Width="8"
+      Height="4"
+      Stretch="Fill"
+      Margin="12,0,2,0"
+      VerticalAlignment="Center"
+      RenderTransformOrigin="0.5,0.5"
+      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+    >
+      <Path.RenderTransform>
+        <RotateTransform x:Name="arrowRotation" />
+      </Path.RenderTransform>
+    </Path>
+    <TextBlock x:Name="summary" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+  </DockPanel>
+</Button>

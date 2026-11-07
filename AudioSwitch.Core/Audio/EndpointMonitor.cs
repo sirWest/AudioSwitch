@@ -38,8 +38,7 @@ public sealed class EndpointMonitor : IDisposable
         }
     }
 
-    public AudioState State =>
-        new(device.AudioEndpointVolume.MasterVolumeLevelScalar, device.AudioEndpointVolume.Mute);
+    public AudioState State => device.AudioEndpointVolume.State;
 
     public (float Left, float Right) Peaks()
     {

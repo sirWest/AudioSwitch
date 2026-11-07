@@ -77,8 +77,9 @@ public sealed class SettingsStore(string? path = null)
     public void Save(AppSettings settings)
     {
         settings.Validate();
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(FilePath))!);
-        var normalizedPath = Path.GetFullPath(FilePath).ToUpperInvariant();
+        var fullPath = Path.GetFullPath(FilePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+        var normalizedPath = fullPath.ToUpperInvariant();
         var pathBytes = System.Text.Encoding.UTF8.GetBytes(normalizedPath);
         var mutexKey = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pathBytes));
         using var gate = new Mutex(false, "Local\\AudioSwitch.Settings." + mutexKey);
@@ -149,12 +150,17 @@ public sealed class SettingsStore(string? path = null)
         }
         finally
         {
-            if (File.Exists(temp))
+            try
             {
-                File.Delete(temp);
+                if (File.Exists(temp))
+                {
+                    File.Delete(temp);
+                }
             }
-
-            gate.ReleaseMutex();
+            finally
+            {
+                gate.ReleaseMutex();
+            }
         }
     }
 }

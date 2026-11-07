@@ -23,6 +23,7 @@ public sealed class CliTests
             "bin",
             configuration,
             "net10.0-windows",
+            "win-x64",
             "audioswitch-cli.exe"
         );
         var start = new ProcessStartInfo(exe)

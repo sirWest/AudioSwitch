@@ -10,107 +10,68 @@ namespace AudioSwitch.Settings;
 
 internal sealed partial class SettingsWindow
 {
-    private UIElement CreateHotkeysTab()
+    private void EditHotkey(bool add, DataGrid grid, bool duplicate = false)
     {
-        var panel = new DockPanel();
-        var toolbar = new StackPanel { Orientation = Orientation.Horizontal };
-        DockPanel.SetDock(toolbar, Dock.Bottom);
-        panel.Children.Add(toolbar);
-        var grid = new DataGrid
+        if ((!add || duplicate) && grid.SelectedItem is not HotkeySettings)
+            return;
+        foreach (var commit in commitEditors)
+            commit();
+        var dialog = new HotkeyEditorWindow(this, app, settings, hotkeys, add, grid, duplicate);
+        dialog.ShowDialog();
+    }
+
+    private void InitializeHotkeysTab()
+    {
+        hotkeyGrid.ItemsSource = hotkeys;
+        editHotkey.IsEnabled = duplicateHotkey.IsEnabled = deleteHotkey.IsEnabled = false;
+        hotkeyActionColumn.Binding = new Binding
         {
-            AutoGenerateColumns = false,
-            CanUserAddRows = false,
-            CanUserDeleteRows = false,
-            CanUserResizeRows = false,
-            IsReadOnly = true,
-            SelectionMode = DataGridSelectionMode.Single,
-            MinRowHeight = 40,
-            ColumnHeaderHeight = 34,
-            HeadersVisibility = DataGridHeadersVisibility.Column,
-            ItemsSource = hotkeys,
+            Converter = new HotkeyDescriptionConverter(settings),
         };
-        ScrollViewer.SetHorizontalScrollBarVisibility(grid, ScrollBarVisibility.Disabled);
-        ScrollViewer.SetVerticalScrollBarVisibility(grid, ScrollBarVisibility.Auto);
-        var textStyle = new Style(typeof(TextBlock));
-        textStyle.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
-        textStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(6)));
-        grid.Columns.Add(
-            new DataGridTextColumn
-            {
-                Header = "Action",
-                Binding = new Binding { Converter = new HotkeyDescriptionConverter(draft) },
-                ElementStyle = textStyle,
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
-            }
-        );
-        grid.Columns.Add(
-            new DataGridTextColumn
-            {
-                Header = "Shortcut",
-                Binding = new Binding { Converter = new ShortcutConverter() },
-                ElementStyle = textStyle,
-                Width = 180,
-            }
-        );
-        void Delete()
-        {
-            if (grid.SelectedItem is HotkeySettings selected)
-            {
-                hotkeys.Remove(selected);
-            }
-        }
-        toolbar.Children.Add(Button("Add", () => EditHotkey(true, grid)));
-        var edit = Button("Edit", () => EditHotkey(false, grid));
-        var duplicate = Button("Duplicate", () => EditHotkey(true, grid, duplicate: true));
-        var delete = Button("Delete", Delete);
-        toolbar.Children.Add(edit);
-        toolbar.Children.Add(duplicate);
-        toolbar.Children.Add(delete);
-        void UpdateSelection()
-        {
-            edit.IsEnabled =
-                duplicate.IsEnabled =
-                delete.IsEnabled =
-                    grid.SelectedItem is HotkeySettings;
-        }
-        grid.SelectionChanged += (_, _) => UpdateSelection();
-        grid.IsVisibleChanged += (_, _) =>
-        {
-            if (grid.IsVisible)
-            {
-                foreach (var commit in commitEditors)
-                {
-                    commit();
-                }
-                grid.Items.Refresh();
-            }
-        };
-        UpdateSelection();
-        grid.PreviewKeyDown += (_, e) =>
-        {
-            if (e.Key == Key.Delete)
-            {
-                Delete();
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Enter)
-            {
-                EditHotkey(false, grid);
-                e.Handled = true;
-            }
-        };
-        grid.MouseDoubleClick += (_, e) =>
-        {
-            if (
-                ItemsControl.ContainerFromElement(grid, e.OriginalSource as DependencyObject)
-                is DataGridRow
-            )
-            {
-                EditHotkey(false, grid);
-            }
-        };
-        panel.Children.Add(grid);
-        return panel;
+        hotkeyShortcutColumn.Binding = new Binding { Converter = new ShortcutConverter() };
+    }
+
+    private void AddHotkeyClick(object sender, RoutedEventArgs e) => EditHotkey(true, hotkeyGrid);
+
+    private void EditHotkeyClick(object sender, RoutedEventArgs e) => EditHotkey(false, hotkeyGrid);
+
+    private void DuplicateHotkeyClick(object sender, RoutedEventArgs e) =>
+        EditHotkey(true, hotkeyGrid, duplicate: true);
+
+    private void DeleteHotkeyClick(object sender, RoutedEventArgs e) => DeleteSelectedHotkey();
+
+    private void DeleteSelectedHotkey()
+    {
+        if (hotkeyGrid.SelectedItem is HotkeySettings selected)
+            hotkeys.Remove(selected);
+    }
+
+    private void HotkeySelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        editHotkey.IsEnabled =
+            duplicateHotkey.IsEnabled =
+            deleteHotkey.IsEnabled =
+                hotkeyGrid.SelectedItem is HotkeySettings;
+    }
+
+    private void HotkeyPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Delete)
+            DeleteSelectedHotkey();
+        else if (e.Key == Key.Enter)
+            EditHotkey(false, hotkeyGrid);
+        else
+            return;
+        e.Handled = true;
+    }
+
+    private void HotkeyDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (
+            e.OriginalSource is DependencyObject source
+            && ItemsControl.ContainerFromElement(hotkeyGrid, source) is DataGridRow
+        )
+            EditHotkey(false, hotkeyGrid);
     }
 
     private sealed class HotkeyDescriptionConverter(AppSettings settings) : IValueConverter

@@ -105,10 +105,8 @@ public sealed class SystemAudioTests
     {
         using var audio = new AudioService();
         var devices = audio.List(Direction.Playback);
-        Assert.True(
-            devices.Count >= 2,
-            "Connect at least two playback endpoints for the switching test."
-        );
+        if (devices.Count < 2)
+            Assert.Skip("Connect at least two playback endpoints for the switching test.");
         var originals = Enum.GetValues<AudioRole>()
             .ToDictionary(role => role, role => audio.DefaultId(Direction.Playback, role));
         var target = devices.First(d => d.Id != originals[AudioRole.Multimedia]);

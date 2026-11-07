@@ -218,6 +218,7 @@ public sealed partial class App : Application
     {
         updateTimer?.Stop();
         updateCancellation?.Cancel();
+        updateCancellation?.Dispose();
         watcher?.Dispose();
         audioRefresh?.Dispose();
         flyout?.Dispose();

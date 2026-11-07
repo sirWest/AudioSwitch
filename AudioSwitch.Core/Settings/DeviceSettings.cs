@@ -18,6 +18,8 @@ public sealed class DeviceSettings
     public bool StartupMultimedia { get; set; }
     public bool StartupCommunications { get; set; }
 
+    public DeviceSettings Clone() => (DeviceSettings)MemberwiseClone();
+
     internal bool HasCustomSettings =>
         Hidden
         || ExcludeFromHotkeyMute

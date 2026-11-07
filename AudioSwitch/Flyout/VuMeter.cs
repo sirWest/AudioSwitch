@@ -51,9 +51,10 @@ public sealed class VuMeter : FrameworkElement
         var dark =
             Surface is SolidColorBrush surface
             && (surface.Color.R * .2126 + surface.Color.G * .7152 + surface.Color.B * .0722) < 128;
+        var litCount = Math.Ceiling(Math.Clamp(Value, 0, 1) * count);
         for (var i = 0; i < count; i++)
         {
-            var on = i < Math.Ceiling(Math.Clamp(Value, 0, 1) * count);
+            var on = i < litCount;
             var brush = on == dark ? Brushes.LightGray : Brushes.Gray;
             if (Colorful)
             {
