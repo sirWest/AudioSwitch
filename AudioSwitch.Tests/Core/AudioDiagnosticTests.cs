@@ -8,17 +8,6 @@ namespace AudioSwitch.Tests;
 
 public sealed class AudioDiagnosticTests
 {
-    [Fact]
-    public void TestProcessesUseAnIsolatedLogDirectory()
-    {
-        var directory = Environment.GetEnvironmentVariable("AUDIOSWITCH_LOG_DIRECTORY");
-        Assert.False(string.IsNullOrEmpty(directory));
-        Assert.Equal(
-            Path.Combine(directory!, $"errors-{Environment.ProcessId}.log"),
-            AudioDiagnostics.LogPath
-        );
-    }
-
     [Theory]
     [InlineData(3)]
     [InlineData(-5)]

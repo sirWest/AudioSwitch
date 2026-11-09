@@ -12,10 +12,19 @@ public sealed class TrayVisibilityTests
     {
         var expected = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "AudioSwitch", "AudioSwitch.exe");
-        Assert.Equal(expected, TrayVisibility.ResolvePath(@"%LOCALAPPDATA%\AudioSwitch\AudioSwitch.exe"));
-        Assert.Equal(expected, TrayVisibility.ResolvePath(
-            @"{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}\AudioSwitch\AudioSwitch.exe"));
+            "AudioSwitch",
+            "AudioSwitch.exe"
+        );
+        Assert.Equal(
+            expected,
+            TrayVisibility.ResolvePath(@"%LOCALAPPDATA%\AudioSwitch\AudioSwitch.exe")
+        );
+        Assert.Equal(
+            expected,
+            TrayVisibility.ResolvePath(
+                @"{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}\AudioSwitch\AudioSwitch.exe"
+            )
+        );
     }
 
     [Theory]
@@ -26,7 +35,7 @@ public sealed class TrayVisibilityTests
     public void InvalidPathsAreIgnored(string path) =>
         Assert.Null(TrayVisibility.ResolvePath(path));
 
-    [Fact]
+    [SystemFact]
     public void PromotesOnlyTheMatchingInstallationAndCanBeRepeated()
     {
         var key = @"Software\AudioSwitch.Tests\" + Guid.NewGuid();

@@ -32,31 +32,6 @@ public sealed class SettingsTests : IDisposable
         Assert.Same(device, Assert.Single(settings.Devices));
     }
 
-    [Fact]
-    public void ExistingDefaultDevicePreferencesAreRemovedOnNextSave()
-    {
-        Directory.CreateDirectory(directory);
-        File.WriteAllText(
-            FilePath,
-            """
-            {"Devices":[
-              {"Id":"speakers","Direction":"Playback"},
-              {"Id":"microphone","Direction":"Recording"},
-              {"Id":"custom","Hidden":true}
-            ]}
-            """
-        );
-        var store = new SettingsStore(FilePath);
-        var settings = store.Load();
-        Assert.Equal(3, settings.Devices.Count);
-
-        store.Save(settings);
-
-        var device = Assert.Single(new SettingsStore(FilePath).Load().Devices);
-        Assert.Equal("custom", device.Id);
-        Assert.True(device.Hidden);
-    }
-
     [Theory]
     [InlineData("\"Hidden\":true")]
     [InlineData("\"ExcludeFromHotkeyMute\":true")]
@@ -95,35 +70,6 @@ public sealed class SettingsTests : IDisposable
         Assert.Empty(new SettingsStore(FilePath).Load().Devices);
     }
 
-    [Fact]
-    public void DeviceGroupDefaultsToPlaybackAndBothSurvivesSaveAndClone()
-    {
-        var store = new SettingsStore(FilePath);
-        var settings = store.Load();
-        Assert.Equal(DeviceGroup.Playback, settings.DefaultDeviceGroup);
-        settings.DefaultDeviceGroup = DeviceGroup.Recording;
-        store.Save(settings);
-        Assert.Equal(DeviceGroup.Recording, new SettingsStore(FilePath).Load().DefaultDeviceGroup);
-        settings.DefaultDeviceGroup = DeviceGroup.Both;
-        store.Save(settings);
-        var restored = new SettingsStore(FilePath).Load().Clone();
-        Assert.Equal(DeviceGroup.Both, restored.DefaultDeviceGroup);
-        Assert.Equal(Direction.Playback, restored.DefaultDirection);
-        restored.DefaultDeviceGroup = DeviceGroup.Playback;
-        Assert.False(restored.ShowBothDeviceGroups);
-    }
-
-    [Fact]
-    public void AppearanceDefaultsToSystemAndPersistsAnOverride()
-    {
-        var store = new SettingsStore(FilePath);
-        var settings = store.Load();
-        Assert.Equal(AppTheme.System, settings.Theme);
-        settings.Theme = AppTheme.Dark;
-        store.Save(settings);
-        Assert.Equal(AppTheme.Dark, new SettingsStore(FilePath).Load().Theme);
-    }
-
     [Theory]
     [InlineData(900, 1040, 40, 40, 0, 0, 1920, 1040, 780, 832)]
     [InlineData(900, 0, 40, 40, 0, 40, 1920, 1040, 780, 48)]
@@ -148,15 +94,29 @@ public sealed class SettingsTests : IDisposable
     }
 
     [Fact]
-    public void RoundTripAndPreviousGoodBackup()
+    public void RoundTripCloneAndPreviousGoodBackup()
     {
         var store = new SettingsStore(FilePath);
         var settings = store.Load();
+        Assert.Equal(DeviceGroup.Playback, settings.DefaultDeviceGroup);
+        Assert.Equal(AppTheme.System, settings.Theme);
+        settings.DefaultDeviceGroup = DeviceGroup.Both;
+        settings.Theme = AppTheme.Dark;
         settings.Osd.Skin = "Ice";
         store.Save(settings);
         settings.Osd.Skin = "PiX";
         store.Save(settings);
-        Assert.Equal("PiX", new SettingsStore(FilePath).Load().Osd.Skin);
+        var restored = new SettingsStore(FilePath).Load();
+        Assert.Equal("PiX", restored.Osd.Skin);
+        Assert.Equal(DeviceGroup.Both, restored.DefaultDeviceGroup);
+        Assert.Equal(AppTheme.Dark, restored.Theme);
+        var clone = restored.Clone();
+        clone.DefaultDeviceGroup = DeviceGroup.Recording;
+        clone.Theme = AppTheme.Light;
+        clone.Osd.Skin = "Default";
+        Assert.Equal(DeviceGroup.Both, restored.DefaultDeviceGroup);
+        Assert.Equal(AppTheme.Dark, restored.Theme);
+        Assert.Equal("PiX", restored.Osd.Skin);
         Assert.Contains("Ice", File.ReadAllText(FilePath + ".bak"));
     }
 

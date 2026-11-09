@@ -54,15 +54,20 @@ dotnet build AudioSwitch.sln -c Release
 dotnet test AudioSwitch.sln -c Release
 ```
 
-The default tests cover settings recovery, concurrent saves, migration, placement,
-interop layout and CLI help. The additional checks below are opt-in:
+The default tests cover settings persistence and recovery, audio failure handling,
+hotkey actions, window placement, tray images, interop and CLI help. OSD rendering
+covers only the Default skin, including light/dark themes, volume, mute and device
+labels. The additional checks below are opt-in:
 
 ```powershell
-# Endpoint enumeration, volume reads, monitor disposal, hotkey registration and CLI JSON.
+# Endpoint enumeration, volume reads, monitor disposal, tray registry, hotkeys and CLI JSON.
 $env:AUDIOSWITCH_TEST_SYSTEM = '1'
 
-# Separate temporary WPF profile; exercise every settings tab and OSD skin.
+# Separate temporary WPF profile; exercise settings, flyout and Default OSD previews.
 $env:AUDIOSWITCH_TEST_UI = '1'
+
+# Render every additional OSD skin; also exercise them in the UI when UI tests are enabled.
+$env:AUDIOSWITCH_TEST_SKINS = '1'
 
 dotnet test AudioSwitch.sln -c Release
 ```
@@ -74,12 +79,24 @@ endpoints. Restoration happens in `finally` blocks, but cannot be guaranteed if
 hardware disappears or the test process is terminated. Enable only the flags you
 intend to use and remove them from your shell afterwards.
 
-To run the complete suite in an interactive Windows session, including audio mutations,
+To run the interactive suite in a Windows session, including audio mutations,
 use the checked-in run settings instead of setting environment variables manually:
 
 ```powershell
 dotnet test AudioSwitch.sln -c Release --settings AudioSwitch.Tests/Interactive.runsettings
 ```
+
+`Interactive.runsettings` leaves additional skins disabled. Set
+`AUDIOSWITCH_TEST_SKINS=1` explicitly to include them, or run just their rendering checks:
+
+```powershell
+$env:AUDIOSWITCH_TEST_SKINS = '1'
+dotnet test AudioSwitch.Tests -c Release --filter Category=AdditionalSkins
+Remove-Item Env:AUDIOSWITCH_TEST_SKINS
+```
+
+Rendering tests assert layout and draw each state in memory; they do not generate
+screenshot galleries during test runs.
 
 The default-device switching test reports a skip when fewer than two playback
 endpoints are connected; it cannot exercise switching with only one endpoint.

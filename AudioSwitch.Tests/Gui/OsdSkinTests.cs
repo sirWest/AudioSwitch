@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,7 +5,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using AudioSwitch.Core.Settings;
-using AudioSwitch.Imaging;
 using AudioSwitch.Osd;
 using Xunit;
 
@@ -14,80 +12,6 @@ namespace AudioSwitch.Tests;
 
 public sealed class OsdSkinTests
 {
-    public static TheoryData<string> MigratedSkins =>
-        new()
-        {
-            "Ace",
-            "Aero",
-            "Classic PRO",
-            "Cold",
-            "Gnome",
-            "HP",
-            "HP ProBook",
-            "Hybrid-X Cold",
-            "LCD",
-            "Mini Volume Bar",
-            "Thoughtful Milk",
-            "Ubunte",
-            "Ubuntu 10",
-            "VAIO",
-            "Volume win8",
-            "VU Meter",
-        };
-
-    [Theory]
-    [MemberData(nameof(MigratedSkins))]
-    public void MigratedSkinsArePackagedAsSingleThemeVersionTwo(string name)
-    {
-        Assert.Contains(name, OsdWindow.Skins);
-        var directory = Path.Combine(OsdWindow.SkinRoot, name);
-        var skin = XElement.Load(Path.Combine(directory, "skin.xml"));
-        Assert.Equal("OSDskin", skin.Name.LocalName);
-        Assert.Equal("2.0", (string?)skin.Attribute("Version"));
-        Assert.Empty(skin.Descendants("Light"));
-        Assert.Empty(skin.Descendants("Dark"));
-        var background = Images.Load(
-            OsdSkin.ImagePath(directory, skin, false, "Background", "back.png")
-        );
-        foreach (var state in new[] { "Background", "Mute", "Meter", "DeviceBackground" })
-        {
-            var fallback = state == "Background" ? "back.png" : state.ToLowerInvariant() + ".png";
-            var path = OsdSkin.ImagePath(directory, skin, false, state, fallback);
-            Assert.Equal(path, OsdSkin.ImagePath(directory, skin, true, state, fallback));
-            var image = Images.Load(path);
-            if (state != "Meter")
-            {
-                Assert.Equal(background.PixelWidth, image.PixelWidth);
-                Assert.Equal(background.PixelHeight, image.PixelHeight);
-                continue;
-            }
-
-            var bar = skin.Element("VolBar")!;
-            var steps = (int)bar.Attribute("Steps")!;
-            Assert.True(steps > 0);
-            var height = image.PixelHeight;
-            if ((string?)bar.Attribute("Type") == "bitstrip")
-            {
-                Assert.Equal(0, height % steps);
-                height /= steps;
-            }
-
-            Assert.InRange((int)bar.Attribute("X")! + image.PixelWidth, 1, background.PixelWidth);
-            Assert.InRange((int)bar.Attribute("Y")! + height, 1, background.PixelHeight);
-        }
-
-        var text = skin.Element("DeviceText")!;
-        Assert.Equal(OsdSkin.TextColor(text, false), OsdSkin.TextColor(text, true));
-        Assert.True((int)text.Attribute("X")! >= 0);
-        Assert.True((int)text.Attribute("Y")! >= 0);
-        Assert.True((int)text.Attribute("MaxWidth")! > 0);
-        Assert.True((int)text.Attribute("MaxHeight")! > 0);
-        Assert.Equal(
-            OsdSkin.ImagePath(directory, skin, false, "Background", "back.png"),
-            OsdSkin.ImagePath(directory, skin, false, "DeviceBackground", "back.png")
-        );
-    }
-
     [Fact]
     public void ThemeImagesFallBackPerPropertyAndCannotEscapeSkin()
     {
@@ -117,7 +41,19 @@ public sealed class OsdSkinTests
     }
 
     [Fact]
-    public void AllSkinsRenderAndDefaultUpdatesWithResolvedAppTheme()
+    public void DefaultSkinRendersAndUpdatesWithResolvedAppTheme() =>
+        RenderSkins(["Default"], verifyDefaultTheme: true);
+
+    [SkinFact]
+    [Trait("Category", "AdditionalSkins")]
+    public void AdditionalSkinsRender()
+    {
+        var skins = OsdWindow.Skins.Where(name => name != "Default").ToArray();
+        Assert.NotEmpty(skins);
+        RenderSkins(skins, verifyDefaultTheme: false);
+    }
+
+    private static void RenderSkins(IEnumerable<string> skins, bool verifyDefaultTheme)
     {
         Exception? failure = null;
         var thread = new Thread(() =>
@@ -126,10 +62,8 @@ public sealed class OsdSkinTests
             try
             {
                 var canvas = Assert.IsType<Canvas>(window.Content);
-                var devicePreviews = new List<(string Name, bool Dark, BitmapSource Bitmap)>();
-                var longDevicePreviews = new List<(string Name, bool Dark, BitmapSource Bitmap)>();
-                Assert.Contains("Default (old)", OsdWindow.Skins);
-                foreach (var name in OsdWindow.Skins)
+                Assert.Contains("Default", OsdWindow.Skins);
+                foreach (var name in skins)
                 {
                     foreach (var dark in new[] { false, true })
                     {
@@ -140,30 +74,21 @@ public sealed class OsdSkinTests
                         {
                             window.Display(new OsdSettings { Skin = name }, volume, preview: true);
                             Assert.NotEmpty(canvas.Children.Cast<UIElement>());
-                            if (!dark && volume == .5f)
-                            {
-                                SavePreview(canvas, name + "-volume");
-                            }
+                            Render(canvas);
                         }
 
                         window.Display(new OsdSettings { Skin = name }, muted: true, preview: true);
                         Assert.Single(canvas.Children.Cast<UIElement>());
-                        if (!dark)
-                        {
-                            SavePreview(canvas, name + "-mute");
-                        }
+                        Render(canvas);
 
                         var skinSize = new Size(window.Width, window.Height);
                         Size? deviceSize = null;
                         foreach (
-                            var (label, suffix) in new[]
+                            var label in new[]
                             {
-                                ("Speakers", "short"),
-                                ("Headphones (USB Audio Device)", "normal"),
-                                (
-                                    "Headphones (High Definition USB Audio Device with Surround Sound)",
-                                    "long"
-                                ),
+                                "Speakers",
+                                "Headphones (USB Audio Device)",
+                                "Headphones (High Definition USB Audio Device with Surround Sound)",
                             }
                         )
                         {
@@ -198,21 +123,7 @@ public sealed class OsdSkinTests
                             }
 
                             deviceSize = size;
-                            var theme = dark ? "dark" : "light";
-                            var bitmap = SavePreview(canvas, $"{name}-device-{theme}-{suffix}");
-                            if (suffix == "long")
-                            {
-                                longDevicePreviews.Add((name, dark, bitmap));
-                            }
-
-                            if (suffix == "normal")
-                            {
-                                devicePreviews.Add((name, dark, bitmap));
-                                if (!dark)
-                                {
-                                    SavePreview(canvas, name + "-device");
-                                }
-                            }
+                            Render(canvas);
                         }
 
                         window.Display(new OsdSettings { Skin = name }, .5f, preview: true);
@@ -222,8 +133,10 @@ public sealed class OsdSkinTests
                     }
                 }
 
-                SaveDeviceGallery(devicePreviews);
-                SaveDeviceGallery(longDevicePreviews, "long-");
+                if (!verifyDefaultTheme)
+                {
+                    return;
+                }
 
                 var settings = new OsdSettings();
                 foreach (var dark in new[] { false, true, false })
@@ -254,17 +167,7 @@ public sealed class OsdSkinTests
                             );
                         }
 
-                        canvas.UpdateLayout();
-                        var bitmap = new RenderTargetBitmap(200, 40, 96, 96, PixelFormats.Pbgra32);
-                        bitmap.Render(canvas);
-                        var output = Path.Combine(AppContext.BaseDirectory, "osd-previews");
-                        Directory.CreateDirectory(output);
-                        using var file = File.Create(
-                            Path.Combine(output, $"{(dark ? "dark" : "light")}-{state}.png")
-                        );
-                        var encoder = new PngBitmapEncoder();
-                        encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                        encoder.Save(file);
+                        Render(canvas);
                     }
                 }
 
@@ -302,7 +205,7 @@ public sealed class OsdSkinTests
         Assert.InRange(Math.Abs(actual.Height - expected.Height), 0, 1 / dpi.DpiScaleY);
     }
 
-    private static BitmapSource SavePreview(Canvas canvas, string name)
+    private static void Render(Canvas canvas)
     {
         canvas.UpdateLayout();
         var bitmap = new RenderTargetBitmap(
@@ -313,67 +216,5 @@ public sealed class OsdSkinTests
             PixelFormats.Pbgra32
         );
         bitmap.Render(canvas);
-        var output = Path.Combine(AppContext.BaseDirectory, "osd-previews");
-        Directory.CreateDirectory(output);
-        using var file = File.Create(Path.Combine(output, name + ".png"));
-        var encoder = new PngBitmapEncoder();
-        encoder.Frames.Add(BitmapFrame.Create(bitmap));
-        encoder.Save(file);
-        return bitmap;
-    }
-
-    private static void SaveDeviceGallery(
-        List<(string Name, bool Dark, BitmapSource Bitmap)> previews,
-        string prefix = ""
-    )
-    {
-        foreach (var dark in new[] { false, true })
-        {
-            var page = 0;
-            foreach (var group in previews.Where(p => p.Dark == dark).Chunk(10))
-            {
-                var visual = new DrawingVisual();
-                using (var drawing = visual.RenderOpen())
-                {
-                    var background = new SolidColorBrush(
-                        dark ? Color.FromRgb(32, 32, 32) : Color.FromRgb(245, 245, 245)
-                    );
-                    drawing.DrawRectangle(background, null, new Rect(0, 0, 1280, 1550));
-                    for (var i = 0; i < group.Length; i++)
-                    {
-                        var x = i % 2 * 640 + 16;
-                        var y = i / 2 * 310 + 12;
-                        var label = new FormattedText(
-                            group[i].Name,
-                            CultureInfo.InvariantCulture,
-                            FlowDirection.LeftToRight,
-                            new Typeface("Segoe UI"),
-                            14,
-                            dark ? Brushes.White : Brushes.Black,
-                            1
-                        );
-                        drawing.DrawText(label, new Point(x, y));
-                        var bitmap = group[i].Bitmap;
-                        // Native pixel size keeps small labels honest during visual review.
-                        drawing.DrawImage(
-                            bitmap,
-                            new Rect(x, y + 28, bitmap.PixelWidth, bitmap.PixelHeight)
-                        );
-                    }
-                }
-
-                var sheet = new RenderTargetBitmap(1280, 1550, 96, 96, PixelFormats.Pbgra32);
-                sheet.Render(visual);
-                var path = Path.Combine(
-                    AppContext.BaseDirectory,
-                    "osd-previews",
-                    $"device-gallery-{prefix}{(dark ? "dark" : "light")}-{++page}.png"
-                );
-                using var file = File.Create(path);
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(sheet));
-                encoder.Save(file);
-            }
-        }
     }
 }

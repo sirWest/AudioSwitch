@@ -245,12 +245,12 @@ the device notification expands to contain the configured label area, then retur
 to the original size for volume and mute. These settings do not require separate
 light/dark skin variants.
 
-`OsdSkinTests` renders all skins with short, normal and long device names, checks
-label bounds and size restoration, and writes individual PNGs plus light/dark
-desktop contact sheets to `AudioSwitch.Tests/bin/<configuration>/net10.0-windows/osd-previews/`.
-Run `dotnet test AudioSwitch.Tests --filter FullyQualifiedName~OsdSkinTests` to
-regenerate them. The `device-gallery-*.png` sheets use native pixel sizes for
-review; the desktop backgrounds also reveal contrast issues in translucent skins.
+`OsdSkinTests` checks the Default skin's light/dark appearance, volume and mute
+states, device-label bounds and size restoration, and renders each state in memory.
+Additional skins are opt-in with `AUDIOSWITCH_TEST_SKINS=1`; run
+`dotnet test AudioSwitch.Tests --filter Category=AdditionalSkins` with that flag to
+check the full additional catalog. UI tests also use only Default unless this flag
+is enabled. See [Contributing](../CONTRIBUTING.md) for the other test options.
 
 The default skin's PNGs can be regenerated with `tools/Build-DefaultOsd.ps1`.
 

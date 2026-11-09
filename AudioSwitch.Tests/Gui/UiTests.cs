@@ -443,7 +443,7 @@ public sealed partial class UiTests
     }
 
     [UiFact]
-    public void EverySettingsTabAndEveryLegacySkinOpensInActualWpfProcess()
+    public void SettingsTabsAndOsdPreviewsWorkInActualWpfProcess()
     {
         var root = new DirectoryInfo(AppContext.BaseDirectory);
         while (root is not null && !File.Exists(Path.Combine(root.FullName, "AudioSwitch.sln")))
@@ -657,9 +657,11 @@ public sealed partial class UiTests
             );
             var combo = Find(settings!, ControlType.ComboBox);
             foreach (
-                var skin in Directory
-                    .GetDirectories(Path.Combine(Path.GetDirectoryName(exe)!, "Skins"))
-                    .Select(Path.GetFileName)
+                var skin in Environment.GetEnvironmentVariable("AUDIOSWITCH_TEST_SKINS") == "1"
+                    ? Directory
+                        .GetDirectories(Path.Combine(Path.GetDirectoryName(exe)!, "Skins"))
+                        .Select(Path.GetFileName)
+                    : ["Default"]
             )
             {
                 (

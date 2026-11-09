@@ -1,5 +1,4 @@
 using System.IO;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AudioSwitch.Core.Audio;
@@ -126,39 +125,22 @@ public sealed partial class TrayImageTests
                 Directory.CreateDirectory(icons.Store.DirectoryPath);
                 File.WriteAllBytes(icons.Store.Resolve(preference.CustomIcon), [1, 2, 3]);
                 Assert.Equal(fallback, Pixels(icons.Get(device, preference)));
-                var sheet = new DrawingVisual();
-                using (var context = sheet.RenderOpen())
+                foreach (var size in new[] { 16, 20, 24, 32, 48, 64 })
                 {
-                    context.DrawRectangle(Brushes.WhiteSmoke, null, new Rect(0, 0, 400, 180));
-                    var x = 12;
-                    foreach (var size in new[] { 16, 20, 24, 32, 48, 64 })
-                    {
-                        var source = icons.Get(device, null);
-                        var normal = Images.DeviceTray(source, false, size);
-                        var muted = Images.DeviceTray(source, true, size);
-                        var first = Pixels(normal);
-                        var second = Pixels(muted);
-                        Assert.Equal(
-                            first[..(size * (size / 2 - 1) * 4)],
-                            second[..(size * (size / 2 - 1) * 4)]
-                        );
-                        Assert.NotEqual(first, second);
-                        var native = Images.Icon(muted, size);
-                        Assert.NotEqual(0, native);
-                        Assert.True(DestroyIcon(native));
-                        context.DrawImage(normal, new Rect(x, 12, size, size));
-                        context.DrawImage(muted, new Rect(x, 95, size, size));
-                        x += size + 16;
-                    }
+                    var source = icons.Get(device, null);
+                    var normal = Images.DeviceTray(source, false, size);
+                    var muted = Images.DeviceTray(source, true, size);
+                    var first = Pixels(normal);
+                    var second = Pixels(muted);
+                    Assert.Equal(
+                        first[..(size * (size / 2 - 1) * 4)],
+                        second[..(size * (size / 2 - 1) * 4)]
+                    );
+                    Assert.NotEqual(first, second);
+                    var native = Images.Icon(muted, size);
+                    Assert.NotEqual(0, native);
+                    Assert.True(DestroyIcon(native));
                 }
-                var rendered = new RenderTargetBitmap(400, 180, 96, 96, PixelFormats.Pbgra32);
-                rendered.Render(sheet);
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(rendered));
-                using var file = File.Create(
-                    Path.Combine(AppContext.BaseDirectory, "device-icon-review.png")
-                );
-                encoder.Save(file);
             }
             finally
             {
