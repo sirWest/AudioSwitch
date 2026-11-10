@@ -11,13 +11,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
-    <PackageReference Include="xunit.v3" Version="4.0.2" />
+    <PackageReference Include="xunit.v3" Version="4.0.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1" PrivateAssets="all" />
     <ProjectReference Include="../AudioSwitch.Core/AudioSwitch.Core.csproj" />
     <ProjectReference Include="../AudioSwitch/AudioSwitch.csproj" />
-    <ProjectReference
-      Include="../AudioSwitch.Cli/AudioSwitch.Cli.csproj"
-      ReferenceOutputAssembly="false"
-    />
+    <ProjectReference Include="../AudioSwitch.Cli/AudioSwitch.Cli.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

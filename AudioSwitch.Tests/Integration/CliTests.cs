@@ -22,7 +22,7 @@ public sealed class CliTests
             "AudioSwitch.Cli",
             "bin",
             configuration,
-            "net10.0-windows",
+            new DirectoryInfo(AppContext.BaseDirectory).Name,
             "win-x64",
             "audioswitch-cli.exe"
         );

@@ -17,6 +17,50 @@ public sealed class SettingsTests : IDisposable
     private string FilePath => Path.Combine(directory, "settings.json");
 
     [Theory]
+    [InlineData("\"Dark\"", "\"LWin, Control\"")]
+    [InlineData("2", "0")]
+    public void GeneratedSettingsJsonPreservesTheExistingFormat(string theme, string scrollKeys)
+    {
+        var json = $$$"""
+            {
+              "Theme": {{{theme}}},
+              "ScrollKeys": {{{scrollKeys}}},
+              "FlyoutLeft": -100.5,
+              "UnknownSetting": true,
+              "Devices": [{"Id":"test", "Direction":"Recording", "CustomName":"Headphones {USB}", "Hidden":true}],
+              "Hotkeys": [{"VirtualKey":65, "Modifiers":2, "Playback":{"DeviceId":"test", "MuteAction":"Unmute"}}]
+            }
+            """;
+        var previousOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() },
+        };
+        var expected = JsonSerializer.Deserialize<AppSettings>(json, previousOptions)!;
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(FilePath, json);
+        var store = new SettingsStore(FilePath);
+        var actual = store.Load();
+        store.Save(actual);
+
+        Assert.Equal(
+            JsonSerializer.Serialize(expected, previousOptions),
+            File.ReadAllText(FilePath)
+        );
+    }
+
+    [Theory]
+    [InlineData("{\"Devices\":[{\"Id\":\"same\"},{\"Id\":\"same\"}]}")]
+    [InlineData(
+        "{\"Hotkeys\":[{\"VirtualKey\":65,\"Modifiers\":2},{\"VirtualKey\":65,\"Modifiers\":2}]}"
+    )]
+    public void DuplicateAssignmentsAreRejected(string json)
+    {
+        var settings = JsonSerializer.Deserialize<AppSettings>(json, SettingsStore.Json)!;
+        Assert.Throws<InvalidDataException>(settings.Validate);
+    }
+
+    [Theory]
     [InlineData(Direction.Playback)]
     [InlineData(Direction.Recording)]
     public void DefaultDevicePreferencesAreOmittedWithoutChangingTheEditor(Direction direction)

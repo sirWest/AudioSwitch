@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Install the .NET 10 SDK on Windows, open `AudioSwitch.sln`, and build the solution.
+Install the .NET 11 SDK on Windows, open `AudioSwitch.sln`, and build the solution.
 Use an isolated profile while developing the UI:
 
 ```powershell

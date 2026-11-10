@@ -68,7 +68,7 @@ public sealed class SettingsStore(string? path = null)
     private static AppSettings Parse(string text)
     {
         var settings =
-            JsonSerializer.Deserialize<AppSettings>(text, Json)
+            JsonSerializer.Deserialize(text, SettingsJsonContext.Default.AppSettings)
             ?? throw new InvalidDataException("Empty settings.");
         settings.Validate();
         return settings;
@@ -110,7 +110,7 @@ public sealed class SettingsStore(string? path = null)
             // Prune the saved snapshot without changing objects held by an open device editor.
             var snapshot = settings.Clone();
             snapshot.Devices.RemoveAll(device => !device.HasCustomSettings);
-            var text = JsonSerializer.Serialize(snapshot, Json);
+            var text = JsonSerializer.Serialize(snapshot, SettingsJsonContext.Default.AppSettings);
             // Flush the complete replacement before atomically swapping it into place.
             using (
                 var stream = new FileStream(

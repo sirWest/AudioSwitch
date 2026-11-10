@@ -1,11 +1,13 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net11.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Let .NET 11 manage async suspension without compiler-generated state machines. -->
+    <Features>$(Features);runtime-async=on</Features>
     <!-- LibraryImport generates unsafe marshalling code. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>3.2.2</Version>
+    <Version>3.3.0</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>AudioSwitch</Product>
     <Authors>Tanel Teede</Authors>

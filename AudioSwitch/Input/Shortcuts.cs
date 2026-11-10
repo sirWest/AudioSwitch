@@ -51,10 +51,11 @@ internal sealed class Shortcuts : IDisposable
 
     internal void Apply(AppSettings value)
     {
-        var duplicate = value
-            .Hotkeys.GroupBy(h => (h.Modifiers, h.VirtualKey))
-            .FirstOrDefault(g => g.Count() > 1);
-        if (duplicate is not null)
+        HashSet<(uint Modifiers, int VirtualKey)> assignments =
+        [
+            with(capacity: value.Hotkeys.Count),
+        ];
+        if (value.Hotkeys.Any(h => !assignments.Add((h.Modifiers, h.VirtualKey))))
         {
             throw new InvalidOperationException("Two actions use the same hotkey.");
         }
@@ -67,7 +68,7 @@ internal sealed class Shortcuts : IDisposable
             Native.UnregisterHotKey(tray.Handle, id);
         }
 
-        var replacement = new Dictionary<int, HotkeySettings>();
+        Dictionary<int, HotkeySettings> replacement = [with(capacity: value.Hotkeys.Count)];
         try
         {
             foreach (var hotkey in value.Hotkeys)

@@ -24,7 +24,7 @@ if (-not $SkipAppPublish -and (Test-Path -LiteralPath $publishDirectory)) {
 $projects = if ($SkipAppPublish) { @('AudioSwitch.Cli') } else { @('AudioSwitch', 'AudioSwitch.Cli') }
 foreach ($project in $projects) {
     $projectPath = Join-Path $repositoryRoot "$project/$project.csproj"
-    & dotnet publish $projectPath -c Release -r win-x64 --self-contained false -o $publishDirectory
+    & dotnet publish $projectPath -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:PublishReadyToRun=true -o $publishDirectory
     if ($LASTEXITCODE -ne 0) {
         throw "Publishing $project failed with exit code $LASTEXITCODE."
     }

@@ -105,7 +105,7 @@ begin
   Key := 'SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.WindowsDesktop.App';
   if RegGetValueNames(RootKey, Key, Versions) then
     for I := 0 to GetArrayLength(Versions) - 1 do
-      if (Copy(Versions[I], 1, 5) = '10.0.') and (Pos('-', Versions[I]) = 0) then
+      if (Copy(Versions[I], 1, 5) = '11.0.') and (Pos('-', Versions[I]) = 0) then
         if RegQueryDWordValue(RootKey, Key, Versions[I], Installed) and (Installed = 1) then
         begin
           Result := True;
@@ -123,11 +123,11 @@ begin
   if not Result then
   begin
     if WizardSilent then
-      Log('AudioSwitch requires Microsoft .NET 10 Desktop Runtime (x64).')
-    else if MsgBox('AudioSwitch requires Microsoft .NET 10 Desktop Runtime (x64).'#13#10#13#10 +
+      Log('AudioSwitch requires Microsoft .NET 11 Desktop Runtime (x64).')
+    else if MsgBox('AudioSwitch requires Microsoft .NET 11 Desktop Runtime (x64).'#13#10#13#10 +
       'Install the Desktop Runtime, then run setup again. Open the download page now?',
       mbConfirmation, MB_YESNO) = IDYES then
-      ShellExec('open', 'https://dotnet.microsoft.com/download/dotnet/10.0',
+      ShellExec('open', 'https://dotnet.microsoft.com/download/dotnet/11.0',
         '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
   end;
 end;

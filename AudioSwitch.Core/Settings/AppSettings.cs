@@ -141,12 +141,14 @@ public sealed class AppSettings
             throw new InvalidDataException("Invalid hotkey.");
         }
 
-        if (Devices.GroupBy(d => d.Id).Any(g => g.Count() > 1))
+        HashSet<string> deviceIds = [with(StringComparer.Ordinal)];
+        if (Devices.Any(d => !deviceIds.Add(d.Id)))
         {
             throw new InvalidDataException("Duplicate device preferences.");
         }
 
-        if (Hotkeys.GroupBy(h => (h.Modifiers, h.VirtualKey)).Any(g => g.Count() > 1))
+        HashSet<(uint Modifiers, int VirtualKey)> assignments = [with(capacity: Hotkeys.Count)];
+        if (Hotkeys.Any(h => !assignments.Add((h.Modifiers, h.VirtualKey))))
         {
             throw new InvalidDataException("Duplicate hotkey assignments.");
         }

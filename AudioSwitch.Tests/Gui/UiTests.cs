@@ -147,7 +147,7 @@ public sealed partial class UiTests
             "AudioSwitch",
             "bin",
             configuration,
-            "net10.0-windows",
+            new DirectoryInfo(AppContext.BaseDirectory).Name,
             "AudioSwitch.exe"
         );
         var temp = Path.Combine(
@@ -458,7 +458,7 @@ public sealed partial class UiTests
             "AudioSwitch",
             "bin",
             configuration,
-            "net10.0-windows",
+            new DirectoryInfo(AppContext.BaseDirectory).Name,
             "AudioSwitch.exe"
         );
         var temp = Path.Combine(

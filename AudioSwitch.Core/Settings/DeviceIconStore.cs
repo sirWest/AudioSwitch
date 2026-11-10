@@ -95,7 +95,7 @@ public sealed class DeviceIconStore(string settingsPath)
                 .Concat(new[] { currentPath, currentPath + ".bak" })
                 .Where(File.Exists)
                 .Distinct(StringComparer.OrdinalIgnoreCase);
-            var retained = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> retained = [with(StringComparer.Ordinal)];
             foreach (var path in profiles)
             {
                 if (
@@ -117,9 +117,9 @@ public sealed class DeviceIconStore(string settingsPath)
                     if (first != '{')
                         continue;
                 }
-                var saved = JsonSerializer.Deserialize<AppSettings>(
+                var saved = JsonSerializer.Deserialize(
                     File.ReadAllText(path),
-                    SettingsStore.Json
+                    SettingsJsonContext.Default.AppSettings
                 );
                 if (saved is null)
                     return;

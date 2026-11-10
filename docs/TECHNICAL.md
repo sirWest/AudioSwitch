@@ -4,7 +4,7 @@ See the [main README](../README.md) for an introduction and testing information.
 
 AudioSwitch is a Windows tray application and command-line tool for switching
 audio devices, controlling volume, and configuring global shortcuts. It uses
-.NET 10 and WPF, with no third-party runtime packages.
+.NET 11 and WPF, with no third-party runtime packages.
 
 This reference describes the latest available release. See the
 [releases page](https://github.com/sirWest/AudioSwitch/releases/latest) for downloads
@@ -12,15 +12,25 @@ and release notes.
 
 ## Requirements
 
-- Windows 11, or a Windows 10 edition supported by .NET 10.
-- The .NET 10 SDK to build from source.
-- The .NET 10 Desktop Runtime to run the tray app. The CLI needs only the .NET runtime.
+- Windows 11, or a Windows 10 edition supported by .NET 11.
+- The .NET 11 SDK to build from source.
+- The .NET 11 Desktop Runtime to run the tray app. The CLI needs only the .NET runtime.
+- An x86-64-v2-compatible CPU (including SSE4.2 and POPCNT) for the x64 build.
 - Inno Setup 6.3 or later to build the installer.
 
 The installer packages x64 executables and checks for the x64 Desktop Runtime,
 including on Windows devices that support x64 emulation. See Microsoft's
 [Windows installation guide](https://learn.microsoft.com/dotnet/core/install/windows)
 for runtime downloads and supported Windows editions.
+
+## .NET 11 Features
+
+All four projects target `net11.0-windows` and use C# 15. `global.json` selects
+stable .NET 11 SDKs, including newer feature bands.
+
+- .NET 11 runtime and JIT optimizations, plus WPF reliability fixes.
+- Runtime-managed async (`runtime-async=on`) for asynchronous methods.
+- C# 15 collection arguments (`with(...)`) for explicit comparers and collection capacity.
 
 ## Build and Run
 
@@ -135,6 +145,9 @@ the preceding valid settings. Recovered corrupt files are preserved as
 An editor cannot overwrite a newer CLI edit; reopen Settings to reload it.
 The JSON schema version is independent of the application release version.
 
+Settings persistence uses generated JSON metadata and retains the existing
+settings format, including string enum values and numeric enum input.
+
 Errors are logged to `%LOCALAPPDATA%/AudioSwitch/errors.log`. Sign-in startup
 uses the per-user `AudioSwitch` Run registry entry, shared with the installer.
 Applying the startup preference removes the legacy startup shortcut.
@@ -143,15 +156,19 @@ Applying the startup preference removes the legacy startup shortcut.
 
 In the IDE, publish the main `AudioSwitch` project using the **Installer** profile
 (`AudioSwitch/Properties/PublishProfiles/Installer.pubxml`). It publishes a Release,
-framework-dependent x64 build of the app and CLI, copies the skins and license,
+framework-dependent x64 single-file build of each executable, copies the skins and license,
 and compiles `Setup/Setup.iss` in the same operation. Inno Setup must be installed
 in its standard location or `ISCC.exe` must be available on `PATH`.
+
+Packaged app and CLI binaries use ReadyToRun precompilation to reduce startup
+JIT work. Each executable bundles its managed assemblies and runtime configuration.
+Skins and the license remain separate. The installed .NET 11 runtime is required.
 
 ```powershell
 # The same complete publish-and-installer operation from the command line:
 dotnet publish AudioSwitch/AudioSwitch.csproj -c Release -p:PublishProfile=Installer
 
-# Framework-dependent x64 app and CLI, skins and license:
+# Framework-dependent x64 single-file app and CLI, skins and license:
 ./tools/Publish.ps1
 
 # Publish and compile the installer:
@@ -165,7 +182,7 @@ directory. The Installer profile uses this fixed output path; do not override it
 with `-o`. A missing Inno Setup compiler or a failed packaging step fails publishing.
 
 `Setup/Setup.iss` is the installer script. Setup installs per
-user, shows the welcome screen, and checks the .NET 10 Desktop Runtime before
+user, shows the welcome screen, and checks the .NET 11 Desktop Runtime before
 installation. It does not automatically download or install the runtime.
 On Windows 11 22H2+, the selected tray-visibility task passes `--show-tray-icon`
 to the application. If launch is declined or setup is silent, setup runs

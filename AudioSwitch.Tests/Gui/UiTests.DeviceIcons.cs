@@ -22,7 +22,7 @@ public sealed partial class UiTests
                 "AudioSwitch",
                 "bin",
                 new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,
-                "net10.0-windows",
+                new DirectoryInfo(AppContext.BaseDirectory).Name,
                 "AudioSwitch.exe"
             );
         var temp = Path.Combine(

@@ -19,7 +19,7 @@ It has been a while. A busy personal life kept me away from AudioSwitch much
 longer than I expected, and I appreciate everyone who stuck around. Hopefully,
 the refreshed AudioSwitch makes the wait worthwhile.
 
-This version has been converted to .NET 10 and WPF and improved with the help of
+AudioSwitch now uses .NET 11 and WPF, with improvements made with the help of
 Codex and the Astra 6 model. AI-assisted coding has made returning to this project
 much more manageable, and I expect it to help me work through future issues and
 requests faster, too.
@@ -66,14 +66,18 @@ See [Device Hotkeys](docs/DEVICE-HOTKEYS.md) for setup examples and the
 Get the latest release from the
 [releases page](https://github.com/sirWest/AudioSwitch/releases/latest).
 AudioSwitch targets Windows 10 and 11. Windows 7, 8, and 8.1 are not
-supported by its .NET 10 runtime; older Windows versions are outside this release's
-scope. Microsoft's official .NET 10 support on Windows 10 is limited to specific
+supported by its .NET 11 runtime; older Windows versions are outside this release's
+scope. Microsoft's official .NET 11 support on Windows 10 is limited to specific
 LTSC and Enterprise releases; see the
-[supported OS list](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md)
+[supported OS list](https://github.com/dotnet/core/blob/main/release-notes/11.0/supported-os.md)
 for details.
 
-The installer uses x64 executables and requires the **.NET 10 Desktop Runtime
+The x64 build requires the .NET 11 CPU baseline (x86-64-v2, including SSE4.2
+and POPCNT).
+
+The installer uses x64 executables and requires the **.NET 11 Desktop Runtime
 (x64)**. It checks for the runtime but does not install it automatically.
+Install this runtime before upgrading, even if you already have .NET 10 installed.
 See the [Windows runtime installation guide](https://learn.microsoft.com/dotnet/core/install/windows)
 for downloads and supported Windows versions.
 
@@ -102,7 +106,7 @@ release better.
 
 ## Build and Contribute
 
-Install the .NET 10 SDK on Windows, then run these commands from the solution
+Install the .NET 11 SDK on Windows, then run these commands from the solution
 folder:
 
 ```powershell
