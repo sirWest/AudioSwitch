@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using AudioSwitch.Core.CoreAudio;
 using AudioSwitch.Core.Settings;
 

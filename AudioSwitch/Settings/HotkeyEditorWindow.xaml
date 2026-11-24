@@ -80,6 +80,14 @@
             AutomationProperties.Name="Shortcut"
           />
           <CheckBox
+            x:Name="repeatWhileHeld"
+            Content="Repeat while held"
+            IsChecked="{Binding RepeatWhileHeld}"
+            MinHeight="24"
+            Padding="8,0,0,0"
+            Margin="0,8,0,2"
+          />
+          <CheckBox
             Content="Show OSD"
             IsChecked="{Binding ShowOsd}"
             MinHeight="24"

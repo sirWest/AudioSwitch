@@ -74,14 +74,7 @@ internal sealed class Shortcuts : IDisposable
             foreach (var hotkey in value.Hotkeys)
             {
                 var id = nextId++;
-                if (
-                    !Native.RegisterHotKey(
-                        tray.Handle,
-                        id,
-                        hotkey.Modifiers | 0x4000,
-                        (uint)hotkey.VirtualKey
-                    )
-                )
+                if (!Register(id, hotkey))
                 {
                     throw new Win32Exception(
                         Marshal.GetLastWin32Error(),
@@ -136,16 +129,20 @@ internal sealed class Shortcuts : IDisposable
 
             foreach (var (id, hotkey) in old)
             {
-                Native.RegisterHotKey(
-                    tray.Handle,
-                    id,
-                    hotkey.Modifiers | 0x4000,
-                    (uint)hotkey.VirtualKey
-                );
+                Register(id, hotkey);
             }
 
             throw;
         }
+    }
+
+    private bool Register(int id, HotkeySettings hotkey)
+    {
+        const uint noRepeat = 0x4000;
+        var modifiers = hotkey.Modifiers;
+        if (!hotkey.RepeatWhileHeld || !hotkey.Function.IsVolumeAdjustment())
+            modifiers |= noRepeat;
+        return Native.RegisterHotKey(tray.Handle, id, modifiers, (uint)hotkey.VirtualKey);
     }
 
     private nint Mouse(int code, nint message, nint data)

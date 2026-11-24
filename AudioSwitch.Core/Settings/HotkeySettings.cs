@@ -6,6 +6,7 @@ public sealed class HotkeySettings
     public uint Modifiers { get; set; }
     public int VirtualKey { get; set; }
     public bool ShowOsd { get; set; } = true;
+    public bool RepeatWhileHeld { get; set; }
     public string Name { get; set; } = "";
     public HotkeyDeviceSettings Playback { get; set; } = new();
     public HotkeyDeviceSettings Recording { get; set; } = new();

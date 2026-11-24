@@ -182,6 +182,9 @@ internal sealed partial class HotkeyEditorWindow
         if (!initialized || action.SelectedValue is not HotkeyAction selected)
             return;
         item.Function = selected;
+        repeatWhileHeld.Visibility = selected.IsVolumeAdjustment()
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         var show = item.Function == HotkeyAction.SelectAudioDevices;
         if (show && !deviceEditorsCreated)
         {

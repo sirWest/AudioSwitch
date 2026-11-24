@@ -7,7 +7,7 @@
     <Features>$(Features);runtime-async=on</Features>
     <!-- LibraryImport generates unsafe marshalling code. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>3.3.0</Version>
+    <Version>3.3.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>AudioSwitch</Product>
     <Authors>Tanel Teede</Authors>
